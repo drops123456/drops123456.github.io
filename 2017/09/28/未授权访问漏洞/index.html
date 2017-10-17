@@ -94,7 +94,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="w2n1ck" />
+  <meta name="keywords" content="编程,渗透测试,Python,未授权访问," />
 
 
 
@@ -113,9 +113,10 @@
 
 
 <meta name="description" content="前言今年5月，比特币勒索病毒WannaCry席卷全球，国内众多机构部门计算机系统瘫痪。根据之前应急响应的案例分析，以及一些安全报告统计，目前大部分的勒索病毒均利用未授权访问等通用漏洞进行植入、勒索，尤其是Redis、MongoDB等数据库的未授权访问漏洞尤其严重。 0x01 介绍未授权访问可以理解为需要安全配置或权限认证的地址、授权页面存在缺陷，导致其他用户可以直接访问，从而引发重要权限可被操作、">
+<meta name="keywords" content="编程,渗透测试,Python,未授权访问">
 <meta property="og:type" content="article">
-<meta property="og:title" content="w2n1ck">
-<meta property="og:url" content="http://byd.dropsec.xyz/2017/09/26/未授权访问漏洞/index.html">
+<meta property="og:title" content="未授权访问漏洞总结">
+<meta property="og:url" content="http://byd.dropsec.xyz/2017/09/28/未授权访问漏洞/index.html">
 <meta property="og:site_name" content="w2n1ck">
 <meta property="og:description" content="前言今年5月，比特币勒索病毒WannaCry席卷全球，国内众多机构部门计算机系统瘫痪。根据之前应急响应的案例分析，以及一些安全报告统计，目前大部分的勒索病毒均利用未授权访问等通用漏洞进行植入、勒索，尤其是Redis、MongoDB等数据库的未授权访问漏洞尤其严重。 0x01 介绍未授权访问可以理解为需要安全配置或权限认证的地址、授权页面存在缺陷，导致其他用户可以直接访问，从而引发重要权限可被操作、">
 <meta property="og:locale" content="zh-Hans">
@@ -140,9 +141,9 @@
 <meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-4.png">
 <meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-5.png">
 <meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-6.png">
-<meta property="og:updated_time" content="2017-10-17T12:28:28.000Z">
+<meta property="og:updated_time" content="2017-10-17T13:51:28.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="w2n1ck">
+<meta name="twitter:title" content="未授权访问漏洞总结">
 <meta name="twitter:description" content="前言今年5月，比特币勒索病毒WannaCry席卷全球，国内众多机构部门计算机系统瘫痪。根据之前应急响应的案例分析，以及一些安全报告统计，目前大部分的勒索病毒均利用未授权访问等通用漏洞进行植入、勒索，尤其是Redis、MongoDB等数据库的未授权访问漏洞尤其严重。 0x01 介绍未授权访问可以理解为需要安全配置或权限认证的地址、授权页面存在缺陷，导致其他用户可以直接访问，从而引发重要权限可被操作、">
 <meta name="twitter:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/ransomware123.jpg">
 
@@ -172,13 +173,13 @@
 
 
 
-  <link rel="canonical" href="http://byd.dropsec.xyz/2017/09/26/未授权访问漏洞/"/>
+  <link rel="canonical" href="http://byd.dropsec.xyz/2017/09/28/未授权访问漏洞/"/>
 
 
 
 
 
-  <title> | w2n1ck</title>
+  <title>未授权访问漏洞总结 | w2n1ck</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -372,7 +373,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2017/09/26/未授权访问漏洞/">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2017/09/28/未授权访问漏洞/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="w2n1ck">
@@ -389,7 +390,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">未授权访问漏洞总结</h1>
         
 
         <div class="post-meta">
@@ -401,8 +402,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-26T11:24:03+08:00">
-                2017-09-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-28T01:32:11+08:00">
+                2017-09-28
               </time>
             
 
@@ -420,9 +421,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/09/26/未授权访问漏洞/#comments" itemprop="discussionUrl">
+                <a href="/2017/09/28/未授权访问漏洞/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/09/26/未授权访问漏洞/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2017/09/28/未授权访问漏洞/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -684,7 +685,7 @@
     </li>
     <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://byd.dropsec.xyz/2017/09/26/未授权访问漏洞/" title="">http://byd.dropsec.xyz/2017/09/26/未授权访问漏洞/</a>
+      <a href="http://byd.dropsec.xyz/2017/09/28/未授权访问漏洞/" title="未授权访问漏洞总结">http://byd.dropsec.xyz/2017/09/28/未授权访问漏洞/</a>
     </li>
     <li class="post-copyright-license">
       <strong>版权声明： </strong>
@@ -697,6 +698,18 @@
     </div>
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/编程/" rel="tag"><i class="fa fa-tag"></i> 编程</a>
+          
+            <a href="/tags/渗透测试/" rel="tag"><i class="fa fa-tag"></i> 渗透测试</a>
+          
+            <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          
+            <a href="/tags/未授权访问/" rel="tag"><i class="fa fa-tag"></i> 未授权访问</a>
+          
+        </div>
       
 
       
@@ -830,7 +843,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-count">54</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1066,9 +1079,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://byd.dropsec.xyz/2017/09/26/未授权访问漏洞/';
-          this.page.identifier = '2017/09/26/未授权访问漏洞/';
-          this.page.title = '';
+          this.page.url = 'http://byd.dropsec.xyz/2017/09/28/未授权访问漏洞/';
+          this.page.identifier = '2017/09/28/未授权访问漏洞/';
+          this.page.title = '未授权访问漏洞总结';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://mydisqus-2.disqus.com/embed.js';
