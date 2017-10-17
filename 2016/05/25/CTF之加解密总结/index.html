@@ -1,0 +1,1522 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CTF,加密解密," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="w2n1ck" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="CTF比赛中主要分为逆向破解，Web安全，加密解密，PWN等几大类，本文主要总结一些自己做过的ctf的以下加密解密的方法和工具等。">
+<meta name="keywords" content="CTF,加密解密">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTF之加解密总结">
+<meta property="og:url" content="http://byd.dropsec.xyz/2016/05/25/CTF之加解密总结/index.html">
+<meta property="og:site_name" content="w2n1ck">
+<meta property="og:description" content="CTF比赛中主要分为逆向破解，Web安全，加密解密，PWN等几大类，本文主要总结一些自己做过的ctf的以下加密解密的方法和工具等。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E8%A1%A8.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%E8%A1%A8.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/%E7%BB%B4%E5%90%89%E5%88%A9%E4%BA%9A%E5%AF%86%E7%A0%81%E8%A1%A8.png.jpg">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/%E6%9B%BC%E5%88%87%E6%96%AF%E7%89%B9%E7%BC%96%E7%A0%81.jpg">
+<meta property="og:updated_time" content="2017-07-28T11:56:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CTF之加解密总结">
+<meta name="twitter:description" content="CTF比赛中主要分为逆向破解，Web安全，加密解密，PWN等几大类，本文主要总结一些自己做过的ctf的以下加密解密的方法和工具等。">
+<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E8%A1%A8.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2016/05/25/CTF之加解密总结/"/>
+
+
+
+
+
+  <title>CTF之加解密总结 | w2n1ck</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">w2n1ck</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2016/05/25/CTF之加解密总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="w2n1ck">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="w2n1ck">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">CTF之加解密总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-05-25T23:21:54+08:00">
+                2016-05-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/05/25/CTF之加解密总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/05/25/CTF之加解密总结/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>CTF比赛中主要分为逆向破解，Web安全，加密解密，PWN等几大类，本文主要总结一些自己做过的ctf的以下加密解密的方法和工具等。<br><a id="more"></a></p>
+<h1 id="0x01-Base64"><a href="#0x01-Base64" class="headerlink" title="0x01 Base64"></a>0x01 Base64</h1><p>Base64顾名思义就是用64个可显示字符表示所有的ASC字符，64也就是6Bits，而ASC字符一共有256个，也就是8Bits。Base64编码要求把3个8位字节（3<em>8=24）转化为4个6位的字节（4</em>6=24），之后在6位的前面补两个0，形成8位一个字节的形式。 如果剩下的字符不足3个字节，则用0填充，输出字符使用’=’，因此编码后输出的文本末尾可能会出现1或2个’=’<br>内存1个字符占8位</p>
+<h2 id="例如"><a href="#例如" class="headerlink" title="例如"></a>例如</h2><pre><code>转前： s 1 3
+先转成ascii：对应 115 49 51
+2进制： 01110011 00110001 00110011
+6个一组（4组） 011100110011000100110011
+然后才有后面的 011100 110011 000100 110011
+然后计算机是8位8位的存数 6不够，自动就补两个高位0了
+所有有了 高位补0
+科学计算器输入 00011100 00110011 00000100 00110011
+得到 28 51 4 51
+查对下照表 c z E z
+</code></pre><h2 id="形式"><a href="#形式" class="headerlink" title="形式"></a>形式</h2><blockquote>
+<p>ZXZhbCgkX1BPU1RbcDRuOV96MV96aDNuOV9qMXVfU2gxX0oxM10pNTU2NJC3ODHHYWJIZ3P4ZWY=</p>
+<h3 id="Base64在线编码解码地址"><a href="#Base64在线编码解码地址" class="headerlink" title="Base64在线编码解码地址"></a><a href="http://www1.tc711.com/tool/BASE64.htm" target="_blank" rel="external">Base64在线编码解码地址</a></h3><h1 id="0x02-Base32"><a href="#0x02-Base32" class="headerlink" title="0x02 Base32"></a>0x02 Base32</h1><p>Base32和Base64相比只有一个区别就是，用32个字符表示256个ASC字符，也就是说5个ASC字符一组可以生成8个Base字符。</p>
+<h3 id="Base32在线编码解码地址"><a href="#Base32在线编码解码地址" class="headerlink" title="Base32在线编码解码地址"></a><a href="http://tomeko.net/online_tools/base32.php?lang=en" target="_blank" rel="external">Base32在线编码解码地址</a></h3><p><strong>注：</strong>以上两种编码都可以使用python的base64模块来加解密</p>
+</blockquote>
+<h1 id="0x03-培根密码"><a href="#0x03-培根密码" class="headerlink" title="0x03 培根密码"></a>0x03 培根密码</h1><p>培根密码，培根所用的密码是一种本质上用二进制数设计的，没有用通常的0和1来表示，而是采用a和b<br>密文形式是明显两个不同的字符。如大写字母和小写字母，英文和数字，斜体和正体。</p>
+<h2 id="例如-1"><a href="#例如-1" class="headerlink" title="例如"></a>例如</h2><pre><code>DEath IS JUST A PaRT oF lIFE,sOMeTHInG wE&apos;RE aLL dESTInED TO dO.
+
+是大写小写两个不同的字符
+大写用a表示，小写用b表示
+选取5个一组
+DEath aabbb    
+ISJUS aaaaa 
+TAPaR aaaba 
+ToFlI ababa 
+FEsOM aabaa 
+eTHIn baaab 
+GwERE abaaa 
+aLLdE baaba
+STInE aaaba 
+DTOdO aaab
+按照上述的形式去在表里找对应得明文.
+</code></pre><ul>
+<li><p>第一种方式</p>
+<p>  A aaaaa    B aaaab C aaaba D aaabb<br>  E aabaa F aabab G aabba H aabbb<br>  I abaaa J abaab K ababa L ababb<br>  M abbaa N abbab O abbba P abbbb<br>  Q baaaa R baaab S baaba T baabb<br>  U babaa V babab W babba X babbb<br>  Y bbaaa Z bbaab</p>
+</li>
+<li><p>第二种方式</p>
+<p>  a AAAAA g AABBA n ABBAA t BAABA<br>  b AAAAB h AABBB o ABBAB u-v BAABB<br>  c AAABA i-j ABAAA p ABBBA w BABAA<br>  d AAABB k ABAAB q ABBBB x BABAB<br>  e AABAA l ABABA r BAAAA y BABBA<br>  f AABAB m ABABB s BAAAB z BABBB</p>
+</li>
+</ul>
+<h3 id="培根密码在线解密"><a href="#培根密码在线解密" class="headerlink" title="培根密码在线解密"></a><a href="http://114.215.92.217/blog/tools/%E5%9F%B9%E6%A0%B9%E5%AF%86%E7%A0%81%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86.html" target="_blank" rel="external">培根密码在线解密</a></h3><h1 id="0x04-摩斯密码"><a href="#0x04-摩斯密码" class="headerlink" title="0x04 摩斯密码"></a>0x04 摩斯密码</h1><p>摩尔斯电码是一种早期的数字化通信形式，但是它不同于现代只使用零和一两种状态的二进制代码，它的代码包括五种： 点、划、点和划之间的停顿、每个字符间短的停顿（在点和划之间）、每个词之间中等的停顿以及句子之间长的停顿。</p>
+<blockquote>
+<p>形如：–  —  .-.  …  .</p>
+</blockquote>
+<p>解密对照下图摩斯密码表:</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E8%A1%A8.png" alt=""></p>
+<h3 id="在线摩斯密码解密"><a href="#在线摩斯密码解密" class="headerlink" title="在线摩斯密码解密"></a><a href="http://www.jb51.net/tools/morse.htm" target="_blank" rel="external">在线摩斯密码解密</a></h3><h1 id="0x05-JsFuck"><a href="#0x05-JsFuck" class="headerlink" title="0x05 JsFuck"></a>0x05 JsFuck</h1><p>JSFuck 可以让你只用 6 个字符 <a href=""></a>!+ 来编写 JavaScript 程序。</p>
+<h3 id="形式："><a href="#形式：" class="headerlink" title="形式："></a>形式：</h3><blockquote>
+<p>[][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]][([][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]]+[])[+[[!+[]+!+[]+!+[]]]]+([][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]]]]+([][[]]+[])[+[[+!+[]]]]+(![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[+!+[]]]]+([][[]]+[])[+[[+[]]]]+([][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+([][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]]]]+(!![]+[])<a href="(![]+[]">+[[+!+[]]]]</a>[+[[+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]+(!![]+[])[+[[+[]]]]+([][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]]+[])[+[[+!+[]]]+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+[+!+[]]+([][(![]+[])[+[[+[]]]]+([][[]]+[])[+[[!+[]+!+[]+!+[]+!+[]+!+[]]]]+(![]+[])[+[[!+[]+!+[]]]]+(!![]+[])[+[[+[]]]]+(!![]+[])[+[[!+[]+!+[]+!+[]]]]+(!![]+[])[+[[+!+[]]]]]+[])[+[[+!+[]]]+[[!+[]+!+[]+!+[]+!+[]+!+[]+!+[]]]])()</p>
+</blockquote>
+<p>其他一些基本的表达：</p>
+<pre><code>false       =&gt;  ![]
+true        =&gt;  !![]
+undefined   =&gt;  [][[]]
+NaN         =&gt;  +[![]]
+0           =&gt;  +[]
+1           =&gt;  +!+[]
+2           =&gt;  !+[]+!+[]
+10          =&gt;  [+!+[]]+[+[]]
+Array       =&gt;  []
+Number      =&gt;  +[]
+String      =&gt;  []+[]
+Boolean     =&gt;  ![]
+Function    =&gt;  [][&quot;filter&quot;]
+eval        =&gt;  [][&quot;filter&quot;][&quot;constructor&quot;]( CODE )()
+window      =&gt;  [][&quot;filter&quot;][&quot;constructor&quot;](&quot;return this&quot;)()
+</code></pre><p>可以使用firebug直接解密.</p>
+<h3 id="JsFuck在线解密"><a href="#JsFuck在线解密" class="headerlink" title="JsFuck在线解密"></a><a href="http://www.jsfuck.com/" target="_blank" rel="external">JsFuck在线解密</a></h3><h1 id="0x06-栅栏密码"><a href="#0x06-栅栏密码" class="headerlink" title="0x06 栅栏密码"></a>0x06 栅栏密码</h1><p>所谓栅栏密码，就是把要加密的明文分成N个一组，然后把每组的第1个字连起来，形成一段无规律的话。 不过栅栏密码本身有一个潜规则，就是组成栅栏的字母一般不会太多。（一般不超过30个，也就是一、两句话）</p>
+<h2 id="例如-2"><a href="#例如-2" class="headerlink" title="例如"></a>例如</h2><pre><code>明文：THERE IS A CIPHER
+去掉空格后变为：THEREISACIPHER
+两个一组，得到：TH ER EI SA CI PH ER
+先取出第一个字母：TEESCPE
+再取出第二个字母：HRIAIHR
+连在一起就是：TEESCPEHRIAIHR
+还原为所需密码。
+而解密的时候，我们先把密文从中间分开，变为两行：
+T E E S C P E
+H R I A I H R
+再按上下上下的顺序组合起来：
+THEREISACIPHER
+分出空格，就可以得到原文了：
+THERE IS A CIPHER
+
+例如密文：NlEyQd{seft}
+N l 
+E y 
+Q d 
+{ s 
+e f
+ t }
+NEQ{etIydsf}
+</code></pre><p>python实现栅栏解密：<a href="http://oa8y5guqs.bkt.clouddn.com/zhalan.py" target="_blank" rel="external">zhalan.py</a></p>
+<h1 id="0x07-凯撒密码"><a href="#0x07-凯撒密码" class="headerlink" title="0x07 凯撒密码"></a>0x07 凯撒密码</h1><p>它的基本思想是：通过把字母移动一定的位数来实现加密和解密。明文中的所有字母都在字母表上向后（或向前）按照一个固定数目进行偏移后被替换成密文。</p>
+<p>##例如</p>
+<blockquote>
+<p>当偏移量是3的时候，所有的字母A将被替换成D，B变成E，以此类推X将变成A，Y变成B，Z变成C。由此可见，位数就是凯撒密码加密和解密的密钥。</p>
+</blockquote>
+<p>解密参照凯撒密码表：<br><img src="http://oa8y5guqs.bkt.clouddn.com/%E5%87%AF%E6%92%92%E5%AF%86%E7%A0%81%E8%A1%A8.png" alt=""></p>
+<pre><code>上述的密文：NEQ{etIydsf}
+发现移位11
+CTF{tianshu}
+</code></pre><p>python实现凯撒解密：<a href="http://oa8y5guqs.bkt.clouddn.com/kaisa.py" target="_blank" rel="external">kaisa.py</a></p>
+<h1 id="0x08-维吉利亚密码"><a href="#0x08-维吉利亚密码" class="headerlink" title="0x08 维吉利亚密码"></a>0x08 维吉利亚密码</h1><p>恺撒密码的基础上扩展的多表密码.</p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><pre><code>如果你要对自己的男（女）神用维密（不是维多利亚的秘密）表白，先写好明文：I LOVE YOU
+然后自己设定一个密钥，比如：KISS。
+这样密钥与明文对应就是
+K ISSK ISS
+I LOVE YOU
+
+对第一个字母“I”加密过程如下：
+先找到最左侧密钥K所在的一行和最上方明文I所在列，找到他们的相交字母S，这样I就被加密成了S。
+同理，这句话通过每一个对应密钥的加密后就变成如下
+密钥：KISSKISS
+明文：ILOVEYOU
+密文：STGNOGGM
+</code></pre><p>维吉利亚密码表：</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/%E7%BB%B4%E5%90%89%E5%88%A9%E4%BA%9A%E5%AF%86%E7%A0%81%E8%A1%A8.png.jpg" alt=""></p>
+<p><a href="http://oa8y5guqs.bkt.clouddn.com/%E5%8F%A4%E5%85%B8%E5%AF%86%E7%A0%81%E5%B7%A5%E5%85%B7.zip" target="_blank" rel="external">维吉利亚加解密工具</a></p>
+<h1 id="0x09-Unicode编码"><a href="#0x09-Unicode编码" class="headerlink" title="0x09 Unicode编码"></a>0x09 Unicode编码</h1><p>Unicode（统一码、万国码、单一码）是计算机科学领域里的一项业界标准,包括字符集、编码方案等。目前常用的有UTF-8、UTF-16、UTF-32。</p>
+<h3 id="密文形式："><a href="#密文形式：" class="headerlink" title="密文形式："></a>密文形式：</h3><blockquote>
+<p>\u5927\u5bb6\u597d\uff01\u000d\u000a</p>
+</blockquote>
+<p><a href="http://tool.chinaz.com/tools/unicode.aspx" target="_blank" rel="external">Unicode在线解密</a></p>
+<h1 id="0x10-brainfuck编码"><a href="#0x10-brainfuck编码" class="headerlink" title="0x10 brainfuck编码"></a>0x10 brainfuck编码</h1><p>Brainfuck是一种极小化的计算机语言，它是由Urban Müller在1993年创建的。由于fuck在英语中是脏话，这种语言有时被称为brainf<em>ck或brainf*</em>k，甚至被简称为BF。<br>共有八个字符</p>
+<pre><code>字符含义：
+&gt;    指针加一
+&lt;    指针减一
++    指针指向的字节的值加一
+-    指针指向的字节的值减一
+.    输出指针指向的单元内容（ASCⅡ码）
+,    输入内容到指针指向的单元（ASCⅡ码）
+[    如果指针指向的单元值为零，向后跳转到对应的]指令的次一指令处
+]    如果指针指向的单元值不为零，向前跳转到对应的[指令的次一指令处
+</code></pre><h3 id="密文形式"><a href="#密文形式" class="headerlink" title="密文形式:"></a>密文形式:</h3><pre><code>++++++++++[&gt;+++++++&gt;++++++++++&gt;+++&gt;+&lt;&lt;&lt;&lt;-]
+&gt;++.&gt;+.+++++++..+++.&gt;++.&lt;&lt;+++++++++++++++.
+&gt;.+++.------.--------.&gt;+.&gt;.
+</code></pre><h3 id="解密方法"><a href="#解密方法" class="headerlink" title="解密方法"></a>解密方法</h3><ul>
+<li><p>使用brainfuck解释器解密</p>
+<p>  bftools.exe Decode braincopter doge.jpg -o dogeout.png</p>
+<p>  bftools.exe run dogeout.png</p>
+<p>  Q1RGe0JyYWluZnVja18xc19TaW1wMWV9</p>
+<p>  CTF{Brainfuck_1s_Simp1e}</p>
+</li>
+<li><a href="https://www.splitbrain.org/services/ook" target="_blank" rel="external">brainfuck在线解密</a></li>
+</ul>
+<h1 id="0x11-Playfair编码"><a href="#0x11-Playfair编码" class="headerlink" title="0x11 Playfair编码"></a>0x11 Playfair编码</h1><p>Playfair密码出现于1854年，它依据一个5*5的正方形组成的密码表来编写，密码表里排列有25个字母。如果一种语言字母超过25个，可以去掉使用频率最少的一个。如，法语一般去掉w或k，德语则是把i和j合起来当成一个字母看待。英语中z使用最少，可以去掉它。</p>
+<h3 id="加密描述："><a href="#加密描述：" class="headerlink" title="加密描述："></a>加密描述：</h3><pre><code>第一步是编制密码表。在这个5*5的密码表中，共有5行5列字母。
+第一列（或第一行）是密钥,其余按照字母顺序。密钥是一个单词或词组，若有重复字母，可将后面重复的字母去掉。当然也要把使用频率最少的字母去掉。
+如：密钥是Live and learn,去掉后则为liveandr。如果密钥过长可占用第二列或行
+</code></pre><h3 id="例如-3"><a href="#例如-3" class="headerlink" title="例如"></a>例如</h3><pre><code>首先playfair的加密过程用到一个5x5的字母矩阵,容纳26个字母，其中i和j挤到一个格子里，字母填写顺序取
+决于密钥，The quick brown fox jumps over the lazy dog!既然出题者不是在讲故事，那，这句就是密钥了吧
+将空格去掉，然后填入矩阵里，重复出现的字母只填一次。
+
+填完后如下表：
+t   h   e   q   u
+i/j  c   k   b   r
+o   w   n   f   x
+m   p   s   v   l
+a   z   y   d   g
+填完密钥出现的字母后，若还有空余，就填字母表中剩余的字母（按字母表顺序）
+</code></pre><h3 id="加密过程："><a href="#加密过程：" class="headerlink" title="加密过程："></a>加密过程：</h3><pre><code>把明文按两个字母一组分组，比如hello就分成he,lx,lo
+相邻字母相同的情况下，中间加个填充字母x(有时候是q)，若最后一个字母没组员，也加个填充字母。
+加密规则：
+1、两明文字母m1,m2同行，密文字母c1,c2在它们右边，同行循环，比如hu加密后是et；
+2、m1,m2同列：c1,c2在它们下边，同列循环，hz加密后是ch；
+3、m1,m2不同行列：c1,c2是m1,m2 组成的长方形的另两个顶点，顺序是c1与m1同行，c2与m2同行，cd加密后是bz；
+</code></pre><h3 id="解密过程："><a href="#解密过程：" class="headerlink" title="解密过程："></a>解密过程：</h3><pre><code>有了密钥矩阵，将加密过程反过来就行。ihxo解密就是ctfx
+ ihxo{smzdodcikmodcismzd}
+ctfx{playfairisfairplay}
+</code></pre><h1 id="0x12-urlcode编码"><a href="#0x12-urlcode编码" class="headerlink" title="0x12 urlcode编码"></a>0x12 urlcode编码</h1><p>UrlEncode：将字符串以URL编码</p>
+<p>返回值：字符串</p>
+<p>函数种类：编码处理</p>
+<h3 id="形式：-1"><a href="#形式：-1" class="headerlink" title="形式："></a>形式：</h3><pre><code>%4d%54%45%35%43%6a%45%77%4d%51%6f%78%4d%44%67%4b%4f%54%6b%4b%4d%54%45%78%43%6a%45%77%4f%51%6f%78%4d%44%45%4b%4d%54%45%32%43%6a%45%78%4d%51%6f%78%4d%54%55%4b%4d%54%41%30%43%6a%45%77%4e%51%6f%78%4d%6a%45%4b%4f%54%63%4b%4d%54%45%77%43%6a%6b%34%43%6a%6b%33%43%6a%45%78%4e%41%3d%3d
+</code></pre><h3 id="urlcode在线解密"><a href="#urlcode在线解密" class="headerlink" title="urlcode在线解密"></a><a href="http://tool.chinaz.com/Tools/URLEncode.aspx" target="_blank" rel="external">urlcode在线解密</a></h3><h1 id="0x13-Serpent编码"><a href="#0x13-Serpent编码" class="headerlink" title="0x13 Serpent编码"></a>0x13 Serpent编码</h1><p>Serpent（蟒蛇）,它是AES的一个候选算法,该算法使用256位的密钥对128位的决数据进行加解密;<br>描述了Serpent的加解密过程及子密钥生成过程,同时对其性能作了部分阐述</p>
+<h3 id="Serpent在线解密"><a href="#Serpent在线解密" class="headerlink" title="Serpent在线解密"></a><a href="http://tool.chacuo.net/cryptserpent" target="_blank" rel="external">Serpent在线解密</a></h3><h1 id="0x14-异或加密"><a href="#0x14-异或加密" class="headerlink" title="0x14 异或加密"></a>0x14 异或加密</h1><pre><code>异或的运算方法是一个二进制运算：
+1^1=0
+0^0=0
+1^0=1
+0^1=1
+
+两者相等为0,不等为1.
+</code></pre><h3 id="形式：-2"><a href="#形式：-2" class="headerlink" title="形式："></a>形式：</h3><blockquote>
+<p>一般为一个二进制字符串和一个英文字母</p>
+<h3 id="解密过程"><a href="#解密过程" class="headerlink" title="解密过程"></a>解密过程</h3><ul>
+<li>先把密钥转化成二进制</li>
+<li>再和密文异或</li>
+</ul>
+</blockquote>
+<p>异或解密算法：<a href="http://oa8y5guqs.bkt.clouddn.com/yihuo.py" target="_blank" rel="external">yihuo.py</a></p>
+<h1 id="0x15-CRC32加密"><a href="#0x15-CRC32加密" class="headerlink" title="0x15 CRC32加密"></a>0x15 CRC32加密</h1><p>CRC校验实用程序库 在数据存储和数据通讯领域，为了保证数据的正确，就不得不采用检错的手段。在诸多检错手段中，CRC是最著名的一种。CRC的全称是循环冗余校验。<br>CRC是网络传输中经常用的一种校验方式。<br>其中CRC32则是采用这样的一个多项式生成式的CRC：<br>Xe32+Xe26+Xe23+Xe22+Xe16+Xe12+Xe11+Xe10 +Xe8+Xe7+Xe5+Xe4+Xe2+X+1<br>( string$str )<br>生成str的 32 位循环冗余校验码多项式。这通常用于检查传输的数据是否完整。</p>
+<p><a href="http://blog.sina.com.cn/s/blog_64d75a250100i2qx.html" target="_blank" rel="external">python计算CRC32</a></p>
+<h1 id="0x16-邮件编码"><a href="#0x16-邮件编码" class="headerlink" title="0x16 邮件编码"></a>0x16 邮件编码</h1><p>邮件编码即uuencode编码，是将二进制文件转换为文本文件的过程，转换后的文件可以通过纯文本e-mail进行传输，在接收方对该文件进行uudecode，即将其转换为初始的二进制文件</p>
+<h3 id="形式：-3"><a href="#形式：-3" class="headerlink" title="形式："></a>形式：</h3><pre><code>MR,O)^KNYU&gt;;*Q[*[P_?#Q+&quot;AHZS6Q\G,LKNYNZ.LR;;2LK*[N^&amp;CK+/VN/;,
+
+MXK:\TJJ]RKZAQ-36K:&amp;CH:,*M/.XQ;3PL+B^S&lt;K&apos;U&gt;+1^;#)=V-T9GMU=75U
+
+*=65N8V]D95]??0``
+</code></pre><p><a href="http://web.chacuo.net/charsetuuencode" target="_blank" rel="external">Uuencode在线解密</a></p>
+<h1 id="0x17-曼切斯特编码"><a href="#0x17-曼切斯特编码" class="headerlink" title="0x17 曼切斯特编码"></a>0x17 曼切斯特编码</h1><p>曼彻斯特编码（Manchester Encoding），也叫做相位编码（ Phase Encode，简写PE），是一个同步时钟编码技术，被物理层使用来编码一个同步位流的时钟和数据。</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/%E6%9B%BC%E5%88%87%E6%96%AF%E7%89%B9%E7%BC%96%E7%A0%81.jpg" alt=""></p>
+<pre><code>从低到高跳变表示&quot;0&quot;，从高到低跳变表示&quot;1&quot;。
+还有一种是差分曼彻斯特编码，每位中间的跳变仅提供时钟定时，而用每位开始时有无跳变表示&quot;0&quot;或&quot;1&quot;，有跳变为&quot;0&quot;，无跳变为&quot;1&quot;。
+即:
+0-1    跳变表示 1,1-0 跳变表示 0
+然而一般来说无线调制中，传感器和 RF 前端之前通信一般会采用 SPI 接口，而 SPI 接口有两种模式， MSB First 和 LSB First，一般在大多数情况下，都是 MSB First，可是这题不是，有点奇葩，这题是 LSB First
+</code></pre><h1 id="0x18-其他加密"><a href="#0x18-其他加密" class="headerlink" title="0x18 其他加密"></a>0x18 其他加密</h1><p><a href="http://baike.baidu.com/link?url=R6oWhCdKvzlG8hB4hdIdUT1cZPbFOCrpU6lJAkTtdiKodD7eRTbASpd_YVfi4LMl7N8yFyhVNOz5ki6TC7_5eq" target="_blank" rel="external">希尔密码</a></p>
+<p><a href="http://baike.baidu.com/view/10613.htm?fromtitle=RSA&amp;fromid=210678&amp;type=syn" target="_blank" rel="external">Ras加密</a></p>
+<p><a href="http://rot13.de/" target="_blank" rel="external">Rot13加密</a></p>
+<p><a href="http://baike.baidu.com/link?url=yN39kWG2pGd9XHo3RjeUAbd7xs0QlnJ2uHzCJfxC03V-fJcQUdfcJ-WuGoAkKGFVE0AxFK4-98wa4FtzvxRA0_" target="_blank" rel="external">猪圈密码</a></p>
+<p><a href="http://tieba.baidu.com/p/2027781907" target="_blank" rel="external">当铺密码</a></p>
+<p><a href="http://tieba.baidu.com/p/2027781907" target="_blank" rel="external">手机电脑键盘密码</a></p>
+<p><a href="http://tool.chinaz.com/Tools/Escape.aspx" target="_blank" rel="external">Escape加密</a></p>
+<h3 id="混淆加密"><a href="#混淆加密" class="headerlink" title="混淆加密"></a>混淆加密</h3><p><a href="http://www.zhaoyuanma.com/aspfix.html" target="_blank" rel="external">Asp混淆加密</a></p>
+<p><a href="http://www.zhaoyuanma.com/phpcodefix.html" target="_blank" rel="external">Php混淆加密</a></p>
+<p><a href="http://tool.css-js.com/" target="_blank" rel="external">Css/js混淆加密</a></p>
+<p><a href="http://www.zhaoyuanma.com/aspfix.html" target="_blank" rel="external">VBScript.Encode混淆加密:</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="w2n1ck WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="w2n1ck Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      w2n1ck
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2016/05/25/CTF之加解密总结/" title="CTF之加解密总结">http://byd.dropsec.xyz/2016/05/25/CTF之加解密总结/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CTF/" rel="tag"><i class="fa fa-tag"></i> CTF</a>
+          
+            <a href="/tags/加密解密/" rel="tag"><i class="fa fa-tag"></i> 加密解密</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/11/上传漏洞总结/" rel="next" title="上传漏洞总结">
+                <i class="fa fa-chevron-left"></i> 上传漏洞总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/13/【PHP安全】PHP弱类型/" rel="prev" title="【PHP安全】PHP弱类型">
+                【PHP安全】PHP弱类型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="w2n1ck" />
+          <p class="site-author-name" itemprop="name">w2n1ck</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://010.dropsec.xyz/" title="小光头" target="_blank">小光头</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.w2n1ck.com/" title="个人主页" target="_blank">个人主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-Base64"><span class="nav-number">1.</span> <span class="nav-text">0x01 Base64</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#例如"><span class="nav-number">1.1.</span> <span class="nav-text">例如</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#形式"><span class="nav-number">1.2.</span> <span class="nav-text">形式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Base64在线编码解码地址"><span class="nav-number">1.2.1.</span> <span class="nav-text">Base64在线编码解码地址</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-Base32"><span class="nav-number">2.</span> <span class="nav-text">0x02 Base32</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Base32在线编码解码地址"><span class="nav-number">2.0.1.</span> <span class="nav-text">Base32在线编码解码地址</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-培根密码"><span class="nav-number">3.</span> <span class="nav-text">0x03 培根密码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#例如-1"><span class="nav-number">3.1.</span> <span class="nav-text">例如</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#培根密码在线解密"><span class="nav-number">3.1.1.</span> <span class="nav-text">培根密码在线解密</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-摩斯密码"><span class="nav-number">4.</span> <span class="nav-text">0x04 摩斯密码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在线摩斯密码解密"><span class="nav-number">4.0.1.</span> <span class="nav-text">在线摩斯密码解密</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x05-JsFuck"><span class="nav-number">5.</span> <span class="nav-text">0x05 JsFuck</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#形式："><span class="nav-number">5.0.1.</span> <span class="nav-text">形式：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JsFuck在线解密"><span class="nav-number">5.0.2.</span> <span class="nav-text">JsFuck在线解密</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x06-栅栏密码"><span class="nav-number">6.</span> <span class="nav-text">0x06 栅栏密码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#例如-2"><span class="nav-number">6.1.</span> <span class="nav-text">例如</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x07-凯撒密码"><span class="nav-number">7.</span> <span class="nav-text">0x07 凯撒密码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x08-维吉利亚密码"><span class="nav-number">8.</span> <span class="nav-text">0x08 维吉利亚密码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#实例"><span class="nav-number">8.1.</span> <span class="nav-text">实例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x09-Unicode编码"><span class="nav-number">9.</span> <span class="nav-text">0x09 Unicode编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#密文形式："><span class="nav-number">9.0.1.</span> <span class="nav-text">密文形式：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x10-brainfuck编码"><span class="nav-number">10.</span> <span class="nav-text">0x10 brainfuck编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#密文形式"><span class="nav-number">10.0.1.</span> <span class="nav-text">密文形式:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解密方法"><span class="nav-number">10.0.2.</span> <span class="nav-text">解密方法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x11-Playfair编码"><span class="nav-number">11.</span> <span class="nav-text">0x11 Playfair编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#加密描述："><span class="nav-number">11.0.1.</span> <span class="nav-text">加密描述：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例如-3"><span class="nav-number">11.0.2.</span> <span class="nav-text">例如</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加密过程："><span class="nav-number">11.0.3.</span> <span class="nav-text">加密过程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解密过程："><span class="nav-number">11.0.4.</span> <span class="nav-text">解密过程：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x12-urlcode编码"><span class="nav-number">12.</span> <span class="nav-text">0x12 urlcode编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#形式：-1"><span class="nav-number">12.0.1.</span> <span class="nav-text">形式：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#urlcode在线解密"><span class="nav-number">12.0.2.</span> <span class="nav-text">urlcode在线解密</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x13-Serpent编码"><span class="nav-number">13.</span> <span class="nav-text">0x13 Serpent编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Serpent在线解密"><span class="nav-number">13.0.1.</span> <span class="nav-text">Serpent在线解密</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x14-异或加密"><span class="nav-number">14.</span> <span class="nav-text">0x14 异或加密</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#形式：-2"><span class="nav-number">14.0.1.</span> <span class="nav-text">形式：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解密过程"><span class="nav-number">14.0.2.</span> <span class="nav-text">解密过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x15-CRC32加密"><span class="nav-number">15.</span> <span class="nav-text">0x15 CRC32加密</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x16-邮件编码"><span class="nav-number">16.</span> <span class="nav-text">0x16 邮件编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#形式：-3"><span class="nav-number">16.0.1.</span> <span class="nav-text">形式：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x17-曼切斯特编码"><span class="nav-number">17.</span> <span class="nav-text">0x17 曼切斯特编码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x18-其他加密"><span class="nav-number">18.</span> <span class="nav-text">0x18 其他加密</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#混淆加密"><span class="nav-number">18.0.1.</span> <span class="nav-text">混淆加密</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">w2n1ck</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2016/05/25/CTF之加解密总结/';
+          this.page.identifier = '2016/05/25/CTF之加解密总结/';
+          this.page.title = 'CTF之加解密总结';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="255,0,0" opacity='0.7' zIndex="-2" count="80" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

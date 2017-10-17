@@ -1,0 +1,1706 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="BootStrap,前端,编程," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="w2n1ck" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="BootStrap是什么BootStrap是基于HTML、CSS和JavaScript的框架，使你只需要写简单的代码就可以很快的搭建一个还不错的前端界面，它是后端程序员的福音，使他们只需要专注业务逻辑，而无须浪费太多的精力在界面设计上。">
+<meta name="keywords" content="BootStrap,前端,编程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BootStrap学习笔记">
+<meta property="og:url" content="http://byd.dropsec.xyz/2016/08/29/BootStrap学习笔记/index.html">
+<meta property="og:site_name" content="w2n1ck">
+<meta property="og:description" content="BootStrap是什么BootStrap是基于HTML、CSS和JavaScript的框架，使你只需要写简单的代码就可以很快的搭建一个还不错的前端界面，它是后端程序员的福音，使他们只需要专注业务逻辑，而无须浪费太多的精力在界面设计上。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2016-08-30T13:07:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="BootStrap学习笔记">
+<meta name="twitter:description" content="BootStrap是什么BootStrap是基于HTML、CSS和JavaScript的框架，使你只需要写简单的代码就可以很快的搭建一个还不错的前端界面，它是后端程序员的福音，使他们只需要专注业务逻辑，而无须浪费太多的精力在界面设计上。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2016/08/29/BootStrap学习笔记/"/>
+
+
+
+
+
+  <title>BootStrap学习笔记 | w2n1ck</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">w2n1ck</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2016/08/29/BootStrap学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="w2n1ck">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="w2n1ck">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">BootStrap学习笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-29T10:39:55+08:00">
+                2016-08-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/08/29/BootStrap学习笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/08/29/BootStrap学习笔记/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="BootStrap是什么"><a href="#BootStrap是什么" class="headerlink" title="BootStrap是什么"></a>BootStrap是什么</h1><p>BootStrap是基于HTML、CSS和JavaScript的框架，使你只需要写简单的代码就可以很快的搭建一个还不错的前端界面，它是后端程序员的福音，使他们只需要专注业务逻辑，而无须浪费太多的精力在界面设计上。</p>
+<a id="more"></a>
+<p><strong>全响应</strong></p>
+<p>它可以开发全响应式网页——不论你使用手机、平板电脑、普通个人电脑浏览网站内容，所有的元素都可以很优雅的呈现，减轻了因为兼容性而带来的工作量。</p>
+<p><strong>版本</strong></p>
+<p>它的最新版本是4.0，国内目前用的较多的是3.x,本教程也基于BootStrap3.x版本。</p>
+<p><strong>二次开发</strong></p>
+<p>你可以使用默认的BootStrap样式、组件和插件，你也可以对其进行二次开发，甚至你还可以基于BootStrap环境使用自己开发的组件。</p>
+<p>你可以登陆<code>http://v3.bootcss.com</code>点击页面中的<code>下载BootStrap</code>按钮下载完整版。</p>
+<p>1.首先把它的文件按照类别放在项目的文件夹中</p>
+<p>你可以把CSS文件——bootstrap.min.css放在类似stylesheets这样专门放CSS的文件夹。把js文件——bootstrap.min.js放在类似Scripts文件夹中。当然，最终如何部署可以按照你的个人喜好。</p>
+<p>2.在页面中使用BootStrap</p>
+<p>将BootStrap的文件bootstrap.min.css、bootstrap.min.js引入当前页面中，由于BootStrap是基于Jquery的，所以在引入它的js文件之前，一定要先引入Jquery.js。注意：这里考虑到文件大小，我们引入了min版的文件，当然，你也可以引入完整版的文件。</p>
+<p>示例代码如下：</p>
+<pre><code>&lt;!-- Bootstrap 核心 CSS 文件 --&gt;&lt;/p&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;/stylesheets/bootstrap.min.css&quot;&gt;
+
+&lt;!-- jQuery文件 --&gt;
+&lt;script src=&quot;/scripts/jquery.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;!-- Bootstrap 核心 JavaScript 文件 --&gt;
+&lt;p&gt;&lt;script src=&quot;/scripts/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+</code></pre><h2 id="BootStrap栅格布局"><a href="#BootStrap栅格布局" class="headerlink" title="BootStrap栅格布局"></a>BootStrap栅格布局</h2><p>BootStrap栅格布局是灵活使用BootStrap的基础。BootStrap将屏幕分为12等分，在具体的DIV中，可以通过设置DIV的所占等分的数字确定其在屏幕中占有的宽度。如：</p>
+<pre><code>&lt;div class=&quot;row“&gt;&lt;!--表示另起一行--&gt;
+      &lt;div class=&quot;col-md-8&quot; style=&quot;border:1px solid black;height:100px;&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;col-md-4&quot; style=&quot;border:1px solid black;height:100px;&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre><p>在第一个DIV中<code>class=&quot;col-md-8&quot;</code>,第二个DIV中<code>class=&quot;col-md-4&quot;</code>, 其中‘8’和‘4’就是其DIV所占屏幕宽度的数值，加在一起等于‘12’。也就是第一个DIV占整个屏幕宽度的‘8/12’,第二个DIV占‘4/12’。 注：在上述代码中为了突显区块，我们设置了DIV的边框宽度为1像素黑色实线，高度设为100像素。</p>
+<h2 id="布局屏幕分类"><a href="#布局屏幕分类" class="headerlink" title="布局屏幕分类"></a>布局屏幕分类</h2><p>BootStrap是一种全响应的技术，那么针对不同的屏幕，它是怎么提供支持的呢？ 别担心，针对不同的显示屏幕尺寸，BootStrap提供了不同的栅格布局的属性：</p>
+<ol>
+<li>col-xs-* 超小屏幕 手机 (&lt;768px)</li>
+<li>col-sm-* 小屏幕 平板 (≥768px)</li>
+<li>col-md-* 中等屏幕 桌面显示器 (≥992px)</li>
+<li>col-lg-* 大屏幕 大桌面显示器 (≥1200px)</li>
+</ol>
+<h2 id="多个布局属性"><a href="#多个布局属性" class="headerlink" title="多个布局属性"></a>多个布局属性</h2><p>如果想让一个DIV在不同的屏幕中占有不同的屏宽该怎么做呢？ BootStrap允许我们在一个DIV中写多个类别的布局属性，从而让该DIV在不同的屏幕中呈现不同的屏宽。如：</p>
+<pre><code>&lt;div class=&quot;row&quot;&gt;
+      &lt;div class=&quot;col-md-8 col-xs-6 col-lg-4&quot;&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre><p>该DIV在中等屏幕中占有‘8/12’，在手机中占有‘6/12’，在大屏幕中占有屏幕比例的‘4/12’。</p>
+<h1 id="网站首页整体设计思路"><a href="#网站首页整体设计思路" class="headerlink" title="网站首页整体设计思路"></a>网站首页整体设计思路</h1><h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><p>一般而言首页设计几乎等同与整个网站设计，那么首页中到底应该放些什么内容才好呢？这要看网站有哪些主要的元素。本教程里要设计的网站首页是一个多用户博客类的网站首页，在该网站中用户可以发表博客，也可以推荐图书给其他用户。所以，首页中的板块包括这些应该是恰当的：</p>
+<ul>
+<li><p>整站导航条</p>
+</li>
+<li><p>文章（博客）展示板块</p>
+</li>
+<li><p>图书展示板块</p>
+</li>
+<li><p>用户（会员）展示板块</p>
+</li>
+<li><p>脚注——footer部分</p>
+</li>
+</ul>
+<p>其中导航条和脚注是整个网站中都要用到的，具体实现时可以放在布局模板中。</p>
+<h2 id="板块划分"><a href="#板块划分" class="headerlink" title="板块划分"></a>板块划分</h2><p>根据上面的整体架构，我们将首页的板块分为以下几个：</p>
+<p><strong>1.文章板块</strong>——将最新、最热的文章以标签页（tab）切换方式放在该模块中，为了页面美观，将有图片的文章的第一章图片放在轮换图片（caoursel）插件中,最右侧放置热门文章分类。</p>
+<p><strong>2.图书板块</strong>——按照图书的分类将图书放在首页中，点击不同的分类切换到不同的选项卡。图书展示使用自己开发的Jquery Tab插件，并将其整合到BootStrap环境中。最右侧同样是图书的分类。</p>
+<p><strong>3.用户板块</strong>——将新加入的用户和对社区贡献最多的用户放在首页中</p>
+<h2 id="要用到的BootStrap元素"><a href="#要用到的BootStrap元素" class="headerlink" title="要用到的BootStrap元素"></a>要用到的BootStrap元素</h2><p>那么，我么要用到哪些BootStrap元素才能很好的展示我们的板块内容呢？</p>
+<p><strong>1.导航条</strong></p>
+<p>这里要用到固定在网页头部的导航条（<code>navbar-fixed-top</code>）,并在其中整合用户登录模块，代码如下</p>
+<pre><code>&lt;div class=&quot;navbar navbar-inverse navbar-fixed-top&quot; role=&quot;navigation&quot;&gt;
+       &lt;div class=&quot;container&quot;&gt;
+         &lt;div class=&quot;navbar-header&quot;&gt;
+          &lt;a class=&quot;navbar-brand active&quot; href=&quot;首页URL&quot;&gt;顶求网&lt;/a&gt;
+          &lt;a class=&quot;navbar-brand&quot; href=&quot;图书页面URL&quot;&gt;图书&lt;/a&gt;
+          &lt;a class=&quot;navbar-brand&quot; href=&quot;文章页面URL&quot;&gt;文章&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;btn-group&quot; style=&quot;margin-top:10px; float:right;&quot;&gt;
+            &lt;button type=&quot;button&quot; class=&quot;btn btn-default dropdown-toggle&quot; data-toggle=&quot;dropdown&quot;&gt;
+          会员登陆 &lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;
+            &lt;/button&gt;
+            &lt;ul class=&quot;dropdown-menu&quot; role=&quot;menu&quot;&gt;
+               &lt;LI&gt;&lt;a href=&quot;会员登陆页面URL&quot;  target=&quot;_top&quot;&gt;会员登陆&lt;/a&gt;&lt;/LI&gt;
+               &lt;LI&gt;&lt;a href=&quot;会员注册页面URL&quot;  target=&quot;_top&quot;&gt;会员注册&lt;/a&gt;&lt;/LI&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre><p><strong>2.文章板块需要用到的BootStrap元素</strong></p>
+<p>1.轮换图片插件（caoursel)——解决了展示图片时图片变形的问题。</p>
+<p>2.标签页插件（tabs）——对插件的样式进行了美化，并增加了自动切换功能。</p>
+<p>3.信息按钮（btn-info）组件——用它列出文章分类信息。</p>
+<p><strong>3.图书板块需要用到的元素</strong></p>
+<p>1.自己开发的Jquery Tab插件</p>
+<p>2.缩略图(thumbnail)组件</p>
+<p>3.分类标签(仿豆瓣)</p>
+<p><strong>4.用户板块用到的BootStrap元素</strong></p>
+<p>1.BootStrap原生tab</p>
+<p>2.圆形图片（<code>image_circle</code>）</p>
+<h1 id="文章板块的设计与实现"><a href="#文章板块的设计与实现" class="headerlink" title="文章板块的设计与实现"></a>文章板块的设计与实现</h1><h2 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h2><p>怎样的布局才能让网站中的文章以较好的形式呈现在首页上呢？既要反应更新，又要有精华。由于文章板块在首页上处于最上面的部分，所以，考虑使用轮换图片插件来吸引眼球，并且还需要展示最新的文章和热门文章以及文章分类。划分如下：</p>
+<ol>
+<li>左部——轮换图片(carousel)和文章列表(tabs)部分，各占一半。</li>
+<li>右部——文章分类部分。</li>
+</ol>
+<p>左边占据（8/12），右边占据（4/12）</p>
+<p>布局代码如下：</p>
+<pre><code>&lt;!--板块的左部，使用panel，占据8/12--&gt;
+&lt;div class=&quot;panel panel-default col-md-8&quot;&gt;
+      &lt;!--轮换图片（carousel）插件,占左部的一半--&gt;
+      &lt;div class=&quot;col-md-6&quot;&gt;
+          &lt;div  class=&quot;carousel slide&quot; &gt;
+          &lt;/div&gt;
+       &lt;/div&gt;
+    &lt;!--文章tabs，占左部的一半--&gt;
+      &lt;div class=&quot;noborder col-md-6&quot;&gt;
+          &lt;div class=&quot;tab&quot; role=&quot;tabpanel&quot;&gt;
+          &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;!--板块的右部，使用普通的DIV，占据4/12--&gt;
+&lt;div class=&quot;col-md-4&quot;&gt;
+&lt;/div&gt;
+</code></pre><h2 id="使用Carousel（轮换图片）插件"><a href="#使用Carousel（轮换图片）插件" class="headerlink" title="使用Carousel（轮换图片）插件"></a>使用Carousel（轮换图片）插件</h2><p>首页中使用Carousel插件往往能达到吸睛的目的，是用来展示图文内容的最佳手段。在页面中使用carsouel插件很容易，可以分为以下几个步骤：</p>
+<p><strong>1.在DIV的class属性中加入carousel</strong></p>
+<p>加入carousel后，该DIV就是一个轮换图片插件了</p>
+<pre><code>&lt;div class=&quot;carousel slide&quot; data-ride=&quot;carousel&quot;&gt;
+
+&lt;/div&gt;
+</code></pre><p><strong>2.设置内容区（carsouel-inner）</strong></p>
+<p>在上述DIV中加入新的DIV作为其主体内容，其<code>class=&quot;carsouel-inner&quot;</code>。</p>
+<pre><code>&lt;div class=&quot;carousel-inner&quot; role=&quot;listbox&quot;&gt;
+
+&lt;/div&gt;
+</code></pre><p><strong>3.在内容区中放入要展示的元素（item）</strong></p>
+<pre><code>&lt;div class=&quot;item active&quot;&gt;
+      &lt;a href=&quot;包含图片文章路径&quot;&gt;
+          &lt;img src=&quot;图片路径&quot; alt=&quot;图片信息&quot;/&gt;&lt;/a&gt;
+          &lt;div class=&quot;carousel-caption&quot;&gt;
+               &lt;h4 class=&quot;alpha&quot;&gt;
+                   &lt;a style=&quot;color:white;&quot; href=&quot;包含图片文章路径&quot;&gt;图片标题&lt;/a&gt;
+               &lt;/h4&gt;
+              &lt;/div&gt;
+
+      &lt;/div&gt;
+      &lt;!--其他item--&gt;
+</code></pre><p>可以看到在元素区中包含文章展示信息——文内图片+标题+指向文章的链接。</p>
+<p><strong>4.按钮区（carousel-control）</strong></p>
+<p>最后放入，“上一个”，“下一个”按钮（左右箭头），用于用户自主切换。</p>
+<pre><code>&lt;a class=&quot;left carousel-control&quot; href=&quot;#carousel-example-generic&quot; role=&quot;button&quot; data-slide=&quot;prev&quot;&gt;
+    &lt;span class=&quot;glyphicon glyphicon-chevron-left&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
+    &lt;span class=&quot;sr-only&quot;&gt;Previous&lt;/span&gt;
+&lt;/a&gt;
+&lt;a class=&quot;right carousel-control&quot; href=&quot;#carousel-example-generic&quot; role=&quot;button&quot; data-slide=&quot;next&quot;&gt;
+&lt;span class=&quot;glyphicon glyphicon-chevron-right&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;sr-only&quot;&gt;Next&lt;/span&gt;
+</code></pre><p><strong>图片变形</strong></p>
+<p>运行右侧的代码中可以看出,当不同长宽比的图片试图占满元素(item)区时，图片发生了变形。</p>
+<h2 id="解决展示时图片变形的问题"><a href="#解决展示时图片变形的问题" class="headerlink" title="解决展示时图片变形的问题"></a>解决展示时图片变形的问题</h2><p>运行上节的代码我们发现插件中的图片发生了变形，分析其原因为：轮换插件中的图片使用的文章中的第一张图片，图片的大小不一，而轮播插件的大小基本是固定的，所以展示的时候图片出现了变形。下面看看怎么解决这个问题：</p>
+<p><strong>1.引入Jqthumb.js</strong></p>
+<p>在BootStrap中我们找不到解决办法，所以我们需要借助其它工具。Jqthumb插件是专门用来为图片生成缩略图的，它可以从图片中的任何坐标点开始取指定大小的图片区域作为图片的缩略图。你可以点击 <code>https://github.com/pakcheong/jqthumb</code> 来下载它，并将其应用到项目中(假设在当前项目中，jqthumb.js放置在scripts文件夹中):</p>
+<pre><code>&lt;script type=&quot;text/javascript&quot; src=&quot;/scripts/jqthumb.js&quot;&gt;&lt;/script&gt;
+</code></pre><p><strong>2.在图片加载(onload)的时候调用DrawImage()函数来生成缩略图</strong></p>
+<p>DrawImage()函数正是基于jqthumb.js库的，注意该函数一定要写在轮换插件前，因为我们必须在图片加载前生成缩略图。DrawImage()函数代码如下：</p>
+<pre><code>&lt;!--导入插件--&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/scripts/jqthumb.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+function DrawImage(hotimg)
+{
+    $(hotimg).jqthumb({
+    classname      : &apos;jqthumb&apos;,
+            width          : &apos;100%&apos;,//宽度
+            height         : &apos;300px&apos;,//高度
+            position       : { y: &apos;50%&apos;, x: &apos;50%&apos;},//从图片的中间开始产生缩略图
+            zoom           : &apos;1&apos;,//缩放比例
+            method         : &apos;auto&apos;,//提交方法，用于不同的浏览器环境，默认为‘auto’
+    });
+}
+&lt;/script&gt;
+</code></pre><p>在上述代码中，我们使用了jqthumb，并且传入了相关初始化参数。调用了该函数后，在图片加载的时候，就会按照上述参数产生图片的缩略图，从而解决图片变形问题。由于缩略图是从原始图片的正中间开始往两边取得，所以该缩略图包含了图片的主要内容。</p>
+<h2 id="针对BootStrap-tab的二次开发"><a href="#针对BootStrap-tab的二次开发" class="headerlink" title="针对BootStrap tab的二次开发"></a>针对BootStrap tab的二次开发</h2><p><strong>为什么要进行二次开发</strong></p>
+<p>在文章列表部分，我们使用了BootStrap的Tab插件。BootStrap中的tab控件是在一小块区域展示大量信息的首选。但是，它的样式比较单一。而在展示文章列表模块时，我希望它可以更美观，而且选项卡可以自动切换。</p>
+<p><strong>使用Tab插件</strong></p>
+<p>在页面中使用BootStrap的Tab插件的方法如下：</p>
+<p><strong>1.在DIV加入role=”tabpanel”</strong></p>
+<p>加入该属性值后，该DIV则变成了tab插件。</p>
+<pre><code>&lt;div class=&quot;tab&quot; role=&quot;tabpanel&quot;&gt;
+&lt;/div&gt;
+</code></pre><p><strong>2.使用列表制作切换标签</strong></p>
+<p>列表项即为切换标签项。</p>
+<pre><code>&lt;ul class=&quot;nav nav-tabs&quot; role=&quot;tablist&quot; style=&quot;margin-top:0px;&quot; id=&quot;docTabs&quot;&gt;
+&lt;li role=&quot;presentation&quot; class=&quot;active&quot;&gt;&lt;a href=&quot;#Section_new&quot;
+aria-controls=&quot;home&quot; role=&quot;tab&quot; data-toggle=&quot;tab&quot;&gt; 最新&lt;/a&gt;&lt;/li&gt;
+&lt;!--其余标签卡……--&gt;
+&lt;/ul&gt;
+</code></pre><p>代码中可以看出，在超级链接元素（a）中有指向该标签页内容的链接地址，如“最新”标签中，<code>href=&quot;#Section_new&quot;</code>,而这个地址一定要跟后面的标签内容页（tab-pane）的ID一一对应。</p>
+<p><strong>3.标签内容页区域（tab-content）</strong></p>
+<p>所有的标签内容页均放在这个区域。</p>
+<pre><code>&lt;div class=&quot;tab-content&quot;&gt;
+    &lt;!--最新--&gt;
+    &lt;!--7天热门--&gt;
+    &lt;!--30天热门--&gt;
+&lt;/div&gt;
+</code></pre><p><strong>4.单个标签页（tab-pane）</strong></p>
+<p>tab插件的最小元素，具体的标签内容页。</p>
+<pre><code>&lt;div role=&quot;tabpanel&quot; class=&quot;tab-pane fade in active&quot; id=&quot;Section_new&quot;&gt;
+    &lt;P&gt;
+        tab中的内容
+    &lt;/P&gt;
+&lt;/div&gt;
+&lt;!--其余标签页……--&gt;
+</code></pre><h2 id="tab样式美化"><a href="#tab样式美化" class="headerlink" title="tab样式美化"></a>tab样式美化</h2><p>下面我们来美化一下tab的样式吧，通过CSS代码来设置tab插件的样式，这些样式会覆盖掉bootstrap中的原有样式达到美化tab的效果，主要包括:</p>
+<ol>
+<li>标签的形状和背景色</li>
+<li>当前(被选中)标签的样式和背景色</li>
+<li>标签内容页样式</li>
+<li><p>与小屏幕兼容</p>
+<p> //标签样式<br> .tab .nav-tabs {<br> ……//详见右侧代码<br> }<br> //标签链接样式<br> .tab .nav-tabs li a {<br> background: transparent;<br> ……//详见右侧代码<br> }<br> //当前选中标签样式<br> .tab .nav-tabs li.active a, .tab .nav-tabs li.active a i {<br> ……//详见右侧代码<br> }<br> //当前选中标签之后插入的样式<br> .tab .nav-tabs li.active a:after {<br> ……//详见右侧代码<br> }<br> //标签内容页样式<br> .tab .tab-content {<br> ……//详见右侧CSS代码<br> }<br> //在小屏幕中的样式<br> @media only screen and (max-width: 480px) {<br> ……//详见右侧代码<br> }</p>
+</li>
+</ol>
+<h2 id="tabs自动切换功能的实现"><a href="#tabs自动切换功能的实现" class="headerlink" title="tabs自动切换功能的实现"></a>tabs自动切换功能的实现</h2><p>文章列表中列出的最新、7天热门、30天热门这三个选项卡每隔5秒钟自动切换，当鼠标悬停到某选项卡的时候，则暂停轮换，移开后，继续切换。代码设计思路如下：</p>
+<ol>
+<li>设置一个定时器timer()，每隔5秒钟对标签页进行切换一次。</li>
+<li>在网页加载完以后就运行该定时器。</li>
+<li>当用户鼠标悬停到某个标签页上时，清除该（clearInterval）定时器。</li>
+<li><p>鼠标移开后，继续使用定时器。</p>
+<p> //tabs自动轮换<br> function timer(i)<br> {</p>
+<pre><code>interval=setInterval(function()
+</code></pre><p> {</p>
+<pre><code> $(&quot;#docTabs li:eq(&quot;+i+&quot;) a&quot;).tab(&apos;show&apos;);
+ i++;
+ if(i&gt;2)
+ i=0;
+}
+</code></pre><p> ,5000);<br> return interval;<br> }<br> $(function(){<br> var i=0;<br> interval=timer(i);<br> //当鼠标悬停在列表区域时暂停轮换<br> $(“.tab-pane”).mouseover(function(){</p>
+<pre><code>    clearInterval(interval);
+});
+</code></pre><p> //鼠标移开时继续轮换<br> $(“.tab-pane”).mouseout(function(){</p>
+<pre><code>   timer(i);
+});
+</code></pre><p> });</p>
+</li>
+</ol>
+<h2 id="分类展示"><a href="#分类展示" class="headerlink" title="分类展示"></a>分类展示</h2><p><strong>实现过程</strong></p>
+<p>文章分类展示部分采用了BootStrap原生的信息按钮（btn-info）,当鼠标悬停时变色，点击则转向相应的二级页面，代码如下：</p>
+<pre><code>&lt;div class=&quot;col-md-4&quot; style=&quot;float:right;&quot;&gt;
+&lt;div&gt; 
+    &lt;H5&gt;分 类&lt;/H5&gt;
+    &lt;div style=&quot;font-size:14px;&quot; id=&quot;blogclas&quot;&gt;
+        &lt;a style=&quot;margin-left:5px; margin-bottom:5px;&quot; class=&quot;btn btn-info col-md-3&quot; href=&quot;二级页面地址&quot; role=&quot;button&quot;&gt;分类名&lt;/a&gt;
+           &lt;!--其他分类信息--&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt; 
+</code></pre><p><strong>代码分析</strong></p>
+<p>由代码可知，分类区域占有的宽度为（4/12）col-md-4，而其中的单个分类又占有其中的（3/12） col-md-3，也就是每4个分类占一行（实际上由于分类之间要有间隔，只能是3个分类占一行）。</p>
+<h1 id="图书板块的设计与实现"><a href="#图书板块的设计与实现" class="headerlink" title="图书板块的设计与实现"></a>图书板块的设计与实现</h1><h2 id="布局-1"><a href="#布局-1" class="headerlink" title="布局"></a>布局</h2><p>图书板块的布局既要考虑到分类展示图书信息，还需要考虑与前面文章板块的对应，所以，图书板块也分为左右两部分，左边同样使用col-md-8,右边使用col-md-4来划分宽度。当然，如果在其它屏幕有不同的布局需求，你也可以添加上其他的属性值，如col-xs-6（在手机屏幕中占6/12）等。布局代码如下：</p>
+<pre><code>&lt;div class=&quot;col-md-8&quot; id=&quot;indexbooks&quot;&gt;
+首页图书展示区……
+&lt;/div&gt;
+&lt;div class=&quot;col-md-4&quot;&gt;
+图书分类展示区……
+&lt;/div&gt;
+</code></pre><h2 id="开发Jquery-tab"><a href="#开发Jquery-tab" class="headerlink" title="开发Jquery tab"></a>开发Jquery tab</h2><p><strong>为什么要自己写tab</strong></p>
+<p>为了更好的在首页图文并茂的展示图书信息以及按类别展示尽可能多的图书，我决定使用Jquery开发自己的tab。下面来看看我的实现过程。</p>
+<p><strong>HTML部分</strong></p>
+<p><strong>1.标签项</strong></p>
+<p>标签仍然使用列表来完成，列表项即为标签项。</p>
+<pre><code>&lt;ul id=&quot;booksfilter&quot; style=&quot;float:right;font-size:14px;&quot;&gt; 
+    &lt;li&gt;&lt;a class=&quot;cur&quot; href=&quot;javascript:void(0);&quot;&gt;入门&lt;/a&gt;&lt;span&gt;|&lt;/span&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;javascript:void(0);&quot;&gt;实战&lt;/a&gt;&lt;span&gt;|&lt;/span&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;javascript:void(0);&quot;&gt;进阶&lt;/a&gt;&lt;span&gt;|&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre><p>其中’a’标签的class=”cur”表示当前被选中的标签。后面再CSS中会设置它的样式。</p>
+<p><strong>2.标签页内容区</strong></p>
+<p>使用3个DIV,分别存放入门、实战和进阶的图书。</p>
+<pre><code>&lt;div class=&quot;booklist&quot;&gt;
+    入门级图书……
+&lt;/div&gt;
+&lt;div class=&quot;booklist&quot; style=&quot;display:none;&quot;&gt;
+    实战类图书……
+&lt;/div&gt;
+&lt;div class=&quot;booklist&quot; style=&quot;display:none;&quot;&gt;
+    进阶类图书……
+&lt;/div&gt;
+</code></pre><p>可以看到，初始时，只有第一个标签页的内容是显示的，而其它两个标签页内容是隐藏（<code>style=&quot;display:none;&quot;</code>）的,后面会利用Jquery来控制他们的切换。</p>
+<p><strong>3.使用缩略图（thumbnail）组件展示图书信息</strong></p>
+<p>在该组件中包含了图书封面、图书标题、和链接到该图书页面的超级链接。</p>
+<pre><code>&lt;div class=&quot;thumbnail&quot; style=&quot;height:220px; border-width:0px;&quot;&gt;
+  &lt;a href=&quot;/book/577e11aa2f33c&quot; target=&quot;_blank&quot;&gt;
+                &lt;img style=&quot;height:130px;&quot; src=&quot;http://img3.doubanio.com/mpic/s1039608.jpg&quot;&gt;            
+  &lt;/a&gt;
+  &lt;div class=&quot;caption&quot;&gt;
+    &lt;h5 style=&quot;text-align:center;&quot;&gt;
+    &lt;a href=&quot;/book/577e11aa2f33c&quot; target=&quot;_blank&quot;&gt;
+    LINUX权威指南（...        &lt;/a&gt;&lt;/h5&gt;
+     &lt;p style=&quot;text-align:center;&quot;&gt;
+    评论(0) &lt;span class=&quot;badge&quot;&gt;1推荐&lt;/span&gt;&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre><p>另外，每本图书所占的宽度为col-md-3,也就是每4本书占据一行。</p>
+<h2 id="设计Tab的样式"><a href="#设计Tab的样式" class="headerlink" title="设计Tab的样式"></a>设计Tab的样式</h2><p>下面我们来设计他的CSS样式，让我们的tabs尽量美观。这些样式主要包括：</p>
+<ol>
+<li>标签项样式</li>
+<li>标签项中链接的样式</li>
+<li><p>当前被选中标签的样式（cur）</p>
+<p> //选项卡列表样式<br> #booksfilter li<br> {</p>
+<pre><code>padding:5px;//内边距 5px
+list-style-type:none;
+float:left;
+padding:0px;
+</code></pre><p> }<br> //设置‘|’的左右边距<br> #booksfilter span<br> {</p>
+<pre><code>margin-left:5px;
+margin-right:5px;
+</code></pre><p> }</p>
+<p> //选项卡链接的样式<br> #booksfilter a<br> {</p>
+<pre><code>padding:5px;//内边距：5px
+text-decoration:none;//无下划线
+</code></pre><p> }<br> //选项卡被选中或当鼠标移动到选项卡时的样式<br> #booksfilter a.cur,#booksfilter a:hover<br> {</p>
+<pre><code>background-color:#e67e22;//背景色
+color:white;//前景色
+border-radius:5px;//圆角
+</code></pre><p> }</p>
+</li>
+</ol>
+<p>代码注释已经很详细了，当然大家也可以修改它来设计出更美的样式。</p>
+<h2 id="实现Tab的行为"><a href="#实现Tab的行为" class="headerlink" title="实现Tab的行为"></a>实现Tab的行为</h2><p>当标签项点击切换的时候，这部分的交互就要交给Jquery代码来完成了。 代码设计思路如下：</p>
+<p><strong>遍历所有的标签页，为每个标签页添加点击(click)事件的处理函数</strong></p>
+<p>在该处理函数，高亮（使用Jquery在该标签项的class中添加cur）显示当前标签项和其对应的标签页，隐藏其它。</p>
+<pre><code>$(function()
+        {
+    $(&apos;#booksfilter a&apos;).each(function(i)
+    {//对每个tabs中的标签添加点击（click）事件的处理函数
+
+        $(this).click(function(){
+            $(this).addClass(&apos;cur&apos;);
+            $(this).parent().siblings().find(&apos;a&apos;).removeClass(&apos;cur&apos;);//删除其他任何选项的cur类
+            $(&apos;.booklist&apos;).eq(i).show();//显示本节点
+            $(&apos;.booklist&apos;).eq(i).siblings().hide();//隐藏兄弟节点
+        })
+
+    });
+
+        });
+</code></pre><p>在右侧具体代码中，为了适应屏幕大小，将col-md-3改为了col-xs-3,如果你想使用这个插件的话在你的项目中记得改回去:)。另外，js代码直接放在了HTML的尾部。</p>
+<h2 id="仿豆瓣分类标签的实现"><a href="#仿豆瓣分类标签的实现" class="headerlink" title="仿豆瓣分类标签的实现"></a>仿豆瓣分类标签的实现</h2><p>为了和文章分类部分的样式进行区分，我决定自己动手写一个具有其他样式的分类标签集。刚好看到豆瓣读书板块的首页中的图书分类标签还不错，于是决定自己写一个类似的样式。首先是HTML代码部分：</p>
+<pre><code>&lt;div class=&quot;col-md-4&quot;&gt;
+&lt;h5 style=&quot;margin-top:0px;&quot;&gt;
+     图书分类
+&lt;/h5&gt;
+&lt;div class=&quot;row&quot; id=&quot;bookclass&quot;&gt;
+    &lt;a href=&quot;图书分类页面&quot; class=&quot;col-md-3&quot;&gt;分类名&lt;/a&gt;
+    &lt;!--其他分类--&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</code></pre><p>可以看到图书分类标签很简单——直接使用’a’标签作为分类标签，下面只要针对它写CSS样式就可以了。</p>
+<pre><code>//a标签样式
+#bookclass a
+{
+    display:block;//区块显示
+    background-color:#f5f5f5;//背景色（跟豆瓣相同）
+    text-align:center;//文字居中
+    padding:2px 5px;//内边距，上下2px，左右5px
+    float:left;//左浮动，从而可以实现水平排列
+    margin:2px 2px;//外边距，上下2px,左右2px
+}
+//当鼠标悬停时改变背景色
+#bookclass a:hover
+{
+    background-color:#e8e8e8;//同豆瓣颜色
+}
+</code></pre><h1 id="用户板块的设计与实现"><a href="#用户板块的设计与实现" class="headerlink" title="用户板块的设计与实现"></a>用户板块的设计与实现</h1><h2 id="布局-2"><a href="#布局-2" class="headerlink" title="布局"></a>布局</h2><p>由于项目开发时间仓促，用户板块没有加入特别的样式美化和行为，而是使用了原生tab。在用户板块中，主要展示最新加入的用户和为博客社区做出最多贡献的用户（高分用户）。布局比较简单，采用整块布局，利用它来展示用户信息。布局主要代码如下：</p>
+<pre><code>&lt;div class=&quot;panel panel-default&quot;&gt;
+&lt;!--用户展示区--&gt;
+&lt;/div&gt;
+</code></pre><h2 id="用户板块的实现"><a href="#用户板块的实现" class="headerlink" title="用户板块的实现"></a>用户板块的实现</h2><p><strong>用到的BootStrap元素</strong></p>
+<p>在用户板块主要用到的BootStrap元素如下：</p>
+<ol>
+<li>Bootstrap tab——以标签页的方式展示新会员和高分会员</li>
+<li>圆形图片区（img-circle）——用于展示用户的头像。</li>
+</ol>
+<p><strong>实现过程</strong></p>
+<p>用户板块主要使用了BootStrap tab,前面的章节已经介绍过其使用方法。主要包括：</p>
+<p><strong>1.在DIV中加入role=”tabpanel”，该DIV则会成为tab</strong></p>
+<pre><code>&lt;div role=&quot;tabpanel&quot;&gt;
+&lt;/div&gt;
+</code></pre><p><strong>2.使用列表来制作标签页</strong></p>
+<pre><code>&lt;ul id=&quot;myTabregister&quot; class=&quot;nav nav-tabs&quot; role=&quot;tablist&quot;&gt;
+      &lt;li role=&quot;presentation&quot; class=&quot;active&quot;&gt;
+         &lt;a href=&quot;#newRegister&quot; id=&quot;home-tab&quot; role=&quot;tab&quot; data-toggle=&quot;tab&quot; aria-controls=&quot;home&quot; aria-expanded=&quot;true&quot;&gt;新会员&lt;/a&gt;         
+     &lt;/li&gt;
+      &lt;li role=&quot;presentation&quot; class=&quot;&quot;&gt;
+          &lt;a href=&quot;#highScoreRegister&quot; role=&quot;tab&quot; id=&quot;profile-tab&quot; data-toggle=&quot;tab&quot; aria-controls=&quot;profile&quot; aria-expanded=&quot;false&quot;&gt;高分会员&lt;/a&gt;
+     &lt;/li&gt;
+
+&lt;/ul&gt;
+</code></pre><p>同样，列表中，超级链接的地址href的值和单个标签内容页的id值一一对应，如最新会员标签项的<code>href=&quot;newRegister&quot;</code>。</p>
+<p><strong>3.标签内容区域（tab-content）</strong></p>
+<pre><code>&lt;div id=&quot;myTabContent&quot; class=&quot;tab-content&quot; style=&quot;text-align:center;&quot;&gt;
+    &lt;!--最新会员展示区--&gt;
+    &lt;!--高分会员展示区--&gt;
+&lt;/div&gt;
+</code></pre><p><strong>4.单个标签页(tabpanel)</strong></p>
+<pre><code>&lt;div role=&quot;tabpanel&quot; class=&quot;tab-pane fade active in&quot; id=&quot;newRegister&quot; aria-labelledby=&quot;home-tab&quot;&gt;
+                    &lt;div class=&quot;row&quot; style=&quot;margin-top:10px;&quot;&gt;
+                        &lt;div class=&quot;col-md-2&quot; style=&quot;height:200px;&quot;&gt;
+                            &lt;a href=&quot;会员主页&quot;&gt;
+                                &lt;img class=&quot;img-circle&quot; src=&quot;图片路径&quot;style=&quot;width:80px; height: 80px;&quot; &gt;
+                            &lt;/a&gt;
+                        &lt;/div&gt;
+                        &lt;!--其他最新会员……--&gt;
+                  &lt;/div&gt;
+                  &lt;!--高分会员--&gt;
+</code></pre><p>该示例代码中主要列出了“最新会员”的展示信息，其ID为newRegister,与其标签项的链接地址相同。其中每个会员信息占有的屏幕宽度为col-md-2(在右侧代码中为了满足屏幕尺寸需要改为col-xs-2),也就是每6个用户占据一行。</p>
+<p>本课程内容转自：<a href="http://hubwiz.com/" target="_blank" rel="external">汇智网</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="w2n1ck WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="w2n1ck Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      w2n1ck
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2016/08/29/BootStrap学习笔记/" title="BootStrap学习笔记">http://byd.dropsec.xyz/2016/08/29/BootStrap学习笔记/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/BootStrap/" rel="tag"><i class="fa fa-tag"></i> BootStrap</a>
+          
+            <a href="/tags/前端/" rel="tag"><i class="fa fa-tag"></i> 前端</a>
+          
+            <a href="/tags/编程/" rel="tag"><i class="fa fa-tag"></i> 编程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/28/JQuery学习笔记/" rel="next" title="JQuery学习笔记">
+                <i class="fa fa-chevron-left"></i> JQuery学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/29/前端开发基础知识/" rel="prev" title="前端开发基础知识">
+                前端开发基础知识 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="w2n1ck" />
+          <p class="site-author-name" itemprop="name">w2n1ck</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://010.dropsec.xyz/" title="小光头" target="_blank">小光头</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.w2n1ck.com/" title="个人主页" target="_blank">个人主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#BootStrap是什么"><span class="nav-number">1.</span> <span class="nav-text">BootStrap是什么</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BootStrap栅格布局"><span class="nav-number">1.1.</span> <span class="nav-text">BootStrap栅格布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#布局屏幕分类"><span class="nav-number">1.2.</span> <span class="nav-text">布局屏幕分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多个布局属性"><span class="nav-number">1.3.</span> <span class="nav-text">多个布局属性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网站首页整体设计思路"><span class="nav-number">2.</span> <span class="nav-text">网站首页整体设计思路</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#整体架构"><span class="nav-number">2.1.</span> <span class="nav-text">整体架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#板块划分"><span class="nav-number">2.2.</span> <span class="nav-text">板块划分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#要用到的BootStrap元素"><span class="nav-number">2.3.</span> <span class="nav-text">要用到的BootStrap元素</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文章板块的设计与实现"><span class="nav-number">3.</span> <span class="nav-text">文章板块的设计与实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#布局"><span class="nav-number">3.1.</span> <span class="nav-text">布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Carousel（轮换图片）插件"><span class="nav-number">3.2.</span> <span class="nav-text">使用Carousel（轮换图片）插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决展示时图片变形的问题"><span class="nav-number">3.3.</span> <span class="nav-text">解决展示时图片变形的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#针对BootStrap-tab的二次开发"><span class="nav-number">3.4.</span> <span class="nav-text">针对BootStrap tab的二次开发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tab样式美化"><span class="nav-number">3.5.</span> <span class="nav-text">tab样式美化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tabs自动切换功能的实现"><span class="nav-number">3.6.</span> <span class="nav-text">tabs自动切换功能的实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分类展示"><span class="nav-number">3.7.</span> <span class="nav-text">分类展示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#图书板块的设计与实现"><span class="nav-number">4.</span> <span class="nav-text">图书板块的设计与实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#布局-1"><span class="nav-number">4.1.</span> <span class="nav-text">布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发Jquery-tab"><span class="nav-number">4.2.</span> <span class="nav-text">开发Jquery tab</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设计Tab的样式"><span class="nav-number">4.3.</span> <span class="nav-text">设计Tab的样式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现Tab的行为"><span class="nav-number">4.4.</span> <span class="nav-text">实现Tab的行为</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#仿豆瓣分类标签的实现"><span class="nav-number">4.5.</span> <span class="nav-text">仿豆瓣分类标签的实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用户板块的设计与实现"><span class="nav-number">5.</span> <span class="nav-text">用户板块的设计与实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#布局-2"><span class="nav-number">5.1.</span> <span class="nav-text">布局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用户板块的实现"><span class="nav-number">5.2.</span> <span class="nav-text">用户板块的实现</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">w2n1ck</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2016/08/29/BootStrap学习笔记/';
+          this.page.identifier = '2016/08/29/BootStrap学习笔记/';
+          this.page.title = 'BootStrap学习笔记';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="255,0,0" opacity='0.7' zIndex="-2" count="80" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

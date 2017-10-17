@@ -1,0 +1,1567 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="CTF,writeup,WeChall," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="w2n1ck" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="WeChall Challage writeup. Training：Get Sourced">
+<meta name="keywords" content="CTF,writeup,WeChall">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WeChall writeup">
+<meta property="og:url" content="http://byd.dropsec.xyz/2016/03/04/WeChall_writeup/index.html">
+<meta property="og:site_name" content="w2n1ck">
+<meta property="og:description" content="WeChall Challage writeup. Training：Get Sourced">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/wechall_zhihuan_1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/wechall_mysql_2.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/wechall_access_1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/wechall_access_2.png">
+<meta property="og:updated_time" content="2017-07-28T11:47:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WeChall writeup">
+<meta name="twitter:description" content="WeChall Challage writeup. Training：Get Sourced">
+<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/wechall_zhihuan_1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2016/03/04/WeChall_writeup/"/>
+
+
+
+
+
+  <title>WeChall writeup | w2n1ck</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">w2n1ck</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2016/03/04/WeChall_writeup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="w2n1ck">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="w2n1ck">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">WeChall writeup</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-03-04T01:33:57+08:00">
+                2016-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2016/03/04/WeChall_writeup/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2016/03/04/WeChall_writeup/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>WeChall Challage writeup.</p>
+<h1 id="Training：Get-Sourced"><a href="#Training：Get-Sourced" class="headerlink" title="Training：Get Sourced"></a>Training：Get Sourced</h1><a id="more"></a>
+<p>查看源码</p>
+<p>最后面：<br>                                                                                                                                                                                                                                          <code>&lt;!-- You are looking for this password: html_sourcecode --&gt;</code></p>
+<h1 id="Training-Stegano-I"><a href="#Training-Stegano-I" class="headerlink" title="Training: Stegano I"></a>Training: Stegano I</h1><p>隐写</p>
+<p>下载下来，使用notepad打开</p>
+<blockquote>
+<p>Look what the hex-edit revealed: passwd:steganoI</p>
+</blockquote>
+<h1 id="Training-ASCII"><a href="#Training-ASCII" class="headerlink" title="Training: ASCII"></a>Training: ASCII</h1><pre><code>84, 104, 101, 32, 115, 111, 108, 117, 116, 105, 111, 110, 32, 105, 115, 58, 32, 108, 101, 110, 112, 108, 99, 102, 104, 104, 105, 115, 102
+</code></pre><p>ASCII解码</p>
+<blockquote>
+<p>The solution is: lenplcfhhisf</p>
+</blockquote>
+<h1 id="Training-Crypto-Caesar-I"><a href="#Training-Crypto-Caesar-I" class="headerlink" title="Training: Crypto - Caesar I"></a>Training: Crypto - Caesar I</h1><pre><code>VJG SWKEM DTQYP HQZ LWORU QXGT VJG NCBA FQI QH ECGUCT CPF AQWT WPKSWG UQNWVKQP KU DHFUHKPPTRCF
+</code></pre><p>凯撒解密，偏移24</p>
+<pre><code>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG OF CAESAR AND YOUR UNIQUE SOLUTION IS BFDSFINNRPAD
+</code></pre><h1 id="Encodings-URL"><a href="#Encodings-URL" class="headerlink" title="Encodings: URL"></a>Encodings: URL</h1><pre><code>%59%69%70%70%65%68%21%20%59%6F%75%72%20%55%52%4C%20%69%73%20%63%68%61%6C%6C%65%6E%67%65%2F%74%72%61%69%6E%69%6E%67%2F%65%6E%63%6F%64%69%6E%67%73%2F%75%72%6C%2F%73%61%77%5F%6C%6F%74%69%6F%6E%2E%70%68%70%3F%70%3D%6D%61%69%68%68%6D%6F%62%68%69%6E%70%26%63%69%64%3D%35%32%23%70%61%73%73%77%6F%72%64%3D%66%69%62%72%65%5F%6F%70%74%69%63%73%20%56%65%72%79%20%77%65%6C%6C%20%64%6F%6E%65%21 
+</code></pre><p>URL编码，URL解码</p>
+<pre><code>Yippeh! Your URL is challenge/training/encodings/url/saw_lotion.php?p=maihhmobhinp&amp;cid=52#password=fibre_optics Very well done! 
+</code></pre><h1 id="Training-WWW-Robots"><a href="#Training-WWW-Robots" class="headerlink" title="Training: WWW-Robots"></a>Training: WWW-Robots</h1><p>考察<strong>robots.txt</strong>（网络爬虫协议）</p>
+<pre><code>http://www.wechall.net/robots.txt
+User-agent: *
+Disallow: /challenge/training/www/robots/T0PS3CR3T
+</code></pre><h1 id="Prime-Factory"><a href="#Prime-Factory" class="headerlink" title="Prime Factory"></a>Prime Factory</h1><p>找到第一个和第二个大于1百万，并且每个位上的数字的和都是素数的素数。</p>
+<p>代码如下：</p>
+<pre><code>def iszhishu(n):
+    for i in range(2,n):
+        if n % i ==0:
+            return False
+    return True
+def sum(n):
+    count = 0
+    for t in range(len(n)):
+        count += int(n[t])
+    if iszhishu(count):
+        return True
+    else:
+        return False
+for num in range(1000001,9999999):
+    if iszhishu(num):
+        if sum(str(num)):
+            print(int(num))
+</code></pre><p>取前两个</p>
+<blockquote>
+<p>1000033 1000037</p>
+</blockquote>
+<h1 id="PHP-0817"><a href="#PHP-0817" class="headerlink" title="PHP 0817"></a>PHP 0817</h1><p>本地文件包含，代码如下：</p>
+<pre><code>&lt;?php
+if (isset($_GET[&apos;which&apos;]))
+{
+        $which = $_GET[&apos;which&apos;];
+        switch ($which)        
+        {
+        case 0:
+        case 1:
+        case 2:
+                require_once $which.&apos;.php&apos;;                
+                break;
+        default:
+                echo GWF_HTML::error(&apos;PHP-0817&apos;, &apos;Hacker NoNoNo!&apos;, false);
+                break;
+        }
+}
+</code></pre><p>要求是包含solution.php.</p>
+<blockquote>
+<p><a href="http://www.wechall.net/challenge/php0817/index.php?which=solution" target="_blank" rel="external">http://www.wechall.net/challenge/php0817/index.php?which=solution</a></p>
+</blockquote>
+<h1 id="Training-MySQL-I"><a href="#Training-MySQL-I" class="headerlink" title="Training: MySQL I"></a>Training: MySQL I</h1><p>简单的sql注入</p>
+<p>万能密钥：</p>
+<blockquote>
+<p>admin’or’1’=’1</p>
+</blockquote>
+<h1 id="Training-Programming-1"><a href="#Training-Programming-1" class="headerlink" title="Training: Programming 1"></a>Training: Programming 1</h1><p>就是一个简单的post数据包。</p>
+<p>就是先获取生成随机数那个页面的 http 头。然后把自己的 Cookie 加上去。</p>
+<p>然后请求这个页面，得到字符串，将其拼接在提交页面的 url 上。</p>
+<p>再请求提交页面的 http 头，并添加自己的 Cookie，最后请求即可。</p>
+<p>Warning:</p>
+<p>这个网站在国外，但是打开一个页面就要 1 秒多。所以国内跑这个脚本肯定超时。这时候你就需要一台国外服务器来跑这个脚本。</p>
+<h1 id="Training-PHP-LFI"><a href="#Training-PHP-LFI" class="headerlink" title="Training: PHP LFI"></a>Training: PHP LFI</h1><p><strong>本地文件包含+零零截断</strong>。</p>
+<p>源码如下：</p>
+<pre><code>$filename = &apos;pages/&apos;.(isset($_GET[&quot;file&quot;])?$_GET[&quot;file&quot;]:&quot;welcome&quot;).&apos;.html&apos;;
+include $filename;
+</code></pre><p>会在file的前面加上<code>pages/</code>后面加上<code>welcome</code></p>
+<p>所以结果就是：<code>pages/file.html</code></p>
+<p>所以构造如下代码：</p>
+<blockquote>
+<p><a href="http://www.wechall.net/challenge/training/php/lfi/up/index.php?file=../../solution.php%00" target="_blank" rel="external">http://www.wechall.net/challenge/training/php/lfi/up/index.php?file=../../solution.php%00</a></p>
+</blockquote>
+<h1 id="Training-Encodings-I"><a href="#Training-Encodings-I" class="headerlink" title="Training: Encodings I"></a>Training: Encodings I</h1><p>本来按照正常思路是先8个8个一组，分到最后发现不对，不是8的倍数。然后百度，原来重点是提示的：<code>English</code>。</p>
+<p><strong>英文字母所用的ascii字符只占用七个bit（即7位）</strong></p>
+<p>脚本如下：</p>
+<pre><code>str1=&quot;101010011010001101001111001101000001110100110010111110001110100010000011010011110011010000001101110101101110001011010011110100010000011001011101110110001111011111100100110010111001000100000110000111100111100011110100111010010101110010000010110011101111111010111100100100000111000011000011110011111001111101111101111111001011001000100000110100111100110100000110010111000011110011111100111100111110100110000111100101110100110010111100100101110&quot;
+
+print len(str1)
+
+def res(str1):
+
+    length = len(str1)
+
+    for i in range(length/7):
+
+        yield str1[i*7:(i+1)*7]
+s=&quot;&quot;
+
+for r in res(str1):
+
+    s += chr(int(r,2)) //将二进制的字符串变成整形的十进制
+
+print s
+</code></pre><ul>
+<li>yield关键字用来定义生成器（Generator），其具体功能是可以当return使用，从函数里返回一个值，不同之处是用yield返回之后，可以让函数从上回yield返回的地点继续执行。也就是说，yield返回函数，交给调用者一个返回值，然后再“瞬移”回去，让函数继续运行， 直到吓一跳yield语句再返回一个新的值。</li>
+<li><code>int(r,2)</code>2是表示转化为十进制，默认的是0<blockquote>
+<p>This text is 7-bit encoded ascii. Your password is easystarter.</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="Training-Crypto-Transposition-I"><a href="#Training-Crypto-Transposition-I" class="headerlink" title="Training: Crypto - Transposition I"></a>Training: Crypto - Transposition I</h1><p><strong>置换密码</strong>：就是明文的字母保持相同，但顺序被打乱了。</p>
+<p>密文如下：</p>
+<pre><code>oWdnreuf.lY uoc nar ae dht eemssga eaw yebttrew eh nht eelttre sra enic roertco drre . Ihtni koy uowlu dilekt  oes eoyrup sawsro don:wa nrrabflmag.b
+</code></pre><p>脚本如下：</p>
+<pre><code>s=&apos;oWdnreuf.lY uoc nar ae dht eemssga eaw yebttrew eh nht eelttre sra enic roertco drre . Ihtni koy uowlu dilekt  oes eoyrup sawsro don:wa msmniaocam.d&apos;
+for i in range(0,len(s),2):
+    res=&apos;&apos;
+    t= (s[i + 1] + s[i])
+    res +=t
+    print res
+</code></pre><p><strong>说明：</strong>字符串的长度为148，所以可以换的话就有：</p>
+<ul>
+<li>两两互换即o，W互换，d，n互换…共74对</li>
+<li>四四互换即oWdn，reuf互换，.lY ，uoc 互换…共37对</li>
+<li>37,37互换…</li>
+<li>74,74互换…<blockquote>
+<p>Wonderful. You can read the message way better when the letters are in correct order. I think you would like to see your password now: asmnmaicomad.</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="Training-Register-Globals"><a href="#Training-Register-Globals" class="headerlink" title="Training: Register Globals"></a>Training: Register Globals</h1><p>PHP全局变量</p>
+<p>源码如下：</p>
+<pre><code>...
+if (isset($login))
+{
+    echo GWF_HTML::message(&apos;Register Globals&apos;, $chall-&gt;lang(&apos;msg_welcome_back&apos;, array(htmlspecialchars($login[0]), htmlspecialchars($login[1]))));
+    if (strtolower($login[0]) === &apos;admin&apos;) {
+        $chall-&gt;onChallengeSolved(GWF_Session::getUserID());
+    }
+...
+</code></pre><p>代码中检测login，如果login[0]=’admin’输出信息。</p>
+<p>构造代码如下：</p>
+<blockquote>
+<p><a href="http://www.wechall.net/challenge/training/php/globals/globals.php?login[0]=admin" target="_blank" rel="external">http://www.wechall.net/challenge/training/php/globals/globals.php?login[0]=admin</a></p>
+</blockquote>
+<h1 id="No-Escape"><a href="#No-Escape" class="headerlink" title="No Escape"></a>No Escape</h1><p><strong>update注入</strong></p>
+<p>如果一直点一个人的话，会一直增长，如果有人达到100，所有人重置。</p>
+<p>执行以下代码：</p>
+<blockquote>
+<p><a href="http://www.wechall.net/challenge/no_escape/index.php?vote_for=bil" target="_blank" rel="external">http://www.wechall.net/challenge/no_escape/index.php?vote_for=bil</a></p>
+</blockquote>
+<p>回显为：</p>
+<blockquote>
+<p>GDO Error(1054): Unknown column ‘bil’ in ‘field list’<br>UPDATE noescvotes SET <code>bil</code>=<code>bil</code>+1 WHERE id=1</p>
+</blockquote>
+<p>构造如下语句：</p>
+<blockquote>
+<p>bill`=111%23</p>
+</blockquote>
+<p>则sql语句为：</p>
+<blockquote>
+<p>UPDATE noescvotes SET <code>bill</code>=111%23<code>=</code>bill`+1 WHERE id=1</p>
+</blockquote>
+<p>构造URL：</p>
+<blockquote>
+<p><a href="http://www.wechall.net/challenge/no_escape/?vote_for=bill`=111%23" target="_blank" rel="external">http://www.wechall.net/challenge/no_escape/?vote_for=bill`=111%23</a></p>
+</blockquote>
+<h1 id="Training-Crypto-Substitution-I"><a href="#Training-Crypto-Substitution-I" class="headerlink" title="Training: Crypto - Substitution I"></a>Training: Crypto - Substitution I</h1><p><strong>单表置换密码</strong></p>
+<p>密文如下：</p>
+<pre><code>DK OAM VTFXLAOK LIG KIQ PVE BMVG OAXH FK RBXMEG X VF XFZBMHHMG YMBK CMTT GIEM KIQB HITQOXIE UMK XH ZMFLMZXAFEXL OAXH TXOOTM PAVTTMELM CVH EIO OII AVBG CVH XO
+</code></pre><p>密钥短语密码就是选一个英文短语作为密钥字(Key Word)或密钥短语(Key Phrase)，如HAPPY NEW YEAR，去掉重复字母得HAPYNEWR。将它依次写在明文字母表之下，而后再将字母表中未在短语中出现过的字母依次写于此短语之后，就可构造出一个字母代换表：</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/wechall_zhihuan_1.png" alt=""></p>
+<p>对照表就行了。</p>
+<p><a href="http://quipqiup.com/index.php" target="_blank" rel="external">免费破解地址</a></p>
+<pre><code>BY THE ALMIGHTY GOD YOU CAN READ THIS MY FRIEND I AM IMPRESSED VERY WELL DONE YOUR SOLUTION KEY IS PEMGEPIHMNIG THIS LITTLE CHALLENGE WAS NOT TOO HARD WAS IT
+</code></pre><h1 id="hi"><a href="#hi" class="headerlink" title="hi"></a>hi</h1><p>说了那么多屁话，就是一个等差数列。</p>
+<p>第一分钟是2，以后依次加一，最后一项是17591026060781</p>
+<p>所以总共有<br><code>(2+17591026060781)*17591026060781/2</code></p>
+<p>发现结果竟然是小数，改为<code>(2+17591026060782)*17591026060782/2</code>竟然对了。。。</p>
+<h1 id="Training-MySQL-II"><a href="#Training-MySQL-II" class="headerlink" title="Training: MySQL II"></a>Training: MySQL II</h1><p><strong>.htaccess</strong></p>
+<p>username password分开来验证。通常的利用方法是使用union构造已知MD5值的查询。</p>
+<p>构造语句：</p>
+<pre><code>username=-1&apos; union select 1,&apos;admin&apos;,&apos;e10adc3949ba59abbe56e057f20f883e&apos; %23&amp;password=123456&amp;login=Login
+</code></pre><p>这句话首先通过username=-1将原语句报错。因此返回的将会是第二条语句产生的信息。<br>而我们union select的是直接构造了用户名为admin，密码为123456的md5值。这样就可以让程序误认为我们构造的信息就是它从数据库里面提取得到的信息。<br><img src="http://oa8y5guqs.bkt.clouddn.com/wechall_mysql_2.png" alt=""></p>
+<h1 id="Limited-Access"><a href="#Limited-Access" class="headerlink" title="Limited Access"></a>Limited Access</h1><p>让我们访问<code>.htaccess</code></p>
+<p>源码如下：</p>
+<pre><code>AuthUserFile .htpasswd
+AuthGroupFile /dev/null
+AuthName &quot;Authorization Required for the Limited Access Challenge&quot;
+AuthType Basic
+&lt;Limit GET&gt;require valid-user
+&lt;/Limit&gt;
+</code></pre><p>源码中限制了<code>GET</code></p>
+<p>所以使用post即可</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/wechall_access_1.png" alt=""></p>
+<h1 id="Training-Regex"><a href="#Training-Regex" class="headerlink" title="Training: Regex"></a>Training: Regex</h1><p><strong>正则表达式</strong></p>
+<p>匹配一个空字符就行了。</p>
+<pre><code>正则表达式匹配空值方式如下：
+\b 匹配单词开头或结尾位置
+^ 匹配字符串开端位置
+$ 匹配字符串结尾位置
+\s 匹配一切空白字符
+\n 匹配换行
+</code></pre><p>代码如下：</p>
+<blockquote>
+<p>/^$/</p>
+</blockquote>
+<h1 id="Training-Crypto-Caesar-II"><a href="#Training-Crypto-Caesar-II" class="headerlink" title="Training: Crypto - Caesar II"></a>Training: Crypto - Caesar II</h1><pre><code>s = &apos;77 1F 1F 14 20 1A 1F 12 5C 20 29 1F 25 20 23 1F 1C 26 15 14 20 1F 1E 15 20 1D 1F 22 15 20 13 18 11 1C 1C 15 1E 17 15 20 19 1E 20 29 1F 25 22 20 1A 1F 25 22 1E 15 29 5E 20 04 18 19 23 20 1F 1E 15 20 27 11 23 20 16 11 19 22 1C 29 20 15 11 23 29 20 24 1F 20 13 22 11 13 1B 5E 20 07 11 23 1E 57 24 20 19 24 6F 20 61 62 68 20 1B 15 29 23 20 19 23 20 11 20 21 25 19 24 15 20 23 1D 11 1C 1C 20 1B 15 29 23 20 11 13 15 5C 20 23 1F 20 19 24 20 23 18 1F 25 1C 14 1E 57 24 20 18 11 26 15 20 24 11 1B 15 1E 20 29 1F 25 20 24 1F 1F 20 1C 1F 1E 17 20 24 1F 20 14 15 13 22 29 20 24 20 24 18 19 23 20 1D 15 23 23 11 17 15 5E 20 07 15 1C 1C 20 14 1F 1E 15 5C 20 29 1F 25 22 20 23 1F 1C 25 24 19 1F 1E 20 19 23 20 1D 20 23 11 22 22 15 23 20 1D 1E 17 5E&apos;
+s = s.split()
+for key in range(0,128+1,1):
+    for i in s:
+        i = int(i,16)
+        print (chr((i + key + 256) % 256 ), end = &apos;&apos;)
+    print (key)
+</code></pre><p>key=80时</p>
+<pre><code>Çoodpjob¬pyoupsolvedponepmorepchallengepinpyourpjourney®pThisponepwaspfairlypeasyptopcrack®pWasn§tpit¿p±²¸pkeyspispapquitepsmallpkeyspace¬psopitpshouldn§tphaveptakenpyouptooplongptopdecryptpthispmessage®pWellpdone¬pyourpsolutionpispmpsarrespmng®
+</code></pre><h1 id="Stegano-Attachment"><a href="#Stegano-Attachment" class="headerlink" title="Stegano Attachment"></a>Stegano Attachment</h1><p>下载图片之后，notepad打开</p>
+<p>发现：<code>solution.txt</code></p>
+<p>改后缀为rar</p>
+<blockquote>
+<p>IDSRGRNENMPS</p>
+</blockquote>
+<h1 id="Training-LSB"><a href="#Training-LSB" class="headerlink" title="Training: LSB"></a>Training: LSB</h1><p>放入神器<code>stegsolve</code>中</p>
+<blockquote>
+<p>CBNMGNBFMOHN</p>
+</blockquote>
+<h1 id="Limited-Access-Too"><a href="#Limited-Access-Too" class="headerlink" title="Limited Access Too"></a>Limited Access Too</h1><p>访问.htaccess发现几乎过滤了所有方法</p>
+<blockquote>
+<p>GET POST HEAD PUT DELETE CONNECT OPTIONS</p>
+</blockquote>
+<ul>
+<li>php会将TO方法给解析成GET方法。那么我们就可以抓包，改为TO</li>
+<li>使用move方法</li>
+</ul>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/wechall_access_2.png" alt=""></p>
+<h1 id="PHP-0815"><a href="#PHP-0815" class="headerlink" title="PHP 0815"></a>PHP 0815</h1><p>源码如下：</p>
+<pre><code>&lt;?
+$whitelist = array(1, 2, 3);
+if (false === ($show = isset($_GET[&apos;show&apos;]) ? $_GET[&apos;show&apos;] : false)) {
+    die(&apos;MISSING PARAMETER; USE foo.bar?show=[1-3]&apos;);
+}
+elseif (in_array($show, $whitelist)){
+    $query = &quot;SELECT 1 FROM `table` WHERE `id`=$show&quot;;
+    echo &apos;Query: &apos;.htmlspecialchars($query, ENT_QUOTES).&apos;&lt;br/&gt;&apos;;
+    die(&apos;SHOWING NUMBER &apos;.htmlspecialchars($show, ENT_QUOTES));
+}else 
+{
+        die(&apos;HACKER NONONO&apos;);
+}
+</code></pre><p>这明显是SQL注入，但是防注入的方法有很多，需要找到最简单的，于是找到一个方法：</p>
+<p><strong>将传入的参数需要转换成整数。</strong></p>
+<p>通常所用的函数是int()或者intval()</p>
+<p>然而出于php wtf的atoi转换规则，$show-0足以完成</p>
+<h1 id="htmlspecialchars"><a href="#htmlspecialchars" class="headerlink" title="htmlspecialchars"></a>htmlspecialchars</h1><p>这题是xss，借这个，再写一篇xss的总结。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="w2n1ck WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="w2n1ck Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      w2n1ck
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2016/03/04/WeChall_writeup/" title="WeChall writeup">http://byd.dropsec.xyz/2016/03/04/WeChall_writeup/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CTF/" rel="tag"><i class="fa fa-tag"></i> CTF</a>
+          
+            <a href="/tags/writeup/" rel="tag"><i class="fa fa-tag"></i> writeup</a>
+          
+            <a href="/tags/WeChall/" rel="tag"><i class="fa fa-tag"></i> WeChall</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/13/创建404页面/" rel="next" title="创建404页面">
+                <i class="fa fa-chevron-left"></i> 创建404页面
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/11/上传漏洞总结/" rel="prev" title="上传漏洞总结">
+                上传漏洞总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="w2n1ck" />
+          <p class="site-author-name" itemprop="name">w2n1ck</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">53</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://010.dropsec.xyz/" title="小光头" target="_blank">小光头</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.w2n1ck.com/" title="个人主页" target="_blank">个人主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Training：Get-Sourced"><span class="nav-number">1.</span> <span class="nav-text">Training：Get Sourced</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-Stegano-I"><span class="nav-number">2.</span> <span class="nav-text">Training: Stegano I</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-ASCII"><span class="nav-number">3.</span> <span class="nav-text">Training: ASCII</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-Crypto-Caesar-I"><span class="nav-number">4.</span> <span class="nav-text">Training: Crypto - Caesar I</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Encodings-URL"><span class="nav-number">5.</span> <span class="nav-text">Encodings: URL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-WWW-Robots"><span class="nav-number">6.</span> <span class="nav-text">Training: WWW-Robots</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Prime-Factory"><span class="nav-number">7.</span> <span class="nav-text">Prime Factory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PHP-0817"><span class="nav-number">8.</span> <span class="nav-text">PHP 0817</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-MySQL-I"><span class="nav-number">9.</span> <span class="nav-text">Training: MySQL I</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-Programming-1"><span class="nav-number">10.</span> <span class="nav-text">Training: Programming 1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-PHP-LFI"><span class="nav-number">11.</span> <span class="nav-text">Training: PHP LFI</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-Encodings-I"><span class="nav-number">12.</span> <span class="nav-text">Training: Encodings I</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-Crypto-Transposition-I"><span class="nav-number">13.</span> <span class="nav-text">Training: Crypto - Transposition I</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-Register-Globals"><span class="nav-number">14.</span> <span class="nav-text">Training: Register Globals</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#No-Escape"><span class="nav-number">15.</span> <span class="nav-text">No Escape</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-Crypto-Substitution-I"><span class="nav-number">16.</span> <span class="nav-text">Training: Crypto - Substitution I</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hi"><span class="nav-number">17.</span> <span class="nav-text">hi</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-MySQL-II"><span class="nav-number">18.</span> <span class="nav-text">Training: MySQL II</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Limited-Access"><span class="nav-number">19.</span> <span class="nav-text">Limited Access</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-Regex"><span class="nav-number">20.</span> <span class="nav-text">Training: Regex</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-Crypto-Caesar-II"><span class="nav-number">21.</span> <span class="nav-text">Training: Crypto - Caesar II</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Stegano-Attachment"><span class="nav-number">22.</span> <span class="nav-text">Stegano Attachment</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Training-LSB"><span class="nav-number">23.</span> <span class="nav-text">Training: LSB</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Limited-Access-Too"><span class="nav-number">24.</span> <span class="nav-text">Limited Access Too</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PHP-0815"><span class="nav-number">25.</span> <span class="nav-text">PHP 0815</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#htmlspecialchars"><span class="nav-number">26.</span> <span class="nav-text">htmlspecialchars</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">w2n1ck</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2016/03/04/WeChall_writeup/';
+          this.page.identifier = '2016/03/04/WeChall_writeup/';
+          this.page.title = 'WeChall writeup';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="255,0,0" opacity='0.7' zIndex="-2" count="80" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
