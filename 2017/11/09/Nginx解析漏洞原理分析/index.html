@@ -112,18 +112,18 @@
 
 
 
-<meta name="description" content="0x01 漏洞描述漏洞介绍：nginx是一款高性能的web服务器，使用非常广泛，其不仅经常被用作反向代理，也可以非常好的支持PHP的运行。Nginx">
+<meta name="description" content="0x01 漏洞描述漏洞介绍：nginx是一款高性能的web服务器，使用非常广泛，其不仅经常被用作反向代理，也可以非常好的支持PHP的运行。Nginx&amp;lt;8.03默认情况下可能导致服务器错误的将任何类型的文件以PHP的方式进行解析，这将导致严重的安全问题，使得恶意的攻击者可能攻陷支持php的nginx服务器。">
 <meta name="keywords" content="文件上传,解析漏洞,漏洞分析">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nginx解析漏洞原理分析">
 <meta property="og:url" content="http://byd.dropsec.xyz/2017/11/09/Nginx解析漏洞原理分析/index.html">
 <meta property="og:site_name" content="w2n1ck">
-<meta property="og:description" content="0x01 漏洞描述漏洞介绍：nginx是一款高性能的web服务器，使用非常广泛，其不仅经常被用作反向代理，也可以非常好的支持PHP的运行。Nginx">
+<meta property="og:description" content="0x01 漏洞描述漏洞介绍：nginx是一款高性能的web服务器，使用非常广泛，其不仅经常被用作反向代理，也可以非常好的支持PHP的运行。Nginx&amp;lt;8.03默认情况下可能导致服务器错误的将任何类型的文件以PHP的方式进行解析，这将导致严重的安全问题，使得恶意的攻击者可能攻陷支持php的nginx服务器。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-11-09T06:19:52.000Z">
+<meta property="og:updated_time" content="2017-11-13T08:30:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Nginx解析漏洞原理分析">
-<meta name="twitter:description" content="0x01 漏洞描述漏洞介绍：nginx是一款高性能的web服务器，使用非常广泛，其不仅经常被用作反向代理，也可以非常好的支持PHP的运行。Nginx">
+<meta name="twitter:description" content="0x01 漏洞描述漏洞介绍：nginx是一款高性能的web服务器，使用非常广泛，其不仅经常被用作反向代理，也可以非常好的支持PHP的运行。Nginx&amp;lt;8.03默认情况下可能导致服务器错误的将任何类型的文件以PHP的方式进行解析，这将导致严重的安全问题，使得恶意的攻击者可能攻陷支持php的nginx服务器。">
 
 
 
@@ -423,7 +423,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  0
+                  1,240
                 </span>
               
 
@@ -439,7 +439,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  1
+                  5
                 </span>
               
             </div>
@@ -457,8 +457,10 @@
       
 
       
-        <h1 id="0x01-漏洞描述"><a href="#0x01-漏洞描述" class="headerlink" title="0x01 漏洞描述"></a>0x01 漏洞描述</h1><p>漏洞介绍：nginx是一款高性能的web服务器，使用非常广泛，其不仅经常被用作反向代理，也可以非常好的支持PHP的运行。Nginx<8.03默认情况下可能导致服务器错误的将任何类型的文件以php的方式进行解析，这将导致严重的安全问题，使得恶意的攻击者可能攻陷支持php的nginx服务器。 <!--more--=""></8.03默认情况下可能导致服务器错误的将任何类型的文件以php的方式进行解析，这将导致严重的安全问题，使得恶意的攻击者可能攻陷支持php的nginx服务器。></p>
-<h1 id="0x02-概念介绍"><a href="#0x02-概念介绍" class="headerlink" title="0x02 概念介绍"></a>0x02 概念介绍</h1><h2 id="0x21-CGI"><a href="#0x21-CGI" class="headerlink" title="0x21 CGI"></a>0x21 CGI</h2><p>CGI是规定web server传递过来的数据是何种标准格式，简单说就是一个协议。web server(例如nginx)只是内容的分发者。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">1) 如果请求/index.html，那么web server会去文件系统中找到这个文件，发送给浏览器，这里分发的是静态数据</div><div class="line">2) 如果请求的是/index.php，根据配置文件，nginx知道这个不是静态文件，需要去找PHP解析器来处理，那么他会把这个请求简单处理后交给PHP解析器</div><div class="line"></div><div class="line">问题的核心在于Nginx需要传哪些数据给PHP解析器呢，例如：</div><div class="line">1) url</div><div class="line">2) 查询字符串</div><div class="line">3) POST数据</div><div class="line">4) HTTP header</div><div class="line">...</div></pre></td></tr></table></figure></p>
+        <h1 id="0x01-漏洞描述"><a href="#0x01-漏洞描述" class="headerlink" title="0x01 漏洞描述"></a>0x01 漏洞描述</h1><p>漏洞介绍：nginx是一款高性能的web服务器，使用非常广泛，其不仅经常被用作反向代理，也可以非常好的支持PHP的运行。<code>Nginx&lt;8.03</code>默认情况下可能导致服务器错误的将任何类型的文件以PHP的方式进行解析，这将导致严重的安全问题，使得恶意的攻击者可能攻陷支持php的nginx服务器。</p>
+<a id="more"></a>
+<h1 id="0x02-概念介绍"><a href="#0x02-概念介绍" class="headerlink" title="0x02 概念介绍"></a>0x02 概念介绍</h1><h2 id="0x21-CGI"><a href="#0x21-CGI" class="headerlink" title="0x21 CGI"></a>0x21 CGI</h2><p>CGI是规定web server传递过来的数据是何种标准格式，简单说就是一个协议。web server(例如nginx)只是内容的分发者。比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">1) 如果请求/index.html，那么web server会去文件系统中找到这个文件，发送给浏览器，这里分发的是静态数据</div><div class="line">2) 如果请求的是/index.php，根据配置文件，nginx知道这个不是静态文件，需要去找PHP解析器来处理，那么他会把这个请求简单处理后交给PHP解析器</div><div class="line"></div><div class="line">问题的核心在于Nginx需要传哪些数据给PHP解析器呢，例如：</div><div class="line">1) url</div><div class="line">2) 查询字符串</div><div class="line">3) POST数据</div><div class="line">4) HTTP header</div><div class="line">...</div></pre></td></tr></table></figure>
 <p>所以，CGI本质上就是规定要传哪些数据、以什么样的格式传递给后方处理这个请求的协议。</p>
 <h2 id="0x22-FastCGI"><a href="#0x22-FastCGI" class="headerlink" title="0x22 FastCGI"></a>0x22 FastCGI</h2><p>FastCGI顾名思义也是CGI的一个协议，FastCGI只是优化了CGI程序的性能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">1) 首先，Fastcgi会先启一个master，解析配置文件，初始化执行环境</div><div class="line">2) 然后再启动多个worker</div><div class="line">3) 当请求过来时，master会传递给一个worker，然后立即可以接受下一个请求。这样就避免了重复的劳动，效率提高了</div><div class="line">4) 而且当worker不够用时，master可以根据配置预先启动几个worker等着，同时如果发现空闲worker太多时，也会停掉一些，这样就提高了性能，也节约了资源</div></pre></td></tr></table></figure></p>
 <h2 id="0x23-PHP-CGI-PHP-FastCGI"><a href="#0x23-PHP-CGI-PHP-FastCGI" class="headerlink" title="0x23 PHP-CGI/PHP-FastCGI"></a>0x23 PHP-CGI/PHP-FastCGI</h2><p>PHP的解释器是PHP-CGI，PHP-CGI只是个CGI程序，他自己本身只能解析请求，返回结果，不会进程管理</p>
