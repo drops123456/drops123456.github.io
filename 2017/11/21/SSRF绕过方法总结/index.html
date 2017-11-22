@@ -120,6 +120,7 @@
 <meta property="og:site_name" content="w2n1ck">
 <meta property="og:description" content="前言 昨天忘了在公众号还是微博上看到的了，看到一个SSRF绕过的技巧，使用的是ⓔⓧⓐⓜⓟⓛⓔ.ⓒⓞⓜ绕过的，自己也没遇到过。然后想想自己对SSRF绕过还是停留在之前的了解，也没学习过新的绕过方法，所以特意找了找资料，学习学习最新黑科技，充充能。">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/11.png">
 <meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/1.png">
 <meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/2.png">
 <meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/3.png">
@@ -130,11 +131,11 @@
 <meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/7.png">
 <meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/8.png">
 <meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/10.png">
-<meta property="og:updated_time" content="2017-11-22T07:08:08.000Z">
+<meta property="og:updated_time" content="2017-11-22T07:11:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SSRF绕过方法总结">
 <meta name="twitter:description" content="前言 昨天忘了在公众号还是微博上看到的了，看到一个SSRF绕过的技巧，使用的是ⓔⓧⓐⓜⓟⓛⓔ.ⓒⓞⓜ绕过的，自己也没遇到过。然后想想自己对SSRF绕过还是停留在之前的了解，也没学习过新的绕过方法，所以特意找了找资料，学习学习最新黑科技，充充能。">
-<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/1.png">
+<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/11.png">
 
 
 
@@ -500,6 +501,7 @@
 <p>以上这些不是本文的重点，下面说下重点介绍的SSRF绕过的方法。</p>
 <h1 id="0x03-SSRF怎么绕"><a href="#0x03-SSRF怎么绕" class="headerlink" title="0x03 SSRF怎么绕"></a>0x03 SSRF怎么绕</h1><h2 id="1、攻击本地"><a href="#1、攻击本地" class="headerlink" title="1、攻击本地"></a>1、攻击本地</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">http://127.0.0.1:80</div><div class="line">http://localhost:22</div></pre></td></tr></table></figure>
 <h2 id="2、利用"><a href="#2、利用" class="headerlink" title="2、利用[::]"></a>2、利用<code>[::]</code></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">利用[::]绕过localhost</div><div class="line">http://[::]:80/  &gt;&gt;&gt;  http://127.0.0.1</div><div class="line">也有看到利用http://0000::1:80/的，但是我测试未成功</div></pre></td></tr></table></figure>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/11.png" alt=""></p>
 <h2 id="3、利用"><a href="#3、利用" class="headerlink" title="3、利用@"></a>3、利用<code>@</code></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://example.com@127.0.0.1</div></pre></td></tr></table></figure>
 <h2 id="4、利用短地址"><a href="#4、利用短地址" class="headerlink" title="4、利用短地址"></a>4、利用短地址</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://dwz.cn/11SMa  &gt;&gt;&gt;  http://127.0.0.1</div></pre></td></tr></table></figure>
 <h2 id="5、利用特殊域名"><a href="#5、利用特殊域名" class="headerlink" title="5、利用特殊域名"></a>5、利用特殊域名</h2><p>利用的原理是DNS解析<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://127.0.0.1.xip.io/</div></pre></td></tr></table></figure></p>
