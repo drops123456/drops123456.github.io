@@ -1,0 +1,1373 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="爬虫,Python,自动化,漏洞挖掘,Wooyun,字典," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="瓦都剋" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="之前做测试的时候，发现@四爷发现个漏洞，一个非常古怪的地址，我问四爷：“你咋知道这个的？”，四爷说：“扫的啊！”，我：“。。。”，所以才有了这篇文章。">
+<meta name="keywords" content="爬虫,Python,自动化,漏洞挖掘,Wooyun,字典">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Wooyun漏洞地址url爬虫及数据处理">
+<meta property="og:url" content="http://byd.dropsec.xyz/2018/03/28/Wooyun漏洞地址url爬虫及数据处理/index.html">
+<meta property="og:site_name" content="瓦都剋">
+<meta property="og:description" content="之前做测试的时候，发现@四爷发现个漏洞，一个非常古怪的地址，我问四爷：“你咋知道这个的？”，四爷说：“扫的啊！”，我：“。。。”，所以才有了这篇文章。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/wooyun-url.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/wooyun-xpath.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/wooyun-1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/wooyun-wooyun.png">
+<meta property="og:updated_time" content="2018-03-29T02:35:48.114Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Wooyun漏洞地址url爬虫及数据处理">
+<meta name="twitter:description" content="之前做测试的时候，发现@四爷发现个漏洞，一个非常古怪的地址，我问四爷：“你咋知道这个的？”，四爷说：“扫的啊！”，我：“。。。”，所以才有了这篇文章。">
+<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/wooyun-url.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2018/03/28/Wooyun漏洞地址url爬虫及数据处理/"/>
+
+
+
+
+
+  <title>Wooyun漏洞地址url爬虫及数据处理 | 瓦都剋</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">瓦都剋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2018/03/28/Wooyun漏洞地址url爬虫及数据处理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="瓦都剋">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓦都剋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Wooyun漏洞地址url爬虫及数据处理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-28T20:07:20+08:00">
+                2018-03-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/28/Wooyun漏洞地址url爬虫及数据处理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/03/28/Wooyun漏洞地址url爬虫及数据处理/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,791
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前做测试的时候，发现@四爷发现个漏洞，一个非常古怪的地址，我问四爷：“你咋知道这个的？”，四爷说：“扫的啊！”，我：“。。。”，所以才有了这篇文章。<br><a id="more"></a></p>
+<p>PS：以上故事纯属扯淡 !  0.0</p>
+<p>其实是今年给自己定了个目标，就是好好把编程给学好，毕竟自己安全那么菜，说不定就失业了。。。</p>
+<h1 id="0x00-获取Wooyun漏洞地址"><a href="#0x00-获取Wooyun漏洞地址" class="headerlink" title="0x00 获取Wooyun漏洞地址"></a>0x00 获取Wooyun漏洞地址</h1><p>这里选择爬取的目标是<a href="https://wooyun.shuimugan.com/" target="_blank" rel="external">https://wooyun.shuimugan.com</a>，这个镜像站有个好处，就是它的wooyun漏洞地址存入数据库的时候使用了id，即<code>https://wooyun.shuimugan.com/bug/view?bug_no=1</code>这种形式，所以，我们只需要遍历<code>bug_no</code>即可获取所有的漏洞地址（这里考虑到数据下载、处理、文件io等因素，选择了先把存在漏洞的url先存起来）。</p>
+<p>感谢网站的站长的不杀之恩！因为，在进行获取地址的时候由于一直再调试并发引擎，所以爬了好多遍。。。</p>
+<p>在获取存在漏洞URL的时候只使用了协程，然后主程序使用的进程，数据下载部分使用的进程+协程。</p>
+<p>在使用requests请求的时候虽然一直用<code>verif=False</code>来忽略ssl，但是会一直打印：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">/Library/Python/2.7/site-packages/requests/packages/urllib3/connectionpool.py:768: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.org/en/latest/security.html</div><div class="line">InsecureRequestWarning)</div></pre></td></tr></table></figure>
+<p>搞的很不爽，百度了下使用了下面代码解决：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">import ssl</div><div class="line">try:</div><div class="line">    _create_unverified_https_context = ssl._create_unverified_context  # 忽略证书错误</div><div class="line">except AttributeError:</div><div class="line">    pass</div><div class="line">else:</div><div class="line">    ssl._create_default_https_context = _create_unverified_https_context</div></pre></td></tr></table></figure>
+<p>请求的时候使用了通用的反爬虫策略：</p>
+<ul>
+<li>伪装header头</li>
+<li>随机User-Aagent</li>
+<li>随机IP</li>
+</ul>
+<p>这里本来是打算使用自己的代理池的，无奈免费的代理实在是慢，浪费时间，同时可能导致数据不准确。所以就没有使用代理IP了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">headers = &#123;</div><div class="line">&quot;User-Agent&quot;: random.choice(User-Agent),</div><div class="line">&quot;Accept&quot;: &quot;text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&quot;,</div><div class="line">&quot;Accept-Language&quot;: &quot;zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3&quot;,</div><div class="line">&quot;Upgrade-Insecure-Requests&quot;: &quot;1&quot;,</div><div class="line">&quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>协程部分：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">from gevent import monkey, pool</div><div class="line">monkey.patch_all()</div><div class="line">reload(sys)</div><div class="line">sys.setdefaultencoding(&apos;utf8&apos;)</div><div class="line"></div><div class="line">p = pool.Pool(150)</div><div class="line">for i in range(NUM):</div><div class="line">    _url = url + str(i)</div><div class="line">    jobs.append(p.spawn(getURL, _url))</div><div class="line">gevent.joinall(jobs)</div></pre></td></tr></table></figure>
+<p>网站<code>bug_no</code>总共有230305个，获取到了8万多个存在漏洞的地址。<br><img src="http://oa8y5guqs.bkt.clouddn.com/wooyun-url.png" alt=""></p>
+<h1 id="0x01-下载数据"><a href="#0x01-下载数据" class="headerlink" title="0x01 下载数据"></a>0x01 下载数据</h1><p>下载数据是爬虫的重点，本着<code>只多不少</code>的原则，本来考虑到大的数据量，效率问题，使用正则表达式来进行处理，但是发现获取的脏数据太多，对后面的数据处理造成了很多无法预知的麻烦，所以最终选择的方案是使用<code>xpath+re</code>来进行数据处理。</p>
+<p>首先，使用xpath获取漏洞细节部分（有些url在poc字段，但是考虑到大部分，所以只选择了漏洞细节字段，所以爬取的结果不是很准确。）<br><img src="http://oa8y5guqs.bkt.clouddn.com/wooyun-xpath.png" alt=""></p>
+<p>xpath：<code>//*[@id=&quot;w0&quot;]/tbody/tr[21]/td/text()</code></p>
+<p>这里遇到个问题就是无论怎么复制，都无法获取到漏洞细节里面的内容，使用chrome的xpath helper也的确是能匹配到内容，实在是郁闷！最终在我@加菲猫和@nearg1e斌哥哥的帮助下找到了原因。</p>
+<p>原因在于：chrome浏览器在进行页面渲染时使用了htmlparse进行了处理，所以诸如tbody等一些标签是chrome自动加载的。</p>
+<p>最终的xpath：<code>//*[@id=&quot;w0&quot;]/tr[21]/td//text()</code></p>
+<p>下面就是从漏洞细节中获取所有的URL了，这里还是为了更多的获取URL，找了个非常全面的正则表达式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">r = re.compile(r&apos;(?i)\b((?:[a-z][\w-]+:(?:/&#123;1,3&#125;|[a-z0-9%])|www\d&#123;0,3&#125;[.]|[a-z0-9.\-]+[.][a-z]&#123;2,4&#125;/)(?:[^\s()&lt;&gt;]+|\(([^\s()&lt;&gt;]+|(\([^\s()&lt;&gt;]+\)))*\))+(?:\(([^\s()&lt;&gt;]+|(\([^\s()&lt;&gt;]+\)))*\)|[^\s\`!()\[\]&#123;&#125;;:\&apos;&quot;.,&lt;&gt;?«»“”‘’]))&apos;)</div></pre></td></tr></table></figure>
+<p>导致匹配的URL什么奇葩都有，具体可看：<a href="https://github.com/w2n1ck/wooyunDic/blob/master/dicc.txt" target="_blank" rel="external">dicc.txt</a>的内容</p>
+<p>在使用这个re的时候又遇到个问题，程序跑着跑着停了，很是无语，后来经帮助调试发现是有些sql注入的URL中存在<code>(,)</code>这两个字符，导致正则死掉，为了图方便，直接做了个判断给剔除了 -。-</p>
+<p>并发部分参考如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">def create_process(level, jobqueue, plugins, debug, headers):</div><div class="line">    for _ in range(level):</div><div class="line">        process = multiprocessing.Process(target=worker, args=(jobqueue, plugins, debug, headers))</div><div class="line">        process.daemon = True</div><div class="line">        process.start()</div><div class="line"></div><div class="line">def worker(jobqueue, plugins, debug, headers):</div><div class="line">    while True:</div><div class="line">        try:</div><div class="line">            target = jobqueue.get()</div><div class="line">                gevent_scan_task(target, plugins, debug, headers)</div><div class="line">        except Exception, e:</div><div class="line">            print traceback.format_exc()</div><div class="line">        finally:</div><div class="line">            jobqueue.task_done()</div><div class="line"></div><div class="line">def gevent_scan_task(target, plugins, debug, headers):</div><div class="line">    evt = Event()</div><div class="line">    pool = []</div><div class="line">    scanmodle = ScanModle(target, plugins, debug, headers)</div><div class="line">    pool.append(gevent.spawn(scanmodle.scan_port(evt)))</div><div class="line">    pool.append(gevent.spawn(scanmodle.scan_plugins(evt)))</div><div class="line">    for port in scanmodle.get_ports():</div><div class="line">        pool.append(gevent.spawn(scanmodle.scan_plugins(evt, port)))</div><div class="line">    gevent.joinall(pool)</div><div class="line">    save_cache(scanmodle)</div></pre></td></tr></table></figure></p>
+<p>最终获取到了153217个地址<br><img src="http://oa8y5guqs.bkt.clouddn.com/wooyun-1.png" alt=""></p>
+<h1 id="0x02-数据处理"><a href="#0x02-数据处理" class="headerlink" title="0x02 数据处理"></a>0x02 数据处理</h1><p>这部分说难也难说不难也不难，我是不太在行【捂脸】，目前我处理的步骤如下：</p>
+<ol>
+<li>去除所有中文部分（这里由于有些url中的确是带中文，所有使用换行替换）</li>
+<li>去除所有只有<code>/</code>，<code>.</code>及<code>len(strip(link) == 0</code>的部分</li>
+<li>获取所有URL中的目录部分(使用urlparse)</li>
+<li>去除一些其他比如<code>wooyun/bugs</code>，<code>jdbc</code>，<code>**</code>，<code>xmlns</code>，<code>t.cn</code>，<code>ldap</code>，<code>ssh</code>等非预期字符及长度小于等于4的部分</li>
+<li>使用urlparse获取<code>p.path</code>, <code>p.query</code>,<code>p.fragment</code>,并使用<code>isinstance</code>来判断两个URL是否相同来去重</li>
+</ol>
+<p><strong>说明：</strong></p>
+<p>1、第三步没有使用迭代，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">/wooyun/bugs/?id=1</div><div class="line">没有获取：</div><div class="line">?id=1</div><div class="line">/wooyun</div><div class="line">/wooyun/bugs/</div><div class="line">只是获取到：</div><div class="line">/wooyun/bugs/?id=1</div><div class="line">有兴趣可参考：https://github.com/Xyntax/POC-T/blob/2.0/plugin/urlparser.py</div></pre></td></tr></table></figure>
+<p>代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">import urlparse</div><div class="line">import sys</div><div class="line">reload(sys)</div><div class="line">sys.setdefaultencoding(&apos;utf-8&apos;)</div><div class="line"></div><div class="line">def iterate_path(ori_str):</div><div class="line"># parser = urlparse.urlparse(ori_str)</div><div class="line"># _path_list = parser.path.replace(&apos;//&apos;, &apos;/&apos;).strip(&apos;/&apos;).split(&apos;/&apos;)</div><div class="line"># print _path_list</div><div class="line">    _ans_list = set()</div><div class="line">    _ans_list.add(ori_str)</div><div class="line">    _ans_list = list(_ans_list)</div><div class="line">    for i in range(len(_ans_list)):</div><div class="line">        p = urlparse.urlparse(_ans_list[i])</div><div class="line">        return urlparse.urlunsplit([&apos;&apos;, &apos;&apos;, p.path, p.query, p.fragment])</div></pre></td></tr></table></figure>
+<p>2、第五步是简单去除如下类型的URL：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">/wooyun/?id=1&amp;url=123</div><div class="line">/wooyun/?id=2&amp;url=233</div><div class="line">/wooyun/?id=3&amp;url=666</div><div class="line">和</div><div class="line">/wooyun/1.html</div><div class="line">/wooyun/233.html</div><div class="line">/wooyun/6666.html</div></pre></td></tr></table></figure>
+<h1 id="0x03-后续"><a href="#0x03-后续" class="headerlink" title="0x03 后续"></a>0x03 后续</h1><p>其实我主要是想获取个扫描目录的字典，但是如果发散下呢？这些URL有什么用？</p>
+<p>我思考的如下：</p>
+<p>1、在我刚算入门安全的时候wooyun叽叽了，所以有些漏洞自己基本上没见过，要是在一个一个去看文章，那代价太大了也没有时间。使用这个做目录扫描的时候，如果发现存在此URL，那么说明在wooyun上是存在这个漏洞的，如果自己不知道就可以搜一波，学习下了，快捷、高效。</p>
+<p>2、做agent、入侵防御、态势感知的话，可把这些做成漏洞库，遇到访问这些地址就可以来个告警，也可以当个威胁情报搞搞。</p>
+<p>3、做个漏洞分析，看看大佬们都喜欢提交啥漏洞（我不会告诉你排在第一二的是svn和git）</p>
+<p>获取的数据，处理和没处理的都可以在下面地址下载（PS：处理真的只是简单处理，比如大佬们上传的webshell、一些只针对某个网站的URL筛选等都得做，，，慎用！后续还得优化，大佬们有兴趣的话带带我。 0.0）</p>
+<p><strong>未处理：</strong><a href="https://github.com/w2n1ck/wooyunDic/blob/master/dicc.txt" target="_blank" rel="external">dicc.txt</a></p>
+<p><strong>已处理：</strong><a href="https://github.com/w2n1ck/wooyunDic/blob/master/dicc8.txt" target="_blank" rel="external">dicc8.txt</a></p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/wooyun-wooyun.png" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="瓦都剋 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="瓦都剋 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      瓦都剋
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2018/03/28/Wooyun漏洞地址url爬虫及数据处理/" title="Wooyun漏洞地址url爬虫及数据处理">http://byd.dropsec.xyz/2018/03/28/Wooyun漏洞地址url爬虫及数据处理/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/爬虫/" rel="tag"><i class="fa fa-tag"></i> 爬虫</a>
+          
+            <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          
+            <a href="/tags/自动化/" rel="tag"><i class="fa fa-tag"></i> 自动化</a>
+          
+            <a href="/tags/漏洞挖掘/" rel="tag"><i class="fa fa-tag"></i> 漏洞挖掘</a>
+          
+            <a href="/tags/Wooyun/" rel="tag"><i class="fa fa-tag"></i> Wooyun</a>
+          
+            <a href="/tags/字典/" rel="tag"><i class="fa fa-tag"></i> 字典</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/05/SSI-服务器端包含注入/" rel="next" title="SSI-服务器端包含注入">
+                <i class="fa fa-chevron-left"></i> SSI-服务器端包含注入
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="瓦都剋" />
+          <p class="site-author-name" itemprop="name">瓦都剋</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">80</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">58</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://am4zing.me/" title="王小岩" target="_blank">王小岩</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yangge.me/" title="杨大成" target="_blank">杨大成</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.secpulse.com/" title="安全脉搏" target="_blank">安全脉搏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.w2n1ck.com/" title="个人主页" target="_blank">个人主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-获取Wooyun漏洞地址"><span class="nav-number">1.</span> <span class="nav-text">0x00 获取Wooyun漏洞地址</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-下载数据"><span class="nav-number">2.</span> <span class="nav-text">0x01 下载数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-数据处理"><span class="nav-number">3.</span> <span class="nav-text">0x02 数据处理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-后续"><span class="nav-number">4.</span> <span class="nav-text">0x03 后续</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">瓦都剋</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2018/03/28/Wooyun漏洞地址url爬虫及数据处理/';
+          this.page.identifier = '2018/03/28/Wooyun漏洞地址url爬虫及数据处理/';
+          this.page.title = 'Wooyun漏洞地址url爬虫及数据处理';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="20" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

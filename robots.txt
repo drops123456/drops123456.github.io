@@ -1,10 +1,5 @@
 User-Agent: *
 Allow: /
-Disallow: /get it
 Disallow: /hi
-Disallow: /hello
-Disallow: /dasb
-Disallow: /2b
-Disallow: /sb
 Sitemap: http://code.youmeek.com/sitemap.xml
 Sitemap: http://code.youmeek.com/baidusitemap.xml
