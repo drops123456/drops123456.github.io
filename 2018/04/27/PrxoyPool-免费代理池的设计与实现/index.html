@@ -1,0 +1,1376 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Python,Redis,代理,渗透测试,自动化,爬虫,Flask," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="瓦都剋" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="前言在进行渗透测试、漏洞挖掘的时候，使用自动化工具是必须的一步，但是令人😠的是，经常由于扫描等原因导致IP被ban，这是我们最不想看到的。所以本着学习编程的目的，根据网上搜索的资料，东拼西凑的开发了这个系统。 0x01 涉及技术 Python3 使用Python3的原因是由于异步IO使用的是asyncio和aiohttp，所以就学习尝试了下Python3，其实没多大区别感觉。（刚开始学编程，原谅">
+<meta name="keywords" content="Python,Redis,代理,渗透测试,自动化,爬虫,Flask">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PrxoyPool-免费代理池的设计与实现">
+<meta property="og:url" content="http://byd.dropsec.xyz/2018/04/27/PrxoyPool-免费代理池的设计与实现/index.html">
+<meta property="og:site_name" content="瓦都剋">
+<meta property="og:description" content="前言在进行渗透测试、漏洞挖掘的时候，使用自动化工具是必须的一步，但是令人😠的是，经常由于扫描等原因导致IP被ban，这是我们最不想看到的。所以本着学习编程的目的，根据网上搜索的资料，东拼西凑的开发了这个系统。 0x01 涉及技术 Python3 使用Python3的原因是由于异步IO使用的是asyncio和aiohttp，所以就学习尝试了下Python3，其实没多大区别感觉。（刚开始学编程，原谅">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/jiagou.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/11111.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/22222.png">
+<meta property="og:updated_time" content="2018-04-28T04:11:27.765Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PrxoyPool-免费代理池的设计与实现">
+<meta name="twitter:description" content="前言在进行渗透测试、漏洞挖掘的时候，使用自动化工具是必须的一步，但是令人😠的是，经常由于扫描等原因导致IP被ban，这是我们最不想看到的。所以本着学习编程的目的，根据网上搜索的资料，东拼西凑的开发了这个系统。 0x01 涉及技术 Python3 使用Python3的原因是由于异步IO使用的是asyncio和aiohttp，所以就学习尝试了下Python3，其实没多大区别感觉。（刚开始学编程，原谅">
+<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/jiagou.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2018/04/27/PrxoyPool-免费代理池的设计与实现/"/>
+
+
+
+
+
+  <title>PrxoyPool-免费代理池的设计与实现 | 瓦都剋</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">瓦都剋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2018/04/27/PrxoyPool-免费代理池的设计与实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="瓦都剋">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓦都剋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PrxoyPool-免费代理池的设计与实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-27T16:04:28+08:00">
+                2018-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/04/27/PrxoyPool-免费代理池的设计与实现/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/04/27/PrxoyPool-免费代理池的设计与实现/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2,458
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  11
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在进行渗透测试、漏洞挖掘的时候，使用自动化工具是必须的一步，但是令人😠的是，经常由于扫描等原因导致IP被ban，这是我们最不想看到的。所以本着学习编程的目的，根据网上搜索的资料，东拼西凑的开发了这个系统。</p>
+<h2 id="0x01-涉及技术"><a href="#0x01-涉及技术" class="headerlink" title="0x01 涉及技术"></a>0x01 涉及技术</h2><ul>
+<li><p>Python3</p>
+<p>使用Python3的原因是由于异步IO使用的是<code>asyncio</code>和<code>aiohttp</code>，所以就学习尝试了下Python3，其实没多大区别感觉。（刚开始学编程，原谅我啥都不知道😜）</p>
+</li>
+<li><p>Flask</p>
+<p>使用Flask作为Web开发微框架，交与其他Python框架，具有简便、易扩展等优点。具体可看：<a href="http://docs.jinkan.org/docs/flask/" target="_blank" rel="external">Flask中文文档</a></p>
+</li>
+<li><p>Redis</p>
+<p>Redis 是速度非常快的非关系型（NoSQL）内存键值数据库，可以存储键和五种不同类型的值之间的映射。</p>
+<p>五种类型数据类型为：字符串、列表、集合、有序集合、散列表。本次数据存储方面就利用的redis的有序集合。</p>
+</li>
+<li><p>爬虫</p>
+<p>爬虫部分是从11个免费代理网站上抓取免费、高可用性的代理IP，并进行数据处理获取统一格式。同时本着学习的理念使用了：<code>lxml</code>，<code>pyquery</code>，<code>正则</code>，<code>json</code>等不同的技术来实现。</p>
+</li>
+<li><p>异步IO</p>
+<p>默认给代理池设置的阈值为50000，由于数量比较大，为了提高代理高可用性的检测效率，我们在这里使用异步请求库aiohttp来进行检测。具体参考：<a href="https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/00143208573480558080fa77514407cb23834c78c6c7309000" target="_blank" rel="external">廖雪峰的官方网站-异步IO</a></p>
+</li>
+<li><p>前端</p>
+<p>web前端部分我是真不懂（但是我会抄啊😝），直接wget的一个自己觉得比较简洁的网站的前端，哈哈😄～</p>
+<p>​</p>
+</li>
+</ul>
+<h2 id="0x02-架构部分"><a href="#0x02-架构部分" class="headerlink" title="0x02 架构部分"></a>0x02 架构部分</h2><p> <img src="http://oa8y5guqs.bkt.clouddn.com/jiagou.png" alt=""></p>
+<p>主要分为如下几个模块：</p>
+<ul>
+<li><p>爬虫模块：</p>
+<p>主要从11个免费代理网站上抓取免费的代理IP，并进行格式统一处理。同时为了保证代理池的枯竭，采用周期性抓取。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">www.66ip.cn</div><div class="line">www.xdaili.cn</div><div class="line">www.kuaidaili</div><div class="line">www.ip3366.net</div><div class="line">www.89ip.cn</div><div class="line">www.xicidaili.com</div><div class="line">www.iphai.com</div><div class="line">premproxy.com</div><div class="line">www.xroxy.com</div><div class="line">www.data5u.com</div><div class="line">www.kxdaili.com</div></pre></td></tr></table></figure>
+</li>
+<li><p>存储模块</p>
+<p>主要学习了GitHub上一个采用的redis的有序集合来进行的，一是保证代理数据的不重复，二是使用<code>zscore</code>来标记代理的可用性。</p>
+</li>
+<li><p>检测模块</p>
+<p>定时检测数据库中的代理的可用性情况，并采用打分机制，初始化一个分值，若可用则标记为最高，不可用则在初始化分值基础上减1，直到为0，则从redis中删除。后续random获取的时候采用分值最高的优先展示的从高到低模式。同时保证代理的实时可用性，设置定时检测。</p>
+</li>
+<li><p>API模块</p>
+<p>采用<code>Flask</code>作为web服务器，前端copy的别人的改的。从redis数据库中优先选择出分数最高的，若同时存在多个，则随机选择一个。</p>
+</li>
+</ul>
+<p>​</p>
+<h2 id="0x03-具体实现"><a href="#0x03-具体实现" class="headerlink" title="0x03 具体实现"></a>0x03 具体实现</h2><h3 id="爬虫模块"><a href="#爬虫模块" class="headerlink" title="爬虫模块"></a>爬虫模块</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div></pre></td><td class="code"><pre><div class="line">def crawl_daili66(self, page_count=4):</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    获取代理:www.66ip.cn</div><div class="line">    方法:pyquery</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    start_url = &apos;http://www.66ip.cn/&#123;&#125;.html&apos;</div><div class="line">    urls = [start_url.format(page) for page in range(1, page_count + 1)]</div><div class="line">    for url in urls:</div><div class="line">        html = get_page(url)</div><div class="line">        if html:</div><div class="line">            doc = pq(html)</div><div class="line">            trs = doc(&apos;.containerbox table tr:gt(0)&apos;).items()</div><div class="line">            for tr in trs:</div><div class="line">                ip = tr.find(&apos;td:nth-child(1)&apos;).text()</div><div class="line">                port = tr.find(&apos;td:nth-child(2)&apos;).text()</div><div class="line">                yield &apos;:&apos;.join([ip, port])</div><div class="line"></div><div class="line">def crawl_ip181(self, page_count=2):</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    获取代理:www.xdaili.cn</div><div class="line">    方法:json</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    start_url = &apos;http://www.xdaili.cn/ipagent//freeip/getFreeIps?page=&#123;&#125;&apos;</div><div class="line">    urls = [start_url.format(page) for page in range(1, page_count + 1)]</div><div class="line">    for url in urls:</div><div class="line">        try:</div><div class="line">            response = requests.get(url)</div><div class="line">            print(&apos;抓取成功 &gt;&gt;&gt; &apos;, url, response.status_code)</div><div class="line">            if response.status_code == 200:</div><div class="line">                html = response.json()</div><div class="line">        except ConnectionError:</div><div class="line">            print(&apos;抓取失败 &gt;&gt;&gt; &apos;, url)</div><div class="line">            pass</div><div class="line">        if html:</div><div class="line">            # ip_address = re.compile(r&apos;&quot;ip&quot;:&quot;(.*?)&quot;,&quot;port&quot;:&quot;(.*?)&quot;&apos;)</div><div class="line">            # ip_address = ip_address.findall(html)</div><div class="line">            for key in html[&apos;RESULT&apos;][&apos;rows&apos;]:</div><div class="line">                yield &apos;:&apos;.join([key[&apos;ip&apos;], key[&apos;port&apos;]])</div><div class="line"></div><div class="line">def crawl_kuaidaili(self):</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    获取代理:www.kuaidaili</div><div class="line">    方法:xpath</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    for i in range(1, 4):</div><div class="line">        start_url = &apos;http://www.kuaidaili.com/free/inha/&#123;&#125;/&apos;.format(i)</div><div class="line">        html = get_page(start_url)</div><div class="line">        if html:</div><div class="line">            html = etree.HTML(html, parser=etree.HTMLParser(encoding=&apos;utf-8&apos;))</div><div class="line">            _ip_xpath = &apos;//*[@id=&quot;list&quot;]/table/tbody/tr[&#123;&#125;]/td[1]/text()&apos;</div><div class="line">            _port_xpath = &apos;//*[@id=&quot;list&quot;]/table/tbody/tr[&#123;&#125;]/td[2]/text()&apos;</div><div class="line">            for i in range(1, 16):</div><div class="line">                ip_xpath = _ip_xpath.format(i)</div><div class="line">                port_xpath = _port_xpath.format(i)</div><div class="line">                ip = html.xpath(ip_xpath)[0]</div><div class="line">                port = html.xpath(port_xpath)[0]</div><div class="line">                yield &quot;:&quot;.join([ip, port])</div><div class="line"></div><div class="line">def crawl_ip3366(self):</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    获取代理:www.ip3366.net</div><div class="line">    方法:正则</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    for page in range(1, 4):</div><div class="line">        start_url = &apos;http://www.ip3366.net/free/?stype=1&amp;page=&#123;&#125;&apos;.format(page)</div><div class="line">        html = get_page(start_url)</div><div class="line">        ip_address = re.compile(&apos;&lt;tr&gt;\s*&lt;td&gt;(.*?)&lt;/td&gt;\s*&lt;td&gt;(.*?)&lt;/td&gt;&apos;)</div><div class="line">        re_ip_address = ip_address.findall(html)</div><div class="line">        for address, port in re_ip_address:</div><div class="line">            result = address + &apos;:&apos; + port</div><div class="line">            yield result.replace(&apos; &apos;, &apos;&apos;)</div></pre></td></tr></table></figure>
+<p>本着学习的目的，同时采用了<code>pyquery</code>，<code>正则</code>，<code>json</code>，<code>xpath</code>等不同的获取方法，使用<code>yield</code>来将这些方法定义成生成器，这样我们每次请求就会通过<code>yield</code>来返回一个代理IP。</p>
+<p>同时使用<code>crawl_</code>开头的函数命名方法，来达到动态添加代理网站地址接口的目的（这部分借鉴的大神的），具体参考：<a href="https://blog.csdn.net/permike/article/details/52211721" target="_blank" rel="external">python元类解析</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">class ProxyMetaclass(type):</div><div class="line">    def __new__(cls, name, bases, attrs):</div><div class="line">        count = 0</div><div class="line">        attrs[&apos;__CrawlFunc__&apos;] = []</div><div class="line">        for k, v in attrs.items():</div><div class="line">            if &apos;crawl_&apos; in k:</div><div class="line">                attrs[&apos;__CrawlFunc__&apos;].append(k)</div><div class="line">                count += 1</div><div class="line">        attrs[&apos;__CrawlFuncCount__&apos;] = count</div><div class="line">        return type.__new__(cls, name, bases, attrs)</div><div class="line"></div><div class="line"></div><div class="line">class Crawler(object, metaclass=ProxyMetaclass):</div><div class="line">    def get_proxies(self, callback):</div><div class="line">        proxies = []</div><div class="line">        for proxy in eval(&quot;self.&#123;&#125;()&quot;.format(callback)):</div><div class="line">            print(u&apos;成功获取到代理 &gt;&gt;&gt; &apos;, proxy)</div><div class="line">            proxies.append(proxy)</div><div class="line">        return proxies</div></pre></td></tr></table></figure>
+<p>定义类ProxyMetaclass并声明一个<code>__new__</code>方法，同时Crawler类将它声明为元类，这个方法有固定的几个参数<code>cls, name, bases, attrs</code>，第四个参数<code>attrs</code>中包含了类的一些属性。我们可以遍历<code>attrs</code>这个参数即可获取类的所有方法信息，就像遍历字典一样，键名对应方法的名称。然后判断方法的开头是否<code>crawl_</code>，如果是，则将其加入到<code>__CrawlFunc__</code>属性中。这样我们就成功将所有以<code>crawl_</code>开头的方法定义成了一个属性，动态获取到所有以<code>crawl_</code>开头的方法列表。</p>
+<p>然后定义了一个<code>get_proxies()</code>方法，将所有以<code>crawl_</code>开头的方法调用一遍，获取每个方法返回的代理并组合成列表形式返回。</p>
+<h3 id="存储模块"><a href="#存储模块" class="headerlink" title="存储模块"></a>存储模块</h3><p>采用redis的有序集合，集合的特点是集合的每一个元素都是不重复的，这样就保证了代理的不重复。有序集合，顾名思义，这里存储的数据是有序的，我们就可以利用这点对代理IP进行打分、排序，实现权重的效果。具体可参考：<a href="http://www.runoob.com/redis/redis-sorted-sets.html" target="_blank" rel="external">Redis 有序集合(sorted set)</a></p>
+<p>连接redis</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db = redis.StrictRedis(host=host, port=port, password=password, decode_responses=True)</div></pre></td></tr></table></figure>
+<p>添加数据，添加代理，设置分数为最高</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">def add(self, proxy, score=INITIAL_SCORE):</div><div class="line">    if not re.match(&apos;\d+\.\d+\.\d+\.\d+\:\d+&apos;, proxy):</div><div class="line">        print(&apos;代理不符合规范&apos;, proxy, u&apos;丢弃&apos;)</div><div class="line">        return</div><div class="line">    if not self.db.zscore(REDIS_KEY, proxy):</div><div class="line">        return self.db.zadd(REDIS_KEY, score, proxy)</div></pre></td></tr></table></figure>
+<p>获取代理IP，随机获取有效代理，首先尝试获取最高分数代理，如果不存在，按照排名获取，否则异常</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">def random(self):</div><div class="line">    result = self.db.zrangebyscore(REDIS_KEY, MAX_SCORE, MAX_SCORE)</div><div class="line">    if len(result):</div><div class="line">        return choice(result)</div><div class="line">    else:</div><div class="line">        result = self.db.zrevrange(REDIS_KEY, 0, 100)</div><div class="line">        if len(result):</div><div class="line">            return choice(result)</div><div class="line">        else:</div><div class="line">            raise PoolEmptyError</div></pre></td></tr></table></figure>
+<p>删除代理IP，代理值减一分，小于最小值则删除</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">def decrease(self, proxy):</div><div class="line">    score = self.db.zscore(REDIS_KEY, proxy)</div><div class="line">    if score and score &gt; MIN_SCORE:</div><div class="line">        print(&apos;代理&apos;, proxy, u&apos;当前分数&apos;, score, u&apos;减1&apos;)</div><div class="line">        return self.db.zincrby(REDIS_KEY, proxy, -1)</div><div class="line">    else:</div><div class="line">        print(&apos;代理&apos;, proxy, u&apos;当前分数&apos;, score, &apos;移除&apos;)</div><div class="line">        return self.db.zrem(REDIS_KEY, proxy)</div></pre></td></tr></table></figure>
+<h3 id="检测模块"><a href="#检测模块" class="headerlink" title="检测模块"></a>检测模块</h3><p>代理检测第一次可用，则分数设置为100，代理不可用，分数减1，这样就可以实时改变每个代理的可用情况。API接口返回的时候只需要获取分数高的代理即可。使用的python3的异步IO库<code>aiohttp</code>，参考的大神的表演，学习了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">class Tester(object):</div><div class="line">    def __init__(self):</div><div class="line">        self.redis = RedisClient()</div><div class="line"></div><div class="line">    async def test_single_proxy(self, proxy):</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        异步测试单个代理IP并写入redis</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        conn = aiohttp.TCPConnector(verify_ssl=False)</div><div class="line">        async with aiohttp.ClientSession(connector=conn) as session:</div><div class="line">            try:</div><div class="line">                if isinstance(proxy, bytes):</div><div class="line">                    proxy = proxy.decode(&apos;utf-8&apos;)</div><div class="line">                real_proxy = &apos;http://&apos; + proxy</div><div class="line">                print(&apos;正在测试 &gt;&gt;&gt;&apos;, proxy)</div><div class="line">                async with session.get(TEST_URL, proxy=real_proxy, timeout=15, allow_redirects=False) as response:</div><div class="line">                    if response.status in VALID_STATUS_CODES:</div><div class="line">                        self.redis.max(proxy)</div><div class="line">                        print(&apos;代理可用 &gt;&gt;&gt; &apos;, proxy)</div><div class="line">                    else:</div><div class="line">                        self.redis.decrease(proxy)</div><div class="line">                        print(&apos;请求响应码不合法 &gt;&gt;&gt;&apos;, response.status, &apos;IP&apos;, proxy)</div><div class="line">            except Exception as e:</div><div class="line">                self.redis.decrease(proxy)</div><div class="line">                print(&apos;代理请求失败 &gt;&gt;&gt; &apos;, proxy)</div><div class="line"></div><div class="line">    def run(self):</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        测试主函数</div><div class="line">        &quot;&quot;&quot;</div><div class="line">        print(&apos;*** 测试器开始运行 ***&apos;)</div><div class="line">        try:</div><div class="line">            count = self.redis.count()</div><div class="line">            print(&apos;当前剩余：&apos;, count, u&apos;个代理&apos;)</div><div class="line">            for i in range(0, count, BATCH_TEST_SIZE):</div><div class="line">                start = i</div><div class="line">                stop = min(i + BATCH_TEST_SIZE, count)</div><div class="line">                print(&apos;正在测试第&apos;, start + 1, &apos;-&apos;, stop, u&apos;个代理&apos;)</div><div class="line">                test_proxies = self.redis.batch(start, stop)</div><div class="line">                loop = asyncio.get_event_loop()</div><div class="line">                tasks = [self.test_single_proxy(proxy) for proxy in test_proxies]</div><div class="line">                loop.run_until_complete(asyncio.wait(tasks))</div><div class="line">                sys.stdout.flush()</div><div class="line">                time.sleep(5)</div><div class="line">        except Exception as e:</div><div class="line">            print(&apos;测试器发生错误&apos;, e.args)</div></pre></td></tr></table></figure>
+<p>定义了一个类<code>Tester</code>，接下来定义了一个<code>test_single_proxy()</code>方法，并在前面加了<code>async</code>关键词，这代表这个方法是异步的。方法内部首先创建了aiohttp的<code>ClientSession</code>对象，此对象类似于requests的<code>Session</code>对象，可以直接调用该对象的get()方法来访问页面。在这里，代理的设置是通过<code>proxy</code>参数传递给<code>get()</code>方法，程序在获取Response后需要判断响应的状态，如果状态码在<code>VALID_STATUS_CODES</code>列表里，则代表代理可用，可以调用<code>RedisClient</code>的<code>max()</code>方法将代理分数设为100，否则调用<code>decrease()</code>方法将代理分数减1，如果出现异常也同样将代理分数减1。</p>
+<h2 id="0x04-接口模块"><a href="#0x04-接口模块" class="headerlink" title="0x04 接口模块"></a>0x04 接口模块</h2><p>使用Flask实现接口模块，前端wget的<a href="http://vulapps.evalbug.com/about/" target="_blank" rel="external">VulApps的前端模版</a>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">__all__ = [&apos;app&apos;]</div><div class="line">app = Flask(__name__)</div><div class="line"></div><div class="line">def get_conn():</div><div class="line">    if not hasattr(g, &apos;redis&apos;):</div><div class="line">        g.redis = RedisClient()</div><div class="line">    return g.redis</div><div class="line"></div><div class="line">@app.route(&apos;/&apos;)</div><div class="line">def index():</div><div class="line">    render = render_template(&apos;index.html&apos;)</div><div class="line">    return make_response(render)</div><div class="line"></div><div class="line">@app.route(&apos;/random&apos;)</div><div class="line">def get_proxy():</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    获取proxyAPI</div><div class="line">    :return: 随机代理</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    conn = get_conn()</div><div class="line">    return conn.random()</div><div class="line"></div><div class="line"></div><div class="line">@app.route(&apos;/count&apos;)</div><div class="line">def get_counts():</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    Get the count of proxies</div><div class="line">    :return: 代理池总量</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    conn = get_conn()</div><div class="line">    return str(conn.count())</div><div class="line"></div><div class="line">if __name__ == &apos;__main__&apos;:</div><div class="line">    app.run()</div></pre></td></tr></table></figure>
+<p>前端模版<code>index.html</code></p>
+<p>项目地址：<a href="http://proxy.w2n1ck.com:9090" target="_blank" rel="external">http://proxy.w2n1ck.com:9090</a>/</p>
+<p>API接口：<a href="http://proxy.w2n1ck.com:9090/random" target="_blank" rel="external">http://proxy.w2n1ck.com:9090/random</a></p>
+<h3 id="0x05-使用"><a href="#0x05-使用" class="headerlink" title="0x05 使用"></a>0x05 使用</h3><p>测试结果如下：</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/11111.png" alt=""></p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/22222.png" alt=""></p>
+<p>获取代理IP：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">import requests</div><div class="line">PROXY_POOL_URL = &apos;http://proxy.w2n1ck.com:9090/random&apos;</div><div class="line">def get_proxy():</div><div class="line">    try:</div><div class="line">        response = requests.get(PROXY_POOL_URL)</div><div class="line">        if response.status_code == 200:</div><div class="line">            return response.text</div><div class="line">    except ConnectionError:</div><div class="line">        return None</div></pre></td></tr></table></figure>
+<p>使用代理IP：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">import requests</div><div class="line">proxy = get_proxy()</div><div class="line">proxies = &#123;</div><div class="line">    &apos;http&apos;: &apos;http://&apos; + proxy,</div><div class="line">    &apos;https&apos;: &apos;https://&apos; + proxy,</div><div class="line">&#125;</div><div class="line">try:</div><div class="line">    response = requests.get(&apos;http://ip.cn/&apos;, proxies=proxies)</div><div class="line">    print(response.text)</div><div class="line">except:</div><div class="line">    pass</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="瓦都剋 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="瓦都剋 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      瓦都剋
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2018/04/27/PrxoyPool-免费代理池的设计与实现/" title="PrxoyPool-免费代理池的设计与实现">http://byd.dropsec.xyz/2018/04/27/PrxoyPool-免费代理池的设计与实现/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python-Redis-代理-渗透测试-自动化-爬虫-Flask/" rel="tag"><i class="fa fa-tag"></i> Python,Redis,代理,渗透测试,自动化,爬虫,Flask</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/23/伏特漏洞扫描-IoT设备安全解决方案/" rel="next" title="伏特漏洞扫描-IoT设备安全解决方案">
+                <i class="fa fa-chevron-left"></i> 伏特漏洞扫描-IoT设备安全解决方案
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="瓦都剋" />
+          <p class="site-author-name" itemprop="name">瓦都剋</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">82</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">60</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://am4zing.me/" title="王小岩" target="_blank">王小岩</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yangge.me/" title="杨大成" target="_blank">杨大成</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.secpulse.com/" title="安全脉搏" target="_blank">安全脉搏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.w2n1ck.com/" title="个人主页" target="_blank">个人主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-涉及技术"><span class="nav-number">2.</span> <span class="nav-text">0x01 涉及技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-架构部分"><span class="nav-number">3.</span> <span class="nav-text">0x02 架构部分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-具体实现"><span class="nav-number">4.</span> <span class="nav-text">0x03 具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#爬虫模块"><span class="nav-number">4.1.</span> <span class="nav-text">爬虫模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储模块"><span class="nav-number">4.2.</span> <span class="nav-text">存储模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检测模块"><span class="nav-number">4.3.</span> <span class="nav-text">检测模块</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-接口模块"><span class="nav-number">5.</span> <span class="nav-text">0x04 接口模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x05-使用"><span class="nav-number">5.1.</span> <span class="nav-text">0x05 使用</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">瓦都剋</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2018/04/27/PrxoyPool-免费代理池的设计与实现/';
+          this.page.identifier = '2018/04/27/PrxoyPool-免费代理池的设计与实现/';
+          this.page.title = 'PrxoyPool-免费代理池的设计与实现';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="20" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
