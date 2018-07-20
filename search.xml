@@ -297,9 +297,9 @@
             
             <tag> WAF绕过 </tag>
             
-            <tag> 命令执行 </tag>
-            
             <tag> linux </tag>
+            
+            <tag> 命令执行 </tag>
             
             <tag> 通配符 </tag>
             
@@ -1017,9 +1017,9 @@
         
         <tags>
             
-            <tag> 编程 </tag>
-            
             <tag> 渗透测试 </tag>
+            
+            <tag> 编程 </tag>
             
             <tag> Python </tag>
             
@@ -2319,9 +2319,9 @@ ls -d xxx.com
             
             <tag> webshell </tag>
             
-            <tag> 命令执行 </tag>
-            
             <tag> linux </tag>
+            
+            <tag> 命令执行 </tag>
             
             <tag> 文件包含 </tag>
             
@@ -2374,9 +2374,9 @@ ls -d xxx.com
             
             <tag> 渗透测试 </tag>
             
-            <tag> 提权 </tag>
-            
             <tag> linux </tag>
+            
+            <tag> 提权 </tag>
             
         </tags>
         
@@ -2473,9 +2473,9 @@ ls -d xxx.com
             
             <tag> 爆破 </tag>
             
-            <tag> 编程 </tag>
-            
             <tag> 渗透测试 </tag>
+            
+            <tag> 编程 </tag>
             
             <tag> Python </tag>
             
@@ -2574,9 +2574,9 @@ ls -d xxx.com
         
         <tags>
             
-            <tag> 编程 </tag>
-            
             <tag> 渗透测试 </tag>
+            
+            <tag> 编程 </tag>
             
             <tag> 自动化 </tag>
             
@@ -2653,9 +2653,9 @@ ls -d xxx.com
         
         <tags>
             
-            <tag> 编程 </tag>
-            
             <tag> 渗透测试 </tag>
+            
+            <tag> 编程 </tag>
             
             <tag> Python </tag>
             
@@ -3038,11 +3038,11 @@ Iptables -I INPUT -p tcp --dport 22 -m state NEW -m recent --update --seconds 30
             
             <tag> 爆破 </tag>
             
-            <tag> 编程 </tag>
-            
             <tag> 渗透测试 </tag>
             
             <tag> XSS </tag>
+            
+            <tag> 编程 </tag>
             
             <tag> PHP </tag>
             
@@ -4477,9 +4477,9 @@ if __name__==&apos;__main__&apos;:
         
         <tags>
             
-            <tag> 编程 </tag>
-            
             <tag> 渗透测试 </tag>
+            
+            <tag> 编程 </tag>
             
             <tag> 信息收集 </tag>
             
