@@ -120,12 +120,13 @@
 <meta property="og:site_name" content="瓦都剋">
 <meta property="og:description" content="# 前言随着智能硬件的兴起，大量智能家居和可穿戴设备进入了人们的生活，根据Gartner 报告预测，2020年全球IOT物联网设备数量将高达260亿个。但是由于安全标准滞后，以及智能设备制造商缺乏安全意识和投入，物联网已经埋下极大隐患，是个人隐私、企业信息安全甚至国家关键基础设施的头号安全威胁。试想一下，无论家用或企业级的互连设备，如接入互联网的交通指示灯，恒温器，或医用监控设备遭到攻击，后果都将">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532082587296&di=3f047ed6df763f4508c85a830fa2e308&imgtype=0&src=http%3A%2F%2Fwx1.sinaimg.cn%2Fthumb150%2Fa7a9fff4ly1fifwd8u8bmg205k05kwh5.gif">
-<meta property="og:updated_time" content="2018-07-20T07:42:05.300Z">
+<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/%E5%9B%BE%E7%89%87%201.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/%E6%B5%81%E7%A8%8B%E5%9B%BE1.png">
+<meta property="og:updated_time" content="2018-12-04T07:45:29.079Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="伏特漏洞扫描-IoT设备安全解决方案">
 <meta name="twitter:description" content="# 前言随着智能硬件的兴起，大量智能家居和可穿戴设备进入了人们的生活，根据Gartner 报告预测，2020年全球IOT物联网设备数量将高达260亿个。但是由于安全标准滞后，以及智能设备制造商缺乏安全意识和投入，物联网已经埋下极大隐患，是个人隐私、企业信息安全甚至国家关键基础设施的头号安全威胁。试想一下，无论家用或企业级的互连设备，如接入互联网的交通指示灯，恒温器，或医用监控设备遭到攻击，后果都将">
-<meta name="twitter:image" content="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1532082587296&di=3f047ed6df763f4508c85a830fa2e308&imgtype=0&src=http%3A%2F%2Fwx1.sinaimg.cn%2Fthumb150%2Fa7a9fff4ly1fifwd8u8bmg205k05kwh5.gif">
+<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/%E5%9B%BE%E7%89%87%201.png">
 
 
 
@@ -425,7 +426,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  184
+                  1,367
                 </span>
               
 
@@ -441,7 +442,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  1
+                  5
                 </span>
               
             </div>
@@ -460,8 +461,43 @@
 
       
         <h3 id="前言"><a href="#前言" class="headerlink" title="# 前言"></a># 前言</h3><p>随着智能硬件的兴起，大量智能家居和可穿戴设备进入了人们的生活，根据Gartner 报告预测，2020年全球IOT物联网设备数量将高达260亿个。但是由于安全标准滞后，以及智能设备制造商缺乏安全意识和投入，物联网已经埋下极大隐患，是个人隐私、企业信息安全甚至国家关键基础设施的头号安全威胁。试想一下，无论家用或企业级的互连设备，如接入互联网的交通指示灯，恒温器，或医用监控设备遭到攻击，后果都将非常可怕。</p>
-<p>由于特殊原因，暂时无法查看。。。</p>
-<p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1532082587296&amp;di=3f047ed6df763f4508c85a830fa2e308&amp;imgtype=0&amp;src=http%3A%2F%2Fwx1.sinaimg.cn%2Fthumb150%2Fa7a9fff4ly1fifwd8u8bmg205k05kwh5.gif" alt=""></p>
+<h3 id="0x01-物联网安全需求"><a href="#0x01-物联网安全需求" class="headerlink" title="# 0x01 物联网安全需求"></a># 0x01 物联网安全需求</h3><p>物联网根据业务形态主要分为工业控制物联网、车载物联网、智能家居物联网。不同的业务形态对安全的需求不尽相同。</p>
+<p>工业控制物联网：涉及到国家安全、再加上目前工业控制网络基本是明文协议很容易遭受攻击。目前安全公司有威努特、匡恩网络等且在市场中已经有很好成效。主要产品形态：工控防火墙、工控漏洞挖掘、主机白名单产品。安全需求基本是传统安全的思路。</p>
+<p>车载物联网：涉及财产安全及驾车人生命安全。国外相关安全厂商产品形态大致是OBD防火墙、云端大数据分析异常监控等。安全需求集中在车载核心物联网硬件安全及嵌入式设备安全上。</p>
+<p>智能家居物联网：涉及到个人及家庭的隐私和数据安全。同时，由于近期各种DDOS、僵尸网络等安全事件的爆发，所以智能家具设备安全问题迫在眉睫。本解决方案主要面向与智能家居物联网方向。</p>
+<h3 id="0x02-IOT设备通用漏洞按风险技术类型分布"><a href="#0x02-IOT设备通用漏洞按风险技术类型分布" class="headerlink" title="# 0x02 IOT设备通用漏洞按风险技术类型分布"></a># 0x02 IOT设备通用漏洞按风险技术类型分布</h3><p>2017年CNVD收录IOT设备漏洞类型分别为权限绕过、拒绝服务、信息泄露、跨站、命令执行、缓冲区溢出、SQL注入、弱口令、设计缺陷等漏洞。其中，权限绕过、拒绝服务、信息泄露漏洞数量位列前三，分别占收录漏洞总数的23%，19%，13%。而对于弱口令（或内置默认口令）漏洞，虽然在统计比例中漏洞条数占比不大（2%），但实际影响却十分广泛，成为恶意代码攻击利用的重要风险点。</p>
+<p><img src="http://oa8y5guqs.bkt.clouddn.com/%E5%9B%BE%E7%89%87%201.png" alt="img"></p>
+<h3 id="0x03-目前IoT设备安全测试的难点"><a href="#0x03-目前IoT设备安全测试的难点" class="headerlink" title="# 0x03 目前IoT设备安全测试的难点"></a># 0x03 目前IoT设备安全测试的难点</h3><ol>
+<li>物联网设备数量和数据流量大，测试点不完全</li>
+<li>没有统一相关漏洞管理等平台，不方便漏洞跟踪</li>
+<li>测试任务量与人员数量不匹配</li>
+<li>目前市面暂时无法找到针对IoT设备的自动化安全测试工具</li>
+</ol>
+<h3 id="0x04-以机顶盒为例的IoT设备解决方案"><a href="#0x04-以机顶盒为例的IoT设备解决方案" class="headerlink" title="# 0x04 以机顶盒为例的IoT设备解决方案"></a># 0x04 以机顶盒为例的IoT设备解决方案</h3><p>结合目前IoT设备安全测试的难点及伏特漏洞扫描云平台本身的产品优势，目前提出了一个关于以机顶盒为例的IoT设备解决方案。</p>
+<p>伏特漏洞扫描产品的一大技术创新是被动扫描，该功能主要优势有：</p>
+<ul>
+<li>无人员干预，全局持续化监控业务线, 弥补基于爬虫的主动扫描短板, 使监控范围更加完整。</li>
+<li>全流量监控，解决了代理流量身份鉴别、权限划分、目标域限制等问题导致的相关功能无法测试难点</li>
+<li>测试点更加全面，支持OWASP TOP 10、系统服务漏洞、框架漏洞、常见服务弱密码检测、通用CSM漏洞插件等</li>
+</ul>
+<p>根据机顶盒相关网络架构，及伏特漏洞扫描器本身技术特点，采用如下接入方式：</p>
+<p><img src="http://blog.w2n1ck.com/%E6%B5%81%E7%A8%8B%E5%9B%BE1.png" alt="img"></p>
+<p>具体步骤如下：</p>
+<ol>
+<li>测试人员按照正常功能测试，操作机顶盒</li>
+<li>机顶盒连接端口镜像交换机，流量走正常业务流程的同时被镜像到监控平台</li>
+<li>流量监控平台监听所有进入的流量，并存储到redis扫描任务队列</li>
+<li>redis扫描任务队列分发到后端伏特分布式扫描平台</li>
+<li>后端进行全流量漏洞扫描</li>
+</ol>
+<h3 id="0x04-技术实现部分代码"><a href="#0x04-技术实现部分代码" class="headerlink" title="0x04 技术实现部分代码"></a>0x04 技术实现部分代码</h3><p>Redis客户端：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">class redis():</div><div class="line">    def __init__(self,host, port, password=None, count=1):</div><div class="line">        ...</div><div class="line"></div><div class="line">    def rpush(self, key, value, expire=None):</div><div class="line">        self.r.rpush(key, value)</div><div class="line">        if isinstance(expire, int):</div><div class="line">            self.r.expire(key,expire)</div><div class="line"></div><div class="line">    def rpop(self, key):</div><div class="line">        n = 0</div><div class="line">        KV = &#123;&#125;</div><div class="line">        list = []</div><div class="line">        result = self.r.rpop(key)</div><div class="line">        if result == None:</div><div class="line">            return None</div><div class="line">        else:</div><div class="line">            return result</div></pre></td></tr></table></figure>
+<p>流量监控平台使用python的libpcap模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">// 设置监听的流量规则</div><div class="line">pc = pcap.pcap()</div><div class="line">pc.setfilter(&quot;tcp&quot;)</div><div class="line">tracker=&#123;&#125;</div></pre></td></tr></table></figure>
+<p>捕捉流量包（包括接受和发送的所有流量）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">for ts, pkt in pc:</div><div class="line">    ...</div><div class="line">    ltuple=(src,tcp.sport,dst,tcp.dport)</div><div class="line">    rtuple=(dst,tcp.dport,src,tcp.sport)</div><div class="line">    try:</div><div class="line">        tracker[ltuple]</div><div class="line">        try:</div><div class="line">            tracker[ltuple][&apos;out&apos;]+=data</div><div class="line">        except KeyError:</div><div class="line">            tracker[ltuple][&apos;out&apos;]=data</div><div class="line">        tracker[ltuple][&apos;lastseen&apos;]=time.time()</div><div class="line">    except KeyError:</div><div class="line">        ...</div><div class="line">        tracker[rtuple][&apos;lastseen&apos;]=time.time()</div></pre></td></tr></table></figure>
+<p>对捕捉的流量进行处理、提取</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">for connection in tracker.keys():</div><div class="line">       # print tracker[connection]</div><div class="line">        if time.time()-tracker[connection][&apos;lastseen&apos;]&gt;600:</div><div class="line">            del tracker[connection]</div><div class="line">            continue</div><div class="line">        ...</div><div class="line">        try:</div><div class="line">            if tracker[connection][&apos;in&apos;] and tracker[connection][&apos;out&apos;]:</div><div class="line">                data=tracker[connection][&apos;in&apos;]</div><div class="line">                data+=tracker[connection][&apos;out&apos;]</div><div class="line">                uri=re.search(&quot;(GET|POST) ([^\r\n]*)( HTTP/)&quot;,data,re.IGNORECASE)</div><div class="line">		postreg = re.compile(&quot;\r\n\r\n(.*?)HTTP/1&quot;,re.S)</div><div class="line">		postdata = re.findall(postreg,data)</div><div class="line">                                </div><div class="line">                webserver = re.search(&quot;server: ([^\r\n]*)&quot;,data,re.IGNORECASE)</div><div class="line">                ...</div><div class="line">                if uri:</div><div class="line">                     for i in uri.string.split(&apos;\r\n&apos;):</div><div class="line">                        if i.startswith(&apos;Cookie:&apos;):</div><div class="line">                            cookie = i</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -662,7 +698,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">86</span>
+                <span class="site-state-item-count">87</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -784,7 +820,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text"># 前言</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text"># 前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x01-物联网安全需求"><span class="nav-number">2.</span> <span class="nav-text"># 0x01 物联网安全需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-IOT设备通用漏洞按风险技术类型分布"><span class="nav-number">3.</span> <span class="nav-text"># 0x02 IOT设备通用漏洞按风险技术类型分布</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x03-目前IoT设备安全测试的难点"><span class="nav-number">4.</span> <span class="nav-text"># 0x03 目前IoT设备安全测试的难点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x04-以机顶盒为例的IoT设备解决方案"><span class="nav-number">5.</span> <span class="nav-text"># 0x04 以机顶盒为例的IoT设备解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x04-技术实现部分代码"><span class="nav-number">6.</span> <span class="nav-text">0x04 技术实现部分代码</span></a></li></ol></div>
             
 
           </div>
