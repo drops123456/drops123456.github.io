@@ -120,14 +120,14 @@
 <meta property="og:site_name" content="瓦都剋">
 <meta property="og:description" content="不知道大家之前对安全脉搏打开的时候是不是感觉响应很慢，所以最近一直在排查，然后重新更换wordpress主题进行改版升级。在对安全脉搏进行维护、更新的时候，偶然之间发现了脉搏上的几个漏洞，在此记录下。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/secpulse_ssrf1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/secpulse_ssrf2.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/%E6%B2%A1%E6%AF%9B%E7%97%85.jpg">
-<meta property="og:updated_time" content="2017-08-07T13:51:28.000Z">
+<meta property="og:image" content="http://blog.w2n1ck.com/secpulse_ssrf1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/secpulse_ssrf2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/%E6%B2%A1%E6%AF%9B%E7%97%85.jpg">
+<meta property="og:updated_time" content="2018-12-14T05:56:18.344Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="安全脉搏漏洞挖掘小记">
 <meta name="twitter:description" content="不知道大家之前对安全脉搏打开的时候是不是感觉响应很慢，所以最近一直在排查，然后重新更换wordpress主题进行改版升级。在对安全脉搏进行维护、更新的时候，偶然之间发现了脉搏上的几个漏洞，在此记录下。">
-<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/secpulse_ssrf1.png">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/secpulse_ssrf1.png">
 
 
 
@@ -464,7 +464,7 @@
         <p>不知道大家之前对安全脉搏打开的时候是不是感觉响应很慢，所以最近一直在排查，然后重新更换wordpress主题进行改版升级。在对安全脉搏进行维护、更新的时候，偶然之间发现了脉搏上的几个漏洞，在此记录下。<br><a id="more"></a></p>
 <p>首先，打开主页。</p>
 <p>打开某个网站不知道大家有什么习惯，但是作为一个”程序员”的我来说(伪程序员,我最喜欢有人叫我程序员了)，<em>F12</em>没关过。[斜眼笑]</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/secpulse_ssrf1.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/secpulse_ssrf1.png" alt=""></p>
 <p>不知道大家看这个图之后敏不敏感，反正我是挺敏感的(让我装个逼)。不知道为啥，这么久了竟然没人发现…</p>
 <p>要是你你咋玩，首先我来了个百度<code>https://www.secpulse.com/wp-content/themes/sec/timthumb.php?src=https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png&amp;h=304&amp;w=504&amp;zc=1</code></p>
 <p>惊喜来了，竟然把网站绝对路径报出来了！信息比较敏感，我就不放图了。</p>
@@ -475,9 +475,9 @@
 </ul>
 <p>然后看到<code>src</code>参数，大家会想到啥，没错！SSRF！</p>
 <p>来一波试试</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/secpulse_ssrf2.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/secpulse_ssrf2.png" alt=""></p>
 <p>没毛病！</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/%E6%B2%A1%E6%AF%9B%E7%97%85.jpg" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/%E6%B2%A1%E6%AF%9B%E7%97%85.jpg" alt=""></p>
 <p>然后我就想着 这是不是个通用漏洞啊，没准拿个CVE呢(不要揭穿我，让我意淫一会)，然后我搜了下，竟然真没有这个插件的SSRF漏洞，但是！！！悲伤的是我发现竟然不维护更新了。。。好吧。。</p>
 <p>然后搜了一下这个插件的其他漏洞，竟然发现个命令执行！嘿嘿嘿嘿嘿。。。</p>
 <p>不说了，四爷在我身边呢，我怕被打死。</p>

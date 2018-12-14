@@ -120,15 +120,15 @@
 <meta property="og:site_name" content="瓦都剋">
 <meta property="og:description" content="之前做测试的时候，发现@四爷发现个漏洞，一个非常古怪的地址，我问四爷：“你咋知道这个的？”，四爷说：“扫的啊！”，我：“。。。”，所以才有了这篇文章。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/wooyun-url.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/wooyun-xpath.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/wooyun-1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/wooyun-wooyun.png">
-<meta property="og:updated_time" content="2018-03-29T02:35:48.114Z">
+<meta property="og:image" content="http://blog.w2n1ck.com/wooyun-url.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/wooyun-xpath.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/wooyun-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/wooyun-wooyun.png">
+<meta property="og:updated_time" content="2018-12-14T05:52:18.843Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Wooyun漏洞地址url爬虫及数据处理">
 <meta name="twitter:description" content="之前做测试的时候，发现@四爷发现个漏洞，一个非常古怪的地址，我问四爷：“你咋知道这个的？”，四爷说：“扫的啊！”，我：“。。。”，所以才有了这篇文章。">
-<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/wooyun-url.png">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/wooyun-url.png">
 
 
 
@@ -482,9 +482,9 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">headers = &#123;</div><div class="line">&quot;User-Agent&quot;: random.choice(User-Agent),</div><div class="line">&quot;Accept&quot;: &quot;text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&quot;,</div><div class="line">&quot;Accept-Language&quot;: &quot;zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3&quot;,</div><div class="line">&quot;Upgrade-Insecure-Requests&quot;: &quot;1&quot;,</div><div class="line">&quot;Content-Type&quot;: &quot;application/x-www-form-urlencoded&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>协程部分：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">from gevent import monkey, pool</div><div class="line">monkey.patch_all()</div><div class="line">reload(sys)</div><div class="line">sys.setdefaultencoding(&apos;utf8&apos;)</div><div class="line"></div><div class="line">p = pool.Pool(150)</div><div class="line">for i in range(NUM):</div><div class="line">    _url = url + str(i)</div><div class="line">    jobs.append(p.spawn(getURL, _url))</div><div class="line">gevent.joinall(jobs)</div></pre></td></tr></table></figure>
-<p>网站<code>bug_no</code>总共有230305个，获取到了8万多个存在漏洞的地址。<br><img src="http://oa8y5guqs.bkt.clouddn.com/wooyun-url.png" alt=""></p>
+<p>网站<code>bug_no</code>总共有230305个，获取到了8万多个存在漏洞的地址。<br><img src="http://blog.w2n1ck.com/wooyun-url.png" alt=""></p>
 <h1 id="0x01-下载数据"><a href="#0x01-下载数据" class="headerlink" title="0x01 下载数据"></a>0x01 下载数据</h1><p>下载数据是爬虫的重点，本着<code>只多不少</code>的原则，本来考虑到大的数据量，效率问题，使用正则表达式来进行处理，但是发现获取的脏数据太多，对后面的数据处理造成了很多无法预知的麻烦，所以最终选择的方案是使用<code>xpath+re</code>来进行数据处理。</p>
-<p>首先，使用xpath获取漏洞细节部分（有些url在poc字段，但是考虑到大部分，所以只选择了漏洞细节字段，所以爬取的结果不是很准确。）<br><img src="http://oa8y5guqs.bkt.clouddn.com/wooyun-xpath.png" alt=""></p>
+<p>首先，使用xpath获取漏洞细节部分（有些url在poc字段，但是考虑到大部分，所以只选择了漏洞细节字段，所以爬取的结果不是很准确。）<br><img src="http://blog.w2n1ck.com/wooyun-xpath.png" alt=""></p>
 <p>xpath：<code>//*[@id=&quot;w0&quot;]/tbody/tr[21]/td/text()</code></p>
 <p>这里遇到个问题就是无论怎么复制，都无法获取到漏洞细节里面的内容，使用chrome的xpath helper也的确是能匹配到内容，实在是郁闷！最终在我@加菲猫和@nearg1e斌哥哥的帮助下找到了原因。</p>
 <p>原因在于：chrome浏览器在进行页面渲染时使用了htmlparse进行了处理，所以诸如tbody等一些标签是chrome自动加载的。</p>
@@ -494,7 +494,7 @@
 <p>导致匹配的URL什么奇葩都有，具体可看：<a href="https://github.com/w2n1ck/wooyunDic/blob/master/dicc.txt" target="_blank" rel="external">dicc.txt</a>的内容</p>
 <p>在使用这个re的时候又遇到个问题，程序跑着跑着停了，很是无语，后来经帮助调试发现是有些sql注入的URL中存在<code>(,)</code>这两个字符，导致正则死掉，为了图方便，直接做了个判断给剔除了 -。-</p>
 <p>并发部分参考如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">...</div><div class="line">def create_process(level, jobqueue, plugins, debug, headers):</div><div class="line">    for _ in range(level):</div><div class="line">        process = multiprocessing.Process(target=worker, args=(jobqueue, plugins, debug, headers))</div><div class="line">        process.daemon = True</div><div class="line">        process.start()</div><div class="line"></div><div class="line">def worker(jobqueue, plugins, debug, headers):</div><div class="line">    while True:</div><div class="line">        try:</div><div class="line">            target = jobqueue.get()</div><div class="line">                gevent_scan_task(target, plugins, debug, headers)</div><div class="line">        except Exception, e:</div><div class="line">            print traceback.format_exc()</div><div class="line">        finally:</div><div class="line">            jobqueue.task_done()</div><div class="line"></div><div class="line">def gevent_scan_task(target, plugins, debug, headers):</div><div class="line">    evt = Event()</div><div class="line">    pool = []</div><div class="line">    scanmodle = ScanModle(target, plugins, debug, headers)</div><div class="line">    pool.append(gevent.spawn(scanmodle.scan_port(evt)))</div><div class="line">    pool.append(gevent.spawn(scanmodle.scan_plugins(evt)))</div><div class="line">    for port in scanmodle.get_ports():</div><div class="line">        pool.append(gevent.spawn(scanmodle.scan_plugins(evt, port)))</div><div class="line">    gevent.joinall(pool)</div><div class="line">    save_cache(scanmodle)</div></pre></td></tr></table></figure></p>
-<p>最终获取到了153217个地址<br><img src="http://oa8y5guqs.bkt.clouddn.com/wooyun-1.png" alt=""></p>
+<p>最终获取到了153217个地址<br><img src="http://blog.w2n1ck.com/wooyun-1.png" alt=""></p>
 <h1 id="0x02-数据处理"><a href="#0x02-数据处理" class="headerlink" title="0x02 数据处理"></a>0x02 数据处理</h1><p>这部分说难也难说不难也不难，我是不太在行【捂脸】，目前我处理的步骤如下：</p>
 <ol>
 <li>去除所有中文部分（这里由于有些url中的确是带中文，所有使用换行替换）</li>
@@ -518,7 +518,7 @@
 <p>获取的数据，处理和没处理的都可以在下面地址下载（PS：处理真的只是简单处理，比如大佬们上传的webshell、一些只针对某个网站的URL筛选等都得做，，，慎用！后续还得优化，大佬们有兴趣的话带带我。 0.0）</p>
 <p><strong>未处理：</strong><a href="https://github.com/w2n1ck/wooyunDic/blob/master/dicc.txt" target="_blank" rel="external">dicc.txt</a></p>
 <p><strong>已处理：</strong><a href="https://github.com/w2n1ck/wooyunDic/blob/master/dicc8.txt" target="_blank" rel="external">dicc8.txt</a></p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/wooyun-wooyun.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/wooyun-wooyun.png" alt=""></p>
 
       
     </div>

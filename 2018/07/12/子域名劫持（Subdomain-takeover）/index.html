@@ -120,14 +120,14 @@
 <meta property="og:site_name" content="瓦都剋">
 <meta property="og:description" content="学到了一个新的漏洞类型，记录学习下 0x01 域名解析域名解析是由DNS协议完成的，包含了多种记录类型，比如：  A (Address) 记录：指明域名对应的哪个IP  NS记录：指明由哪台服务器对该域名进行解析  CNAME记录：别名记录，将一个域名映射到另一个域名的记录（比如：张晓明的小名叫小明，小名和晓明都是同一个人）   0x02 子域名劫持原理怎么简单怎么说：  比如：子域名test.e">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/takeover.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/takeover1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/takeover2.png">
-<meta property="og:updated_time" content="2018-07-20T03:18:39.696Z">
+<meta property="og:image" content="http://blog.w2n1ck.com/takeover.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/takeover1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/takeover2.png">
+<meta property="og:updated_time" content="2018-12-14T05:47:21.467Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="子域名劫持（Subdomain takeover）">
 <meta name="twitter:description" content="学到了一个新的漏洞类型，记录学习下 0x01 域名解析域名解析是由DNS协议完成的，包含了多种记录类型，比如：  A (Address) 记录：指明域名对应的哪个IP  NS记录：指明由哪台服务器对该域名进行解析  CNAME记录：别名记录，将一个域名映射到另一个域名的记录（比如：张晓明的小名叫小明，小名和晓明都是同一个人）   0x02 子域名劫持原理怎么简单怎么说：  比如：子域名test.e">
-<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/takeover.png">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/takeover.png">
 
 
 
@@ -479,11 +479,11 @@
 <h2 id="1、使用dig、nslookup"><a href="#1、使用dig、nslookup" class="headerlink" title="1、使用dig、nslookup"></a>1、使用dig、nslookup</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># nslookup ping.ubnt.com 8.8.8.8</div><div class="line">Server:     8.8.8.8</div><div class="line">Address:    8.8.8.8#53</div><div class="line"></div><div class="line">Non-authoritative answer:</div><div class="line">ping.ubnt.com   canonical name = dl.ubnt.com.</div><div class="line">dl.ubnt.com canonical name = d2cnv2pop2xy4v.cloudfront.net.</div><div class="line">Name:   d2cnv2pop2xy4v.cloudfront.net</div><div class="line">Address: 54.192.96.244</div><div class="line"></div><div class="line"># dig example.com  | grep CNAME</div><div class="line">example.com. 3027 IN  CNAME   example.cloudfront.net.</div></pre></td></tr></table></figure>
 <p>然后访问出现的CNAME记录值，如果显示不存在，那么Congratulations！</p>
 <h2 id="2、直接访问子域名"><a href="#2、直接访问子域名" class="headerlink" title="2、直接访问子域名"></a>2、直接访问子域名</h2><p>如果出现类似下面这种情况，那么Congratulations！</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/takeover.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/takeover.png" alt=""></p>
 <h2 id="3、使用工具-aquatone"><a href="#3、使用工具-aquatone" class="headerlink" title="3、使用工具-aquatone"></a>3、使用工具-aquatone</h2><p>直接使用<code>aquatone-takeover —d target.com</code>即可</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/takeover1.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/takeover1.png" alt=""></p>
 <h1 id="0x04-漏洞危害"><a href="#0x04-漏洞危害" class="headerlink" title="0x04 漏洞危害"></a>0x04 漏洞危害</h1><h2 id="1、认证劫持、钓鱼"><a href="#1、认证劫持、钓鱼" class="headerlink" title="1、认证劫持、钓鱼"></a>1、认证劫持、钓鱼</h2><p>由于攻击者已经控制了该子域名，那么攻击者就可以构造特定的页面诱导用户操作，比如登陆表单、密码表单等，由于是完全正常的可信的域名，所以很难以分别是否存在钓鱼。</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/takeover2.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/takeover2.png" alt=""></p>
 <h2 id="2、会话劫持"><a href="#2、会话劫持" class="headerlink" title="2、会话劫持"></a>2、会话劫持</h2><p>这种对那些大型企业危害巨大，现在很多网站使用单点登陆（SSO），那么Cookie就是在整个域中共享的，那么攻击者只需要接受到用户的Cookie，即可操作其他域名了。</p>
 
       

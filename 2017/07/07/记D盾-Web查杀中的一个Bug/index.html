@@ -120,12 +120,12 @@
 <meta property="og:site_name" content="瓦都剋">
 <meta property="og:description" content="公司最近的接的项目，需要对40000个webshell样本分析，由于时间紧，也没写东西，先拿D盾凑合着用一次吧，记使用过程中遇到的一个bug。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/D%E7%9B%BE-1.png">
-<meta property="og:updated_time" content="2017-07-07T02:06:50.000Z">
+<meta property="og:image" content="http://blog.w2n1ck.com/D%E7%9B%BE-1.png">
+<meta property="og:updated_time" content="2018-12-14T05:59:44.281Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记D盾_Web查杀中的一个Bug">
 <meta name="twitter:description" content="公司最近的接的项目，需要对40000个webshell样本分析，由于时间紧，也没写东西，先拿D盾凑合着用一次吧，记使用过程中遇到的一个bug。">
-<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/D%E7%9B%BE-1.png">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/D%E7%9B%BE-1.png">
 
 
 
@@ -459,7 +459,7 @@
       
 
       
-        <p>公司最近的接的项目，需要对40000个webshell样本分析，由于时间紧，也没写东西，先拿D盾凑合着用一次吧，记使用过程中遇到的一个bug。<br><a id="more"></a><br><img src="http://oa8y5guqs.bkt.clouddn.com/D%E7%9B%BE-1.png" alt=""><br>大家看这个图片</p>
+        <p>公司最近的接的项目，需要对40000个webshell样本分析，由于时间紧，也没写东西，先拿D盾凑合着用一次吧，记使用过程中遇到的一个bug。<br><a id="more"></a><br><img src="http://blog.w2n1ck.com/D%E7%9B%BE-1.png" alt=""><br>大家看这个图片</p>
 <p>D盾报的等级才是“1”，我们看下<code>file_put_contents</code>函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">file_put_contents(file,data,mode,context)</div><div class="line">file    必需。规定要写入数据的文件。如果文件不存在，则创建一个新文件。</div><div class="line">data    可选。规定要写入文件的数据。可以是字符串、数组或数据流。</div><div class="line">mode    可选。规定如何打开/写入文件。可能的值：</div><div class="line">        FILE_USE_INCLUDE_PATH</div><div class="line">        FILE_APPEND</div><div class="line">        LOCK_EX</div><div class="line">context</div><div class="line">        可选。规定文件句柄的环境。</div><div class="line">        context 是一套可以修改流的行为的选项。若使用 null，则忽略。</div></pre></td></tr></table></figure></p>
 <p>很明显，这个文件的名字要看后端怎么处理，如果是接收<code>POST</code>参数中的“K”，那就是自定义文件名了，就是不是，肯定也是会创建一个新的文件而文件内容就是<code>&lt;?php eval($_POST[k]);?&gt;</code>。</p>
 <p>这种很明显不是正常操作啊，但是D盾竟然报等级为“1”！我们使用的时候  有时候会经常忽略等级“3”以下的文件，这就很危险啊。</p>

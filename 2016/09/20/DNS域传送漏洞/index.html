@@ -120,13 +120,13 @@
 <meta property="og:site_name" content="瓦都剋">
 <meta property="og:description" content="DNS是网络中应用非常广泛的服务之一，是一种底层的网络基础服务。它的主要作用是提供域名（如baidu.com）和IP直接解析关系的功能，只要我们的网络通信中存在域名，就会涉及到DNS服务。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/DNS%E5%9F%9F%E4%BC%A0%E9%80%811.png">
-<meta property="og:image" content="http://oa8y5guqs.bkt.clouddn.com/DNS%E5%9F%9F%E4%BC%A0%E9%80%812.png">
-<meta property="og:updated_time" content="2017-07-28T12:04:36.000Z">
+<meta property="og:image" content="http://blog.w2n1ck.com/DNS%E5%9F%9F%E4%BC%A0%E9%80%811.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/DNS%E5%9F%9F%E4%BC%A0%E9%80%812.png">
+<meta property="og:updated_time" content="2018-12-14T05:58:10.646Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="DNS域传送漏洞">
 <meta name="twitter:description" content="DNS是网络中应用非常广泛的服务之一，是一种底层的网络基础服务。它的主要作用是提供域名（如baidu.com）和IP直接解析关系的功能，只要我们的网络通信中存在域名，就会涉及到DNS服务。">
-<meta name="twitter:image" content="http://oa8y5guqs.bkt.clouddn.com/DNS%E5%9F%9F%E4%BC%A0%E9%80%811.png">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/DNS%E5%9F%9F%E4%BC%A0%E9%80%811.png">
 
 
 
@@ -471,12 +471,12 @@
 <p>显示结果忽略注释部分，我们可以看到SOA记录有两个服务器：<code>f1g1ns1.dnspod.net</code> 和 <code>freednsadmin.dnspod.com</code>，然后我们就可以通过如下命令查看DNS是否存在DNS域传送漏洞，如果存在，则可以找到xxx.com的所有子域名和IP对应关系：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@user ~]# dig axfr xxx.com @f1g1ns1.dnspod.net</div><div class="line"> </div><div class="line">; &lt;&lt;&gt;&gt; DiG 9.8.2rc1-RedHat-9.8.2-0.23.rc1.el6_5.1 &lt;&lt;&gt;&gt; axfr xxx.com @f1g1ns1.dnspod.net</div><div class="line">;; global options: +cmd</div><div class="line">; Transfer failed.</div></pre></td></tr></table></figure>
 <p>以上是不能进行DNS域传送的结果，下图是可以进行DNS域传送的结果：</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/DNS%E5%9F%9F%E4%BC%A0%E9%80%811.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/DNS%E5%9F%9F%E4%BC%A0%E9%80%811.png" alt=""></p>
 <h2 id="2、Windows-nslookup命令"><a href="#2、Windows-nslookup命令" class="headerlink" title="2、Windows nslookup命令"></a>2、Windows nslookup命令</h2><p>nslookup是windows下自带的DNS测试工具，可以通过此命令进行DNS域传送测试：</p>
 <p>主要方法和dig类似，先找出ns服务器，然后执行<code>ls -d</code> 列出子域等信息（以下是不能传送的情形）：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">[c:\~]$ nslookup</div><div class="line">默认服务器:  public1.alidns.com</div><div class="line">Address:  223.5.5.5</div><div class="line"> </div><div class="line">&gt; set type=ns</div><div class="line">&gt; xxx.com</div><div class="line">非权威应答:</div><div class="line">服务器:  public1.alidns.com</div><div class="line">Address:  223.5.5.5</div><div class="line"> </div><div class="line">xxx.com    nameserver = f1g1ns1.dnspod.net</div><div class="line">xxx.com    nameserver = f1g1ns2.dnspod.net</div><div class="line">&gt; server f1g1ns2.dnspod.net</div><div class="line">默认服务器:  f1g1ns2.dnspod.net</div><div class="line">Addresses:  115.236.137.40</div><div class="line">      112.90.82.194</div><div class="line">      101.226.30.224</div><div class="line">      182.140.167.188</div><div class="line">&gt; set type=any</div><div class="line">&gt; ls -d 3mc2.com</div><div class="line">*** 无法列出域 xxx.com: BAD ERROR VALUE</div><div class="line">DNS 服务器拒绝将区域 3mc2.com 传送到您的计算机。如果这不正确，</div><div class="line">请检查 IP 地址 223.5.5.5 的 DNS 服务器上 3mc2.com 的</div><div class="line">区域传送安全设置。</div></pre></td></tr></table></figure>
 <p>正常存在DNS域传送漏洞的返回结果如下所示：</p>
-<p><img src="http://oa8y5guqs.bkt.clouddn.com/DNS%E5%9F%9F%E4%BC%A0%E9%80%812.png" alt=""></p>
+<p><img src="http://blog.w2n1ck.com/DNS%E5%9F%9F%E4%BC%A0%E9%80%812.png" alt=""></p>
 <h2 id="3、使用dnsenum-pl和Dnswalk测试："><a href="#3、使用dnsenum-pl和Dnswalk测试：" class="headerlink" title="3、使用dnsenum.pl和Dnswalk测试："></a>3、使用dnsenum.pl和Dnswalk测试：</h2><p>现成工具，不做介绍，Kali里边有</p>
 
       
