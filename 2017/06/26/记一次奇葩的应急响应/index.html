@@ -488,7 +488,7 @@
 <p>本地复现的话客户肯定不让啊，无助啊。。。</p>
 <p>没办法只能继续分析，然后事件出现了转机：</p>
 <p>服务会呈现两种情况：</p>
-<p>http资源未被占尽的情况下，可以访问静态资源以及直接查sql的路由链接，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">http://xxx/wap/test.css?v=1</div><div class="line">http://xxx/phpmyadmin/index.php</div></pre></td></tr></table></figure></p>
+<p>http资源未被占尽的情况下，可以访问静态资源以及直接查sql的路由链接，如：<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">http:<span class="regexp">//</span>xxx<span class="regexp">/wap/</span>test.css?v=<span class="number">1</span></div><div class="line">http:<span class="regexp">//</span>xxx<span class="regexp">/phpmyadmin/i</span>ndex.php</div></pre></td></tr></table></figure></p>
 <p>http资源完全被占满，导致静态资源都不能访问，查询进程会发现最大50个httpd进程全启动了。</p>
 <p><img src="http://blog.w2n1ck.com/25_3.png" alt=""></p>
 <p>由于最大只允许50个进程，所以导致这个时候静态和动态的资源都无法进行访问了。<br>检查nginx日志，log中有大量的499状态码，这个是由于客户端等待超时，关闭了链接导致。</p>
@@ -507,7 +507,7 @@
 </blockquote>
 <p><img src="http://blog.w2n1ck.com/25_7.png" alt=""></p>
 <p>于是定位到该方法的源代码函数位置，在渲染模版前，尝试<code>die(&#39;111111&#39;);</code>发现很快能显示111111</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">vi ./xxx/finduser.action.php</div><div class="line"></div><div class="line">$title = &quot;找回密码&quot;;</div><div class="line">die(&apos;1111111&apos;);</div><div class="line">include templates(&quot;mobile/user&quot;, &quot;findpassword&quot;);</div></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">vi ./xxx/finduser.action.php</div><div class="line"></div><div class="line">$title = <span class="string">"找回密码"</span>;</div><div class="line"><span class="keyword">die</span>(<span class="string">'1111111'</span>);</div><div class="line"><span class="keyword">include</span> templates(<span class="string">"mobile/user"</span>, <span class="string">"findpassword"</span>);</div></pre></td></tr></table></figure>
 <p>这说明模版在渲染前是没有问题的。</p>
 <p>上边两步也就说明了：</p>
 <ol>
@@ -522,7 +522,7 @@
 <p>重新刷新页面，并同时查看端口<code>syn_send</code>情况，果然发现了问题：</p>
 <p><code>netstat -anp|grep -i syn_sent|awk &#39;{print $5}&#39;|sort|uniq</code></p>
 <p><img src="http://blog.w2n1ck.com/25_9.png" alt=""></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">140.207.119.12:443</div><div class="line">58.246.220.31:443</div></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">140<span class="selector-class">.207</span><span class="selector-class">.119</span><span class="selector-class">.12</span><span class="selector-pseudo">:443</span></div><div class="line">58<span class="selector-class">.246</span><span class="selector-class">.220</span><span class="selector-class">.31</span><span class="selector-pseudo">:443</span></div></pre></td></tr></table></figure>
 <p>每访问加载慢的页面，就会多一个这个ip的链接出来。<br>浏览器访问后，发现ssl标识是微信的接口。</p>
 <p><img src="http://blog.w2n1ck.com/25_10.png" alt=""></p>
 <p>api.weixin.qq.com -&gt;  58.246.220.31<br>上边这个在服务器上是ping不通的。查看了下服务器上调用该api的文件。</p>
@@ -751,7 +751,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-count">72</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

