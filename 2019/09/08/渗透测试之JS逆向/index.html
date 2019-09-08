@@ -1,0 +1,1430 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="渗透测试,前端,抓包,JS加密,JS逆向," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="瓦都剋" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="前言现在前端开发为了提高爬虫的难度及加强安全性，都会在数据包提交前进行加密，最典型的就是传参加密，相信大家在测试的时候都遇到过，那么我们在抓取数据包并修改之后，修改之后的参数无法通过后端程序数据完整性的校验，就无法进行进一步测试。如果我们逆向解析出加密的过程，就可以模拟出相同的密文，通过后端接口的校验。  最近由于工作需要，在搜索资料的时候，学到了很多爬虫大佬们的关于JS逆向、APK逆向、代码分析">
+<meta name="keywords" content="渗透测试,前端,抓包,JS加密,JS逆向">
+<meta property="og:type" content="article">
+<meta property="og:title" content="渗透测试 | 突破前端JS加密限制">
+<meta property="og:url" content="http://byd.dropsec.xyz/2019/09/08/渗透测试之JS逆向/index.html">
+<meta property="og:site_name" content="瓦都剋">
+<meta property="og:description" content="前言现在前端开发为了提高爬虫的难度及加强安全性，都会在数据包提交前进行加密，最典型的就是传参加密，相信大家在测试的时候都遇到过，那么我们在抓取数据包并修改之后，修改之后的参数无法通过后端程序数据完整性的校验，就无法进行进一步测试。如果我们逆向解析出加密的过程，就可以模拟出相同的密文，通过后端接口的校验。  最近由于工作需要，在搜索资料的时候，学到了很多爬虫大佬们的关于JS逆向、APK逆向、代码分析">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-burp-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-burp-2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-chrome-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-chrome-token.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-chrome-debug.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-token-python.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-res-iplist.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-iplist-code.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-iplist-debug.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-run-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-base64-debug.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-run-2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-run-debug.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/js-run-reslut.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/w2n1ck-code.gif">
+<meta property="og:updated_time" content="2019-09-08T08:53:32.531Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="渗透测试 | 突破前端JS加密限制">
+<meta name="twitter:description" content="前言现在前端开发为了提高爬虫的难度及加强安全性，都会在数据包提交前进行加密，最典型的就是传参加密，相信大家在测试的时候都遇到过，那么我们在抓取数据包并修改之后，修改之后的参数无法通过后端程序数据完整性的校验，就无法进行进一步测试。如果我们逆向解析出加密的过程，就可以模拟出相同的密文，通过后端接口的校验。  最近由于工作需要，在搜索资料的时候，学到了很多爬虫大佬们的关于JS逆向、APK逆向、代码分析">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/js-burp-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2019/09/08/渗透测试之JS逆向/"/>
+
+
+
+
+
+  <title>渗透测试 | 突破前端JS加密限制 | 瓦都剋</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">瓦都剋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-wx">
+          <a href="/wx" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            微信公众号
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2019/09/08/渗透测试之JS逆向/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="瓦都剋">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓦都剋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">渗透测试 | 突破前端JS加密限制</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-08T13:05:34+08:00">
+                2019-09-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/08/渗透测试之JS逆向/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/09/08/渗透测试之JS逆向/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2,730
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>现在前端开发为了提高爬虫的难度及加强安全性，都会在数据包提交前进行加密，最典型的就是传参加密，相信大家在测试的时候都遇到过，那么我们在抓取数据包并修改之后，修改之后的参数无法通过后端程序数据完整性的校验，就无法进行进一步测试。如果我们逆向解析出加密的过程，就可以模拟出相同的密文，通过后端接口的校验。</p>
+<blockquote>
+<p>最近由于工作需要，在搜索资料的时候，学到了很多爬虫大佬们的关于JS逆向、APK逆向、代码分析等方面的经验和技巧，后续会分部分记录并总结下来。</p>
+</blockquote>
+<h2 id="0x01-常见加密算法"><a href="#0x01-常见加密算法" class="headerlink" title="0x01 常见加密算法"></a>0x01 常见加密算法</h2><p>比较简单的base64、hex等这些编码就不再说了。</p>
+<h3 id="1-1-对称加密（加解密的密钥相同）"><a href="#1-1-对称加密（加解密的密钥相同）" class="headerlink" title="1.1 对称加密（加解密的密钥相同）"></a>1.1 对称加密（加解密的密钥相同）</h3><ul>
+<li>常用算法：DES、DES3、AES</li>
+<li>根据密钥长度不同又分为：AES-128、AES-192、AES-256</li>
+<li>其中AES-192和AES-256在Java中使用需获取无政策限制权限文件</li>
+<li>加密/解密使用相同的密钥</li>
+<li>加密和解密的过程是可逆的</li>
+</ul>
+<h3 id="1-2-非对称加密（加解密密钥为公钥和私钥）"><a href="#1-2-非对称加密（加解密密钥为公钥和私钥）" class="headerlink" title="1.2 非对称加密（加解密密钥为公钥和私钥）"></a>1.2 非对称加密（加解密密钥为公钥和私钥）</h3><ul>
+<li>常用算法：RSA</li>
+<li>使用公钥加密，使用私钥解密</li>
+<li>公钥是公开的，私钥保密</li>
+<li>加密处理安全，但是性能极差，单次加密长度有限制</li>
+<li>RSA既可用于数据交换，也可用于数据校验</li>
+<li>数据校验通常结合消息摘要算法 MD5withRSA 等</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">两种加密算法常见结合套路：</div><div class="line"><span class="number">1</span>、随机生成密钥</div><div class="line"><span class="number">2</span>、密钥用于AES/DES/<span class="number">3</span>DES加密数据</div><div class="line"><span class="number">3</span>、RSA对密钥加密</div><div class="line"><span class="number">4</span>、提交加密后的密钥和加密后的数据给服务器</div></pre></td></tr></table></figure>
+<h3 id="1-3-信息摘要算法-签名算法"><a href="#1-3-信息摘要算法-签名算法" class="headerlink" title="1.3 信息摘要算法/签名算法"></a>1.3 信息摘要算法/签名算法</h3><ul>
+<li>常用算法：MD5、HMAC（HmacMD5、HmacSHA1、HmacSHA256）、SHA（SHA1、SHA256、SHA512）</li>
+<li>不管明文多长，散列后的密文定长</li>
+<li>明文不一样，散列后结果一定不一样</li>
+<li>散列后的密文不可逆</li>
+<li>一般用于校验数据完整性、签名 sign</li>
+<li>由于密文不可逆，所以后台无法还原，也就是说他要验证，会在后台以跟前台一样的方式去重新签名一遍。也就是说他会把源数据和签名后的值一起提交到后台。所以我们要保证在签名时候的数据和提交上去的源数据一致，这种算法特喜欢在内部加入时间戳</li>
+</ul>
+<h2 id="0x02-JS逆向流程"><a href="#0x02-JS逆向流程" class="headerlink" title="0x02 JS逆向流程"></a>0x02 JS逆向流程</h2><h5 id="以登录为例的基本流程："><a href="#以登录为例的基本流程：" class="headerlink" title="以登录为例的基本流程："></a><strong>以登录为例的基本流程：</strong></h5><ol>
+<li>如果网页有跳转，必须勾选<code>preserve log</code>（F12-Network）防止丢包</li>
+<li>看一下有没有框架，右键查看框架源代码(弹出式登陆界面)</li>
+<li>登陆尽量使用错误密码，防止跳转</li>
+<li>查看关键登陆包，分析哪些参数是加密的</li>
+<li>使用别的浏览器分析哪些参数是固定的值</li>
+<li>初步猜测加密的方法</li>
+<li>搜索<ul>
+<li>直接搜索参数，比如：<code>pwd=</code>，<code>pwd =</code>，<code>pwd:</code>，<code>pwd :</code></li>
+<li>密码框地方右键 检查 查看 id name type</li>
+</ul>
+</li>
+<li>找到加密的地方(重点)</li>
+<li>进行代码调试</li>
+<li>找出所有的加密代码<ul>
+<li>从最后一步开始写起，缺啥找啥</li>
+<li>如果找的是函数的话，search 要带上 function xxx</li>
+<li>如果看到加密的地方有个类，并且之后是用 prototype 把方法加在原生对象上的话，要把 所有加在原生对象上的方法都找出来</li>
+<li>函数找多了没关系，只要不报错不会影响结果，但是不能找少了</li>
+</ul>
+</li>
+</ol>
+<h2 id="0x03-实例操作"><a href="#0x03-实例操作" class="headerlink" title="0x03 实例操作"></a>0x03 实例操作</h2><p>打开网站，抓包</p>
+<p><img src="http://blog.w2n1ck.com/js-burp-1.png" alt="image.png"></p>
+<p>修改个数据，比如修改num为1000</p>
+<p><img src="http://blog.w2n1ck.com/js-burp-2.png" alt="image.png"></p>
+<blockquote>
+<p>有些杠精该说了：我渗透测试改这有毛用。</p>
+<p>是没用，只是以此为例。。。</p>
+</blockquote>
+<p>可以看到，修改过参数数据后，后端数据校验之后不合法，所以没有返回数据。</p>
+<p>打开测试网站 -&gt; F12控制台 -&gt; 切换至 XHR</p>
+<p><img src="http://blog.w2n1ck.com/js-chrome-1.png" alt=""></p>
+<p><strong>这里我们看下需要做的有什么？</strong></p>
+<ol>
+<li>请求中有token（t明显是时间戳），token和数据不匹配后端不返回数据</li>
+<li>返回的数据是加密的，需要解密</li>
+</ol>
+<p><strong>接下来我们就定位具体的加密函数和解密函数。</strong></p>
+<p>按照上面提到的流程步骤</p>
+<p>打开控制台 -&gt; source -&gt;搜索</p>
+<p>搜索加密参数名 token</p>
+<p><img src="http://blog.w2n1ck.com/js-chrome-token.png" alt=""></p>
+<p>根据搜索结果的文件名判断，基本上就是第二个文件，点击打开</p>
+<p>token的生成代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> token = md5(<span class="built_in">String</span>(page) + <span class="built_in">String</span>(num) + <span class="built_in">String</span>(timestamp));</div></pre></td></tr></table></figure>
+<p>设置断点，刷新</p>
+<p><img src="http://blog.w2n1ck.com/js-chrome-debug.png" alt=""></p>
+<p>成功进入断点，没毛病了</p>
+<p>根据加密函数，编写脚本</p>
+<p><img src="http://blog.w2n1ck.com/js-token-python.png" alt=""></p>
+<p>可以看到，生成的token和URL中的一致，至此，加密部分完成。</p>
+<p>解密部分同样的道理，搜索返回包中的参数，直接搜索list发现有点多，不太好观察，还有一种方法</p>
+<p><img src="http://blog.w2n1ck.com/js-res-iplist.png" alt=""></p>
+<p>可以看到数据部分html的id为<code>ip-list</code>，再次搜索</p>
+<p><img src="http://blog.w2n1ck.com/js-iplist-code.png" alt=""></p>
+<p>成功找到解密数据包的代码</p>
+<p>设置断点，进一步确认</p>
+<p><img src="http://blog.w2n1ck.com/js-iplist-debug.png" alt=""></p>
+<p>没毛病，可以看到<code>decode_str</code>后就开始出现我们需要的明文数据了，所以这里的 decode_str 就是我们要的解密方法。剩下就是分析代码，编写解密脚本了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">decode_str</span>(<span class="params">scHZjLUh1</span>) </span>&#123;</div><div class="line">    scHZjLUh1 = Base64[<span class="string">"\x64\x65\x63\x6f\x64\x65"</span>](scHZjLUh1);</div><div class="line">    key = <span class="string">'\x6e\x79\x6c\x6f\x6e\x65\x72'</span>;</div><div class="line">    len = key[<span class="string">"\x6c\x65\x6e\x67\x74\x68"</span>];</div><div class="line">    code = <span class="string">''</span>;</div><div class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; scHZjLUh1[<span class="string">"\x6c\x65\x6e\x67\x74\x68"</span>]; i++) &#123;</div><div class="line">        <span class="keyword">var</span> coeFYlqUm2 = i % len;</div><div class="line">        code += <span class="built_in">window</span>[<span class="string">"\x53\x74\x72\x69\x6e\x67"</span>][<span class="string">"\x66\x72\x6f\x6d\x43\x68\x61\x72\x43\x6f\x64\x65"</span>](scHZjLUh1[<span class="string">"\x63\x68\x61\x72\x43\x6f\x64\x65\x41\x74"</span>](i) ^ key[<span class="string">"\x63\x68\x61\x72\x43\x6f\x64\x65\x41\x74"</span>](coeFYlqUm2))</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> Base64[<span class="string">"\x64\x65\x63\x6f\x64\x65"</span>](code)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>先运行下看看</p>
+<p><img src="http://blog.w2n1ck.com/js-run-1.png" alt=""></p>
+<p>报错，提示<code>Base64</code>未定义，设置断点，找到<code>Base64</code>的具体代码</p>
+<p><img src="http://blog.w2n1ck.com/js-base64-debug.png" alt=""></p>
+<p>复制粘贴进代码，再次运行</p>
+<p><img src="http://blog.w2n1ck.com/js-run-2.png" alt=""></p>
+<p>艹，提示Windows未定义，根据流程，缺啥补啥，debug，找对应的值</p>
+<p><img src="http://blog.w2n1ck.com/js-run-debug.png" alt=""></p>
+<p>可以看到分别对应的是<code>String</code>和<code>fromCharCode</code></p>
+<p>那就是调用了<code>String.fromCharCode</code>方法了，替换掉，再次运行</p>
+<p><img src="http://blog.w2n1ck.com/js-run-reslut.png" alt=""></p>
+<p>bingo～</p>
+<p>成功解密获取到明文数据。</p>
+<h2 id="0x04-Python实现加密方法合集"><a href="#0x04-Python实现加密方法合集" class="headerlink" title="0x04 Python实现加密方法合集"></a>0x04 Python实现加密方法合集</h2><p>关于上述第一部分的常见加密算法，GitHub有对应的仓库，直接可以用的</p>
+<p>GitHub：<a href="https://github.com/dhfjcuff/R-A-M-D-D3-S-M-H/" target="_blank" rel="external">https://github.com/dhfjcuff/R-A-M-D-D3-S-M-H/</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div><div class="line">228</div><div class="line">229</div><div class="line">230</div><div class="line">231</div><div class="line">232</div><div class="line">233</div><div class="line">234</div><div class="line">235</div><div class="line">236</div><div class="line">237</div><div class="line">238</div><div class="line">239</div><div class="line">240</div><div class="line">241</div><div class="line">242</div><div class="line">243</div><div class="line">244</div><div class="line">245</div><div class="line">246</div><div class="line">247</div><div class="line">248</div><div class="line">249</div><div class="line">250</div><div class="line">251</div><div class="line">252</div><div class="line">253</div><div class="line">254</div><div class="line">255</div><div class="line">256</div><div class="line">257</div><div class="line">258</div><div class="line">259</div><div class="line">260</div><div class="line">261</div><div class="line">262</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># -*- coding：utf-8 -*-</span></div><div class="line"><span class="keyword">import</span> base64</div><div class="line"><span class="keyword">import</span> rsa</div><div class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</div><div class="line"><span class="keyword">from</span> Crypto.PublicKey <span class="keyword">import</span> RSA</div><div class="line"><span class="keyword">from</span> pyDes <span class="keyword">import</span> des, CBC, PAD_PKCS5</div><div class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> DES3</div><div class="line"><span class="keyword">import</span> hashlib</div><div class="line"><span class="keyword">import</span> hmac</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">USE_AES</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line"><span class="string">    AES</span></div><div class="line"><span class="string">    除了MODE_SIV模式key长度为：32, 48, or 64,</span></div><div class="line"><span class="string">    其余key长度为16, 24 or 32</span></div><div class="line"><span class="string">    详细见AES内部文档</span></div><div class="line"><span class="string">    CBC模式传入iv参数</span></div><div class="line"><span class="string">    本例使用常用的ECB模式</span></div><div class="line"><span class="string">    """</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, key)</span>:</span></div><div class="line">        <span class="keyword">if</span> len(key) &gt; <span class="number">32</span>:</div><div class="line">            key = key[:<span class="number">32</span>]</div><div class="line">        self.key = self.to_16(key)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">to_16</span><span class="params">(self, key)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line"><span class="string">        转为16倍数的bytes数据</span></div><div class="line"><span class="string">        :param key:</span></div><div class="line"><span class="string">        :return:</span></div><div class="line"><span class="string">        """</span></div><div class="line">        key = bytes(key, encoding=<span class="string">"utf8"</span>)</div><div class="line">        <span class="keyword">while</span> len(key) % <span class="number">16</span> != <span class="number">0</span>:</div><div class="line">            key += <span class="string">b'\0'</span></div><div class="line">        <span class="keyword">return</span> key  <span class="comment"># 返回bytes</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">aes</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> AES.new(self.key, AES.MODE_ECB) <span class="comment"># 初始化加密器</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">encrypt</span><span class="params">(self, text)</span>:</span></div><div class="line">        aes = self.aes()</div><div class="line">        <span class="keyword">return</span> str(base64.encodebytes(aes.encrypt(self.to_16(text))),</div><div class="line">                   encoding=<span class="string">'utf8'</span>).replace(<span class="string">'\n'</span>, <span class="string">''</span>)  <span class="comment"># 加密</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decodebytes</span><span class="params">(self, text)</span>:</span></div><div class="line">        aes = self.aes()</div><div class="line">        <span class="keyword">return</span> str(aes.decrypt(base64.decodebytes(bytes(</div><div class="line">            text, encoding=<span class="string">'utf8'</span>))).rstrip(<span class="string">b'\0'</span>).decode(<span class="string">"utf8"</span>))  <span class="comment"># 解密</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">USE_RSA</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line"><span class="string">    生成密钥可保存.pem格式文件</span></div><div class="line"><span class="string">    1024位的证书，加密时最大支持117个字节，解密时为128；</span></div><div class="line"><span class="string">    2048位的证书，加密时最大支持245个字节，解密时为256。</span></div><div class="line"><span class="string">    加密大文件时需要先用AES或者DES加密，再用RSA加密密钥，详细见文档</span></div><div class="line"><span class="string">    文档:https://stuvel.eu/files/python-rsa-doc/usage.html#generating-keys</span></div><div class="line"><span class="string">    """</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, number=<span class="number">1024</span>)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line"><span class="string">        :param number: 公钥、私钥</span></div><div class="line"><span class="string">        """</span></div><div class="line">        self.pubkey, self.privkey = rsa.newkeys(number)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">rsaEncrypt</span><span class="params">(self, text)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line"><span class="string">        :param test: str</span></div><div class="line"><span class="string">        :return: bytes</span></div><div class="line"><span class="string">        """</span></div><div class="line">        content = text.encode(<span class="string">'utf-8'</span>)</div><div class="line">        crypto = rsa.encrypt(content, self.pubkey)</div><div class="line">        <span class="keyword">return</span> crypto</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">rsaDecrypt</span><span class="params">(self, text)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line"><span class="string">        :param text:bytes </span></div><div class="line"><span class="string">        :return: str</span></div><div class="line"><span class="string">        """</span></div><div class="line">        content = rsa.decrypt(text, self.privkey)</div><div class="line">        con = content.decode(<span class="string">'utf-8'</span>)</div><div class="line">        <span class="keyword">return</span> con</div><div class="line">        </div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">savePem</span><span class="params">(self, path_name, text)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line"><span class="string">        :param path_name: 保存路径</span></div><div class="line"><span class="string">        :param text: str</span></div><div class="line"><span class="string">        :return:bytes</span></div><div class="line"><span class="string">        """</span></div><div class="line">        <span class="keyword">if</span> <span class="string">"PEM"</span> <span class="keyword">in</span> path_name.upper():</div><div class="line">            path_name = path_name[:<span class="number">-4</span>]</div><div class="line">        <span class="keyword">with</span> open(<span class="string">'&#123;&#125;.pem'</span>.format(path_name), <span class="string">'bw'</span>) <span class="keyword">as</span> f:</div><div class="line">            f.write(text.save_pkcs1())</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">readPem</span><span class="params">(self, path_name, key_type)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line"><span class="string">        :param path_name: 密钥文件</span></div><div class="line"><span class="string">        :param key_type:类型 </span></div><div class="line"><span class="string">        :return: </span></div><div class="line"><span class="string">        """</span></div><div class="line">        <span class="keyword">if</span> <span class="string">'pubkey'</span> <span class="keyword">in</span> key_type:</div><div class="line">            self.pubkey = rsa.PublicKey.load_pkcs1(path_name)</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            self.privkey = rsa.PublicKey.load_pkcs1(path_name)</div><div class="line">        <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">sign</span><span class="params">(self, message, priv_key=None, hash_method=<span class="string">'SHA-1'</span>)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line"><span class="string">        生成明文的哈希签名以便还原后对照</span></div><div class="line"><span class="string">        :param message: str</span></div><div class="line"><span class="string">        :param priv_key:</span></div><div class="line"><span class="string">        :param hash_method: 哈希的模式</span></div><div class="line"><span class="string">        :return:</span></div><div class="line"><span class="string">        """</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">None</span> == priv_key:</div><div class="line">            priv_key = self.privkey</div><div class="line">        <span class="keyword">return</span> rsa.sign(message.encode(), priv_key, hash_method)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">checkSign</span><span class="params">(self, mess, result, pubkey=None)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line"><span class="string">        验证签名：传入解密后明文、签名、公钥，验证成功返回哈希方法，失败则报错</span></div><div class="line"><span class="string">        :param mess: str</span></div><div class="line"><span class="string">        :param result: bytes</span></div><div class="line"><span class="string">        :param pubkey: </span></div><div class="line"><span class="string">        :return: str</span></div><div class="line"><span class="string">        """</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">None</span> == pubkey:</div><div class="line">            pubkey = self.privkey</div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            result = rsa.verify(mess, result, pubkey)</div><div class="line">            <span class="keyword">return</span> result</div><div class="line">        <span class="keyword">except</span>:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">False</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">USE_DES</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line"><span class="string">    des(key,[mode], [IV], [pad], [pad mode])</span></div><div class="line"><span class="string">    key:必须正好8字节</span></div><div class="line"><span class="string">    mode（模式）：ECB、CBC</span></div><div class="line"><span class="string">    iv:CBC模式中必须提供长8字节</span></div><div class="line"><span class="string">    pad:填充字符</span></div><div class="line"><span class="string">    padmode:加密填充模式PAD_NORMAL or PAD_PKCS5</span></div><div class="line"><span class="string">    """</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, key, iv)</span>:</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> isinstance(key, bytes):</div><div class="line">            key = bytes(key, encoding=<span class="string">"utf8"</span>)</div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> isinstance(iv, bytes):</div><div class="line">            iv = bytes(iv, encoding=<span class="string">"utf8"</span>)</div><div class="line">        self.key = key</div><div class="line">        self.iv = iv</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">encrypt</span><span class="params">(self, text)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line"><span class="string">        DES 加密</span></div><div class="line"><span class="string">        :param text: 原始字符串</span></div><div class="line"><span class="string">        :return: 加密后字符串，bytes</span></div><div class="line"><span class="string">        """</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> isinstance(text, bytes):</div><div class="line">            text = bytes(text, <span class="string">"utf-8"</span>)</div><div class="line">        secret_key = self.key</div><div class="line">        iv = self.iv</div><div class="line">        k = des(secret_key, CBC, iv, pad=<span class="keyword">None</span>, padmode=PAD_PKCS5)</div><div class="line">        en = k.encrypt(text, padmode=PAD_PKCS5)</div><div class="line">        <span class="keyword">return</span> en</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">descrypt</span><span class="params">(self, text)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line"><span class="string">        DES 解密</span></div><div class="line"><span class="string">        :param text: 加密后的字符串，bytes</span></div><div class="line"><span class="string">        :return:  解密后的字符串</span></div><div class="line"><span class="string">        """</span></div><div class="line">        secret_key = self.key</div><div class="line">        iv = self.iv</div><div class="line">        k = des(secret_key, CBC, iv, pad=<span class="keyword">None</span>, padmode=PAD_PKCS5)</div><div class="line">        de = k.decrypt(text, padmode=PAD_PKCS5)</div><div class="line">        <span class="keyword">return</span> de.decode()</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">USE_DES3</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line"><span class="string">    new(key, mode, *args, **kwargs)</span></div><div class="line"><span class="string">    key:必须8bytes倍数介于16-24</span></div><div class="line"><span class="string">    mode：</span></div><div class="line"><span class="string">    iv:初始化向量适用于MODE_CBC、MODE_CFB、MODE_OFB、MODE_OPENPGP，4种模式</span></div><div class="line"><span class="string">        ``MODE_CBC``, ``MODE_CFB``, and ``MODE_OFB``长度为8bytes</span></div><div class="line"><span class="string">        ```MODE_OPENPGP```加密时8bytes解密时10bytes</span></div><div class="line"><span class="string">        未提供默认随机生成</span></div><div class="line"><span class="string">    nonce：仅在 ``MODE_EAX`` and ``MODE_CTR``模式中使用</span></div><div class="line"><span class="string">            ``MODE_EAX``建议16bytes</span></div><div class="line"><span class="string">            ``MODE_CTR``建议[0, 7]长度</span></div><div class="line"><span class="string">            未提供则随机生成</span></div><div class="line"><span class="string">    segment_size：分段大小，仅在 ``MODE_CFB``模式中使用，长度为8倍数，未指定则默认为8</span></div><div class="line"><span class="string">    mac_len： 适用``MODE_EAX``模式，身份验证标记的长度（字节），它不能超过8（默认值）</span></div><div class="line"><span class="string">    initial_value：适用```MODE_CTR```，计数器的初始值计数器块。默认为**0**。</span></div><div class="line"><span class="string">    """</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, key)</span>:</span></div><div class="line">        self.key = key</div><div class="line">        self.mode = DES3.MODE_ECB</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">encrypt</span><span class="params">(self, text)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line"><span class="string">        传入明文</span></div><div class="line"><span class="string">        :param text:bytes类型，长度是KEY的倍数</span></div><div class="line"><span class="string">        :return:</span></div><div class="line"><span class="string">        """</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> isinstance(text, bytes):</div><div class="line">            text = bytes(text, <span class="string">'utf-8'</span>)</div><div class="line">        x = len(text) % <span class="number">8</span></div><div class="line">        text = text+<span class="string">b'\0'</span>*x</div><div class="line">        cryptor = DES3.new(self.key, self.mode)</div><div class="line">        ciphertext = cryptor.encrypt(text)</div><div class="line">        <span class="keyword">return</span> ciphertext</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">decrypt</span><span class="params">(self, text)</span>:</span></div><div class="line">        cryptor = DES3.new(self.key, self.mode)</div><div class="line">        plain_text = cryptor.decrypt(text)</div><div class="line">        st = str(plain_text.decode(<span class="string">"utf-8"</span>)).rstrip(<span class="string">'\0'</span>)</div><div class="line">        <span class="keyword">return</span> st</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">USE_MD5</span><span class="params">(test)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> isinstance(test, bytes):</div><div class="line">        test = bytes(test, <span class="string">'utf-8'</span>)</div><div class="line">    m = hashlib.md5()</div><div class="line">    m.update(test)</div><div class="line">    <span class="keyword">return</span> m.hexdigest()</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">USE_HMAC</span><span class="params">(key, text)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> isinstance(key, bytes):</div><div class="line">        key = bytes(key, <span class="string">'utf-8'</span>)</div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> isinstance(text, bytes):</div><div class="line">        text = bytes(text, <span class="string">'utf-8'</span>)</div><div class="line">    h = hmac.new(key, text, digestmod=<span class="string">'MD5'</span>)</div><div class="line">    <span class="keyword">return</span> h.hexdigest()</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">USE_SHA</span><span class="params">(text)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> isinstance(text, bytes):</div><div class="line">        text = bytes(text, <span class="string">'utf-8'</span>)</div><div class="line">    sha = hashlib.sha1(text)</div><div class="line">    encrypts = sha.hexdigest()</div><div class="line">    <span class="keyword">return</span> encrypts</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    aes_test = USE_AES(<span class="string">"assssssssdfasasasasa"</span>)</div><div class="line">    a = aes_test.encrypt(<span class="string">"测试"</span>)</div><div class="line">    b = aes_test.decodebytes(a)</div><div class="line">    rsa_test = USE_RSA()</div><div class="line">    a = rsa_test.rsaEncrypt(<span class="string">"测试加密"</span>)</div><div class="line">    b = rsa_test.rsaDecrypt(a)</div><div class="line">    des_test = USE_DES(<span class="string">b"12345678"</span>, <span class="string">b"12345678"</span>)</div><div class="line">    a = des_test.encrypt(<span class="string">"测试加密"</span>)</div><div class="line">    b = des_test.descrypt(a)</div><div class="line">    des3_test = USE_DES3(<span class="string">b"123456789qazxswe"</span>)</div><div class="line">    a = des3_test.encrypt(<span class="string">"测试加密"</span>)</div><div class="line">    b = des3_test.decrypt(a)</div><div class="line">    md5_test = USE_MD5(<span class="string">"测试签名"</span>)</div><div class="line">    hmac_test = USE_HMAC(<span class="string">"123456"</span>, <span class="string">"测试"</span>)</div><div class="line">    sha_test = USE_SHA(<span class="string">"测试加密"</span>)</div></pre></td></tr></table></figure>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><p>公众号：咸鱼学python</p>
+<p>公众号：小周码字</p>
+<p><img src="http://blog.w2n1ck.com/w2n1ck-code.gif" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="瓦都剋 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="瓦都剋 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      瓦都剋
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2019/09/08/渗透测试之JS逆向/" title="渗透测试 | 突破前端JS加密限制">http://byd.dropsec.xyz/2019/09/08/渗透测试之JS逆向/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/渗透测试/" rel="tag"><i class="fa fa-tag"></i> 渗透测试</a>
+          
+            <a href="/tags/前端/" rel="tag"><i class="fa fa-tag"></i> 前端</a>
+          
+            <a href="/tags/抓包/" rel="tag"><i class="fa fa-tag"></i> 抓包</a>
+          
+            <a href="/tags/JS加密/" rel="tag"><i class="fa fa-tag"></i> JS加密</a>
+          
+            <a href="/tags/JS逆向/" rel="tag"><i class="fa fa-tag"></i> JS逆向</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/20/渗透测试之业务流量通用抓包方法/" rel="next" title="渗透测试之业务流量通用抓包方法">
+                <i class="fa fa-chevron-left"></i> 渗透测试之业务流量通用抓包方法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="瓦都剋" />
+          <p class="site-author-name" itemprop="name">瓦都剋</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">95</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">88</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/w2n1ck/activities" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://am4zing.me/" title="王小岩" target="_blank">王小岩</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yangge.me/" title="杨大成" target="_blank">杨大成</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.secpulse.com/" title="安全脉搏" target="_blank">安全脉搏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-常见加密算法"><span class="nav-number">2.</span> <span class="nav-text">0x01 常见加密算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-对称加密（加解密的密钥相同）"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 对称加密（加解密的密钥相同）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-非对称加密（加解密密钥为公钥和私钥）"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 非对称加密（加解密密钥为公钥和私钥）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-信息摘要算法-签名算法"><span class="nav-number">2.3.</span> <span class="nav-text">1.3 信息摘要算法/签名算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-JS逆向流程"><span class="nav-number">3.</span> <span class="nav-text">0x02 JS逆向流程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#以登录为例的基本流程："><span class="nav-number">3.0.0.1.</span> <span class="nav-text">以登录为例的基本流程：</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-实例操作"><span class="nav-number">4.</span> <span class="nav-text">0x03 实例操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-Python实现加密方法合集"><span class="nav-number">5.</span> <span class="nav-text">0x04 Python实现加密方法合集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">5.0.1.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">瓦都剋</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2019/09/08/渗透测试之JS逆向/';
+          this.page.identifier = '2019/09/08/渗透测试之JS逆向/';
+          this.page.title = '渗透测试 | 突破前端JS加密限制';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="20" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
