@@ -1,0 +1,1436 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="渗透测试,应急响应,企业安全建设,APP," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="瓦都剋" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="0x00 前言9月初的时候离开了工作两年的上海，又回到了杭州的一家初创的金融公司。为什么想着换工作呢，主要是想着换个角色和身份，学习下甲方的安全建设思路，从甲方角度思考安全方面的问题。由于行业特性的原因，来了之后才发现自己想法太单纯。。。水太深了。。。 入职之后，总监和我说了下目前公司大致情况，目前的主要问题就是用户、订单信息泄漏。 然后自己就有了个很年轻的想法：”那就应急响应呗“  拿到APP、">
+<meta name="keywords" content="渗透测试,应急响应,企业安全建设,APP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="企业安全建设之与灰黑产对抗的两个多月（一）">
+<meta property="og:url" content="http://byd.dropsec.xyz/2020/01/12/企业安全建设之与灰黑产对抗的两个多月（一）/index.html">
+<meta property="og:site_name" content="瓦都剋">
+<meta property="og:description" content="0x00 前言9月初的时候离开了工作两年的上海，又回到了杭州的一家初创的金融公司。为什么想着换工作呢，主要是想着换个角色和身份，学习下甲方的安全建设思路，从甲方角度思考安全方面的问题。由于行业特性的原因，来了之后才发现自己想法太单纯。。。水太深了。。。 入职之后，总监和我说了下目前公司大致情况，目前的主要问题就是用户、订单信息泄漏。 然后自己就有了个很年轻的想法：”那就应急响应呗“  拿到APP、">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-soyoung.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-burp1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-apk1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-apk2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-aes1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-aes2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-login1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-passwd1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-netstat1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-cron1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-last1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-secure1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-rc1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-ssh1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-ldpread1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-webshell1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-log1.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-log2.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/应急响应-log3.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/w2n1ck-code.gif">
+<meta property="og:updated_time" content="2020-01-16T07:15:50.115Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="企业安全建设之与灰黑产对抗的两个多月（一）">
+<meta name="twitter:description" content="0x00 前言9月初的时候离开了工作两年的上海，又回到了杭州的一家初创的金融公司。为什么想着换工作呢，主要是想着换个角色和身份，学习下甲方的安全建设思路，从甲方角度思考安全方面的问题。由于行业特性的原因，来了之后才发现自己想法太单纯。。。水太深了。。。 入职之后，总监和我说了下目前公司大致情况，目前的主要问题就是用户、订单信息泄漏。 然后自己就有了个很年轻的想法：”那就应急响应呗“  拿到APP、">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/应急响应-soyoung.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2020/01/12/企业安全建设之与灰黑产对抗的两个多月（一）/"/>
+
+
+
+
+
+  <title>企业安全建设之与灰黑产对抗的两个多月（一） | 瓦都剋</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">瓦都剋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-wx">
+          <a href="/wx" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            微信公众号
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2020/01/12/企业安全建设之与灰黑产对抗的两个多月（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="瓦都剋">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓦都剋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">企业安全建设之与灰黑产对抗的两个多月（一）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-12T15:19:35+08:00">
+                2020-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/01/12/企业安全建设之与灰黑产对抗的两个多月（一）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/01/12/企业安全建设之与灰黑产对抗的两个多月（一）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,717
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>9月初的时候离开了工作两年的上海，又回到了杭州的一家初创的金融公司。为什么想着换工作呢，主要是想着换个角色和身份，学习下甲方的安全建设思路，从甲方角度思考安全方面的问题。由于行业特性的原因，来了之后才发现自己想法太单纯。。。水太深了。。。</p>
+<p>入职之后，总监和我说了下目前公司大致情况，目前的主要问题就是用户、订单信息泄漏。</p>
+<p>然后自己就有了个很年轻的想法：”那就应急响应呗“</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-soyoung.png" alt=""></p>
+<p>拿到APP、后台地址以及服务器账号密码，信誓旦旦的准备大展身手。</p>
+<blockquote>
+<p>文章中列举的都是有些异常或者不太规范的点，未提及的暂时都可以认为相对来说是没啥问题的。</p>
+</blockquote>
+<h2 id="0x01-应急响应"><a href="#0x01-应急响应" class="headerlink" title="0x01 应急响应"></a>0x01 应急响应</h2><p>首先，分析下问题，由于总监比较忙，只给我说了用户信息及订单信息泄漏，其他就是两眼一抹黑了。</p>
+<p>这种情况下，自己就要针对实际情况进行思考了，我这里想了如下几个方面：</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-1.png" alt=""></p>
+<p>先解决下上面的问题，这样我们的脑海里就会知道该往哪查，哪些地方可能会有什么问题。</p>
+<h4 id="1-1-用户、订单信息从哪产生？"><a href="#1-1-用户、订单信息从哪产生？" class="headerlink" title="1.1 用户、订单信息从哪产生？"></a>1.1 用户、订单信息从哪产生？</h4><ul>
+<li>前台APP</li>
+</ul>
+<h4 id="1-2-用户、订单信息在哪展示？"><a href="#1-2-用户、订单信息在哪展示？" class="headerlink" title="1.2 用户、订单信息在哪展示？"></a>1.2 用户、订单信息在哪展示？</h4><ul>
+<li>前台用户APP和后台系统</li>
+</ul>
+<h4 id="1-3-用户、订单信息的数据流向？"><a href="#1-3-用户、订单信息的数据流向？" class="headerlink" title="1.3 用户、订单信息的数据流向？"></a>1.3 用户、订单信息的数据流向？</h4><ul>
+<li>这个暂时先不讨论，涉及到供应链及第三方厂商，后续会单独讨论</li>
+</ul>
+<h4 id="1-4-用户、订单信息存储在哪？"><a href="#1-4-用户、订单信息存储在哪？" class="headerlink" title="1.4 用户、订单信息存储在哪？"></a>1.4 用户、订单信息存储在哪？</h4><ul>
+<li>阿里云RDS</li>
+</ul>
+<h4 id="1-5-用户、订单信息泄漏的途径有哪些？"><a href="#1-5-用户、订单信息泄漏的途径有哪些？" class="headerlink" title="1.5 用户、订单信息泄漏的途径有哪些？"></a>1.5 用户、订单信息泄漏的途径有哪些？</h4><p><strong>前台客户端</strong></p>
+<ol>
+<li>水平、垂直越权漏洞</li>
+<li>APP安装包硬编码了数据库的敏感信息</li>
+<li>存在命令执行漏洞控制了服务器</li>
+<li>上传了webshell木马控制了服务器</li>
+<li>接口存在SQL注入漏洞</li>
+</ol>
+<p><strong>管理后台</strong></p>
+<ol>
+<li>后台账号存在弱口令</li>
+<li>通过某种途径进入后台，比如爆破、未授权访问等</li>
+<li>管理员Cookie被盗取</li>
+</ol>
+<p><strong>运营人员</strong></p>
+<ol>
+<li>内鬼</li>
+<li>手机、电脑等终端被病毒木马入侵控制了</li>
+</ol>
+<p>好了，大致思路有了，买包瓜子、花生，开瓶旺仔，撸起袖子开始干吧！</p>
+<h2 id="0x02-应用层安全分析"><a href="#0x02-应用层安全分析" class="headerlink" title="0x02 应用层安全分析"></a>0x02 应用层安全分析</h2><h3 id="2-1-前台安全分析"><a href="#2-1-前台安全分析" class="headerlink" title="2.1 前台安全分析"></a>2.1 前台安全分析</h3><p>拿到APK之后，打开APK，进行业务流量数据包抓取，发现所有数据包均被加密过</p>
+<blockquote>
+<p>由于比较敏感，所以后续的图打码可能会有点严重，见谅～</p>
+</blockquote>
+<p><img src="http://blog.w2n1ck.com/应急响应-burp1.png" alt=""></p>
+<p>发现数据已被加密，那么如果不知道加密算法，即使有漏洞也是无法利用的，所以得想办法找到加密规则。</p>
+<p><strong>溯源加密算法</strong></p>
+<p>发现APK可被逆向、反编译获取源码文件，但是并未在APK源码中找到硬编码数据库、服务器等敏感信息。</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-apk1.png" alt=""></p>
+<p>在源码中找加密算法，发现加解密key直接硬编码在代码中，导致存在敏感信息泄漏</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-apk2.png" alt=""></p>
+<p>根据算法源码及泄漏的密钥，编写解密脚本。</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-aes1.png" alt=""></p>
+<p>解密数据包试试</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-aes2.png" alt=""></p>
+<p>但是，我们可以发现这个用户的唯一标识不是规律递增的，舔了会开发小哥哥，开发小哥哥告诉我用户的唯一标识是经过几个参数拼接的，同时有时间戳。后续和服务端的交互都是通过这个标识进行通讯的，后续的测试也印证了这个说法，没有白舔！</p>
+<p>那我就放心了，通过越权漏洞这种途径，是基本上不太可能了。</p>
+<p><strong>但是，%&amp;!@$^%*</strong></p>
+<p>这个地方给大家留个悬念，大家可以自己想下黑产会怎么搞？后续会揭晓哦～</p>
+<h3 id="2-2-后台安全分析"><a href="#2-2-后台安全分析" class="headerlink" title="2.2 后台安全分析"></a>2.2 后台安全分析</h3><p>后台地址登录处，最开始是没有任何限制的，导致可直接进行口令爆破</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-login1.png" alt=""></p>
+<p>使用社工口令、密码进行爆破，未爆破出存在弱口令的账号。</p>
+<p>自认为根据自己的经验和陈酿多年的字典生成的口令还是很全面的，所以弱口令这方面基本上也可以排除了。</p>
+<p><strong>接口测试</strong></p>
+<p>对后台地址 API 接口进行模糊测试，发现所有接口均需要登录之后才能操作，未发现存在未授权访问的接口。</p>
+<p>又去舔了下开发小哥哥，一天就完成了短信验证码+图形验证码的登录方案，果然给力，舔的超值！</p>
+<h2 id="0x03-主机层安全分析"><a href="#0x03-主机层安全分析" class="headerlink" title="0x03 主机层安全分析"></a>0x03 主机层安全分析</h2><p>按照常规的排查步骤走一遍呗，当然也可以编成脚本跑喽，我个人建议分析、排查类的还是一点点仔细看比较好。</p>
+<p>这里只罗列一些常规、简单的，具体可以网上搜下排查的点，不在赘述</p>
+<p>查看服务器用户，未发现异常账号</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-passwd1.png" alt=""></p>
+<p>查看服务器网络连接，未发现异常网络连接</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-netstat1.png" alt=""></p>
+<p>查看服务器计划任务，未发现恶意计划任务</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-cron1.png" alt=""></p>
+<p>查看历史登录日志，未发现异常登录IP</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-last1.png" alt=""></p>
+<p>查看SSH日志，未发现异常记录</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-secure1.png" alt=""></p>
+<p>查看开机启动项，未发现异常</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-rc1.png" alt=""></p>
+<p>查看是否存在SSH后门及密钥文件，未发现异常</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-ssh1.png" alt=""></p>
+<p>查看是否存在动态链接库后门，未发现异常</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-ldpread1.png" alt=""></p>
+<p>查看服务器是否存在webshell恶意后门，经确认，未发现异常</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-webshell1.png" alt=""></p>
+<p>所以，主机层也是没啥问题的。</p>
+<h2 id="0x04-日志分析"><a href="#0x04-日志分析" class="headerlink" title="0x04 日志分析"></a>0x04 日志分析</h2><p>日志分析的点太多了，比如攻击特征、时间维度、接口特征、IP纬度、请求头纬度等，所以这里就不全部一一列举了，大家有兴趣可以一块探讨。</p>
+<p>统计IP请求次数，发现未对安全产品进行有效配置，导致访问日志中记录的都是高防的回源IP</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-log1.png" alt=""></p>
+<p>统计接口请求，未发现异常接口请求</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-log2.png" alt=""></p>
+<p>根据开发文档，模糊匹配相关用户、订单请求日志</p>
+<p><img src="http://blog.w2n1ck.com/应急响应-log3.png" alt=""></p>
+<p>根据用户、请求头等排查分析，暂未发现异常情况</p>
+<h2 id="0x05-后续分析"><a href="#0x05-后续分析" class="headerlink" title="0x05 后续分析"></a>0x05 后续分析</h2><p>经过初步流程分析排查，发现待改善的问题点还是蛮多的，还得继续舔开发小哥哥。</p>
+<p>另外，大家有没有发现，上述所有的排查都是笼统的，不是针对某个特殊的点进行的，比如某个用户纬度的日志分析、RDS、后台等。</p>
+<p>由于篇幅问题，以及所涉及的面太多了，所以都会留到后续慢慢整理处理，大家一块加油呀！</p>
+<p><img src="http://blog.w2n1ck.com/w2n1ck-code.gif" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="瓦都剋 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="瓦都剋 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      瓦都剋
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2020/01/12/企业安全建设之与灰黑产对抗的两个多月（一）/" title="企业安全建设之与灰黑产对抗的两个多月（一）">http://byd.dropsec.xyz/2020/01/12/企业安全建设之与灰黑产对抗的两个多月（一）/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/渗透测试/" rel="tag"><i class="fa fa-tag"></i> 渗透测试</a>
+          
+            <a href="/tags/应急响应/" rel="tag"><i class="fa fa-tag"></i> 应急响应</a>
+          
+            <a href="/tags/企业安全建设/" rel="tag"><i class="fa fa-tag"></i> 企业安全建设</a>
+          
+            <a href="/tags/APP/" rel="tag"><i class="fa fa-tag"></i> APP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/02/如何设计一个安全的对外接口/" rel="next" title="如何设计一个安全的对外接口?">
+                <i class="fa fa-chevron-left"></i> 如何设计一个安全的对外接口?
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/01/16/企业安全建设之与灰黑产对抗的两个多月（二）/" rel="prev" title="企业安全建设之与灰黑产对抗的两个多月（二）">
+                企业安全建设之与灰黑产对抗的两个多月（二） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="瓦都剋" />
+          <p class="site-author-name" itemprop="name">瓦都剋</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">103</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">95</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://vulwiki.readthedocs.io/" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://am4zing.me/" title="王小岩" target="_blank">王小岩</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yangge.me/" title="杨大成" target="_blank">杨大成</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://vulwiki.readthedocs.io/" title="漏洞知识库" target="_blank">漏洞知识库</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.w2n1ck.com/" title="新博客" target="_blank">新博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x00-前言"><span class="nav-number">1.</span> <span class="nav-text">0x00 前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-应急响应"><span class="nav-number">2.</span> <span class="nav-text">0x01 应急响应</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-用户、订单信息从哪产生？"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.1 用户、订单信息从哪产生？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-用户、订单信息在哪展示？"><span class="nav-number">2.0.2.</span> <span class="nav-text">1.2 用户、订单信息在哪展示？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-用户、订单信息的数据流向？"><span class="nav-number">2.0.3.</span> <span class="nav-text">1.3 用户、订单信息的数据流向？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-用户、订单信息存储在哪？"><span class="nav-number">2.0.4.</span> <span class="nav-text">1.4 用户、订单信息存储在哪？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-用户、订单信息泄漏的途径有哪些？"><span class="nav-number">2.0.5.</span> <span class="nav-text">1.5 用户、订单信息泄漏的途径有哪些？</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-应用层安全分析"><span class="nav-number">3.</span> <span class="nav-text">0x02 应用层安全分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-前台安全分析"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 前台安全分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-后台安全分析"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 后台安全分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-主机层安全分析"><span class="nav-number">4.</span> <span class="nav-text">0x03 主机层安全分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-日志分析"><span class="nav-number">5.</span> <span class="nav-text">0x04 日志分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-后续分析"><span class="nav-number">6.</span> <span class="nav-text">0x05 后续分析</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">瓦都剋</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2020/01/12/企业安全建设之与灰黑产对抗的两个多月（一）/';
+          this.page.identifier = '2020/01/12/企业安全建设之与灰黑产对抗的两个多月（一）/';
+          this.page.title = '企业安全建设之与灰黑产对抗的两个多月（一）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="20" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
