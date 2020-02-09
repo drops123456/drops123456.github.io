@@ -1,0 +1,1393 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="linux,应急响应," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="瓦都剋" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="整理下自己之前做的应急响应相关的碎片笔记，太多了，没办法全部列出来，先整理一些常用的。 1. 系统日志/var/log/cron ：crontab命令日志 /var/log/lastlog：登录用户日志 /var/log/secure：记录登录成功与否（有次在这个文件里面找到了一些关键性的web访问日志。。。） /var/log/wtmp：记录登录系统成功的账户信息，等同于last /var/lo">
+<meta name="keywords" content="linux,应急响应">
+<meta property="og:type" content="article">
+<meta property="og:title" content="应急响应笔记之Linux篇">
+<meta property="og:url" content="http://byd.dropsec.xyz/2020/02/01/应急响应笔记/index.html">
+<meta property="og:site_name" content="瓦都剋">
+<meta property="og:description" content="整理下自己之前做的应急响应相关的碎片笔记，太多了，没办法全部列出来，先整理一些常用的。 1. 系统日志/var/log/cron ：crontab命令日志 /var/log/lastlog：登录用户日志 /var/log/secure：记录登录成功与否（有次在这个文件里面找到了一些关键性的web访问日志。。。） /var/log/wtmp：记录登录系统成功的账户信息，等同于last /var/lo">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.w2n1ck.com/w2n1ck-code.gif">
+<meta property="og:updated_time" content="2020-02-01T06:11:37.370Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="应急响应笔记之Linux篇">
+<meta name="twitter:description" content="整理下自己之前做的应急响应相关的碎片笔记，太多了，没办法全部列出来，先整理一些常用的。 1. 系统日志/var/log/cron ：crontab命令日志 /var/log/lastlog：登录用户日志 /var/log/secure：记录登录成功与否（有次在这个文件里面找到了一些关键性的web访问日志。。。） /var/log/wtmp：记录登录系统成功的账户信息，等同于last /var/lo">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/w2n1ck-code.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2020/02/01/应急响应笔记/"/>
+
+
+
+
+
+  <title>应急响应笔记之Linux篇 | 瓦都剋</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">瓦都剋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-wx">
+          <a href="/wx" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            微信公众号
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2020/02/01/应急响应笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="瓦都剋">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓦都剋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">应急响应笔记之Linux篇</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-01T10:53:24+08:00">
+                2020-02-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/02/01/应急响应笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/02/01/应急响应笔记/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,749
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  8
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>整理下自己之前做的应急响应相关的碎片笔记，太多了，没办法全部列出来，先整理一些常用的。</p>
+<h3 id="1-系统日志"><a href="#1-系统日志" class="headerlink" title="1. 系统日志"></a>1. 系统日志</h3><p><code>/var/log/cron</code> ：crontab命令日志</p>
+<p><code>/var/log/lastlog</code>：登录用户日志</p>
+<p><code>/var/log/secure</code>：记录登录成功与否（有次在这个文件里面找到了一些关键性的web访问日志。。。）</p>
+<p><code>/var/log/wtmp</code>：记录登录系统成功的账户信息，等同于last</p>
+<p><code>/var/log/utmp</code>：查看当前登录系统的情况，等同于who</p>
+<p><code>/var/log/faillog</code>：记录登录系统不成功的账号信息</p>
+<p><code>history</code>：查看所有历史命令记录</p>
+<p><code>~/.bash_history</code>：黑客可能会使用history -c清除日志，使用<code>cat ~/.bash_history</code>仍可查看相关的记录</p>
+<p><code>/var/log/cups</code>：记录打印信息的日志</p>
+<p><code>/var/log/dmesg</code>：记录了系统在开机时内核自检的信息，也可以使用dmesg命令直接查看内核自检信息</p>
+<p><code>/var/log/mailog</code>：记录邮件信息</p>
+<h3 id="2-访问日志"><a href="#2-访问日志" class="headerlink" title="2. 访问日志"></a>2. 访问日志</h3><p>web服务器的种类很多，比如apache、tomcat、Nginx等。web访问日志需要根据配置获取，大部分在默认存储位置，比如nginx的在<code>/var/log/nginx</code>目录下。</p>
+<p>主要关注两个文件，即<code>access_log</code>和<code>error_log</code>，一般在确定了可疑点之后通过find、grep、xargs、awk等组合命令进一步获取日志信息。</p>
+<h3 id="3-进程"><a href="#3-进程" class="headerlink" title="3. 进程"></a>3. 进程</h3><p><code>ps -ef</code>：查看可疑进程</p>
+<p><code>top -c</code>：查看资源占有情况，并显示文件路径</p>
+<p><code>lsof -g $GID</code>：通常能找到恶意文件进程关联的lib文件</p>
+<p><code>lsof -p $PID</code>：查看进程详细信息</p>
+<p><code>netstat -anltp | grep $PID</code>：查看进程端口情况</p>
+<p><code>ls -la /proc/$PID/exe</code>：查看进程可执行文件</p>
+<p><code>strace -tt -T -e trace=all -p $PID</code>：跟踪异常进程运行情况</p>
+<p><code>lsof -c $PID</code>：查看进程关联文件</p>
+<h3 id="4-用户"><a href="#4-用户" class="headerlink" title="4. 用户"></a>4. 用户</h3><p>Linux所有用户都会在<code>/etc/passwd</code>、<code>/etc/shadow</code>、<code>/etc/group</code>文件中记录</p>
+<p><code>cat /etc/passwd</code> ：查看是否有其他uid，gid为0的情况</p>
+<p><code>less /etc/passwd</code>：查看是否有新增用户</p>
+<p><code>grep :0 /etc/passwd</code>：查看是否有特权用户</p>
+<p><code>ls -l /etc/passwd</code>：查看passwd最后修改时间</p>
+<p><code>awk -F: &#39;length($2)==0 {print $1}&#39; /etc/shadow</code>：查看是否存在空口令用户</p>
+<h3 id="5-系统命令"><a href="#5-系统命令" class="headerlink" title="5. 系统命令"></a>5. 系统命令</h3><p>查看系统命令是否存在异常，比如文件大小、创建时间、修改时间等，比如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">ls -alt /bin/ | head -n 10</div><div class="line">ls -alt /usr/sbin/ | head -n 10</div><div class="line">ls -alt /usr/bin/ | head -n 10</div><div class="line"></div><div class="line">find /etc/ /usr/bin/ /usr/sbin/ /bin/ /usr/<span class="built_in">local</span>/bin/ /var/spool/cron/ -<span class="built_in">type</span> f -mtime -3 | xargs ls -al</div></pre></td></tr></table></figure>
+<p><code>rpm -Va</code>：查看系统命令是否被替换</p>
+<p>显示<code>S.5…T.</code>表示是被修改过的，可以选择yum重新还原回去，也可以使用系统命令工具包busybox</p>
+<h3 id="6-计划任务"><a href="#6-计划任务" class="headerlink" title="6. 计划任务"></a>6. 计划任务</h3><p>常见计划任务位置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">/var/spool/cron/*</div><div class="line">/var/spool/anacron/*</div><div class="line">/etc/crontab</div><div class="line">/etc/anacrontab</div><div class="line">/etc/cron.*</div><div class="line">/etc/anacrontab</div><div class="line">/etc/rc.d/init.d/</div></pre></td></tr></table></figure>
+<h3 id="7-开机启动项"><a href="#7-开机启动项" class="headerlink" title="7. 开机启动项"></a>7. 开机启动项</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ls /etc/rc.d</div><div class="line">systemctl list-unit-files</div><div class="line">chkconfig --list [service_name]</div></pre></td></tr></table></figure>
+<h3 id="8-文件"><a href="#8-文件" class="headerlink" title="8. 文件"></a>8. 文件</h3><p>文件的范围就比较大了，但是无非就是基于文件的创建时间、修改时间、所属组、所属用户、权限、文件大小、文件名称、md5信息、文件内容、suid等。</p>
+<p>以查找具有SUID的文件为例</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">find / -perm +4000 -ls</div><div class="line">find / -perm -u=s -<span class="built_in">type</span> f 2&gt;/dev/null</div><div class="line">find / -user root -perm -4000 -<span class="built_in">print</span> 2&gt;/dev/null</div><div class="line">find / -user root -perm -4000 -<span class="built_in">exec</span> ls -ldb &#123;&#125; \;</div></pre></td></tr></table></figure>
+<h3 id="9-端口"><a href="#9-端口" class="headerlink" title="9. 端口"></a>9. 端口</h3><p><code>netstat -anltp | grep $PID</code>：查看进程端口情况</p>
+<p><code>lsof -i:5000</code>：查看5000端口的占用情况</p>
+<p><code>netstat -alntp</code>：查看端口</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">netstat -an | grep tcp | awk <span class="string">'&#123;print $5&#125;'</span> | awk -F: <span class="string">'&#123;print $1&#125;'</span> | sort | uniq -c | sort -nr | more <span class="comment">#查看所有tcp连接</span></div></pre></td></tr></table></figure>
+<p><code>netstat -antlp| grep ESTABLISHED</code>：查看所有建立连接的详细记录</p>
+<p><code>netstat -antlp | grep LISTEN</code>：检查监听的端口</p>
+<p><code>netstat -antlp | grep 80 | awk &#39;{print $7}&#39; | cut -d/ -f1</code>：根据端口列进程</p>
+<h3 id="10-技巧"><a href="#10-技巧" class="headerlink" title="10. 技巧"></a>10. 技巧</h3><p>10.1 日志如果被软链接到/dev/null</p>
+<ol>
+<li>删除log</li>
+<li>重启rsyslog</li>
+</ol>
+<p>10.2 如果文件/目录无法删除，可使用lsattr查看文件/目录属性，如果有<code>-i</code>属性可使用<code>chattr -i</code>去除</p>
+<p>10.3 查找777的权限的文件：<code>find / *.php -perm 777</code>，因为大部分黑客普遍喜欢直接赋于文件/目录777的权限</p>
+<p>10.4 搜集SSH爆破字典：<code>grep &quot;Failed password&quot; /var/log/secure | awk {&#39;print $9&#39;} | sort | uniq -c | sort -nr</code></p>
+<p>10.5 查看恶意文件里面的IP：<code>strings /usr/bin/.sshd | egrep &#39;[1-9]{1,3}\.[1-9]{1,3}\.&#39;</code></p>
+<p>10.6 根据特征删除指定进程：<code>ps aux|grep -v grep|grep &quot;mysqlc&quot;|awk &#39;{print $2}&#39;|xargs kill -9</code></p>
+<p>10.7 获取进程id数组，并循环杀死所有进程</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">ps -ef|<span class="keyword">grep</span> <span class="string">"java"</span> | <span class="keyword">grep</span> -v <span class="keyword">grep</span>|awk <span class="string">'&#123;print $2&#125;'</span></div><div class="line">kill -<span class="number">9</span> `ps -ef|<span class="keyword">grep</span> <span class="string">"java"</span> | <span class="keyword">grep</span> -v <span class="keyword">grep</span>|awk <span class="string">'&#123;print $2&#125;'</span>`</div><div class="line"><span class="keyword">for</span> pid in $(ps -ef|<span class="keyword">grep</span> <span class="string">"java"</span> | <span class="keyword">grep</span> -v <span class="keyword">grep</span>|awk <span class="string">'&#123;print $2&#125;'</span>); <span class="keyword">do</span></div><div class="line">  echo $pid</div><div class="line">  kill -<span class="number">9</span> $pid</div><div class="line">done</div></pre></td></tr></table></figure>
+<p>10.8 隐藏进程查找：</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">进程都存在于内存中，而内存中的数据又都是写入到/proc/目录下，基于此可查找隐藏文件</div><div class="line">ps -ef | <span class="type">awk</span> '&#123;print&#125;' | <span class="type">sort</span> -n | <span class="type">uniq</span> &gt;<span class="number">1</span></div><div class="line">ls /proc | <span class="type">sort</span> -n |<span class="type">uniq</span> &gt;<span class="number">2</span></div><div class="line">diff <span class="number">1</span> <span class="number">2</span></div><div class="line">另外，针对挖矿命令被劫持的情况下可以使用perf <span class="built_in">top</span> -s pid,comm,dso,symbol来看到挖矿进程</div></pre></td></tr></table></figure>
+<p>10.9 SEO文件搜索：<code>grep -ri baiduspider web_root_master</code></p>
+<p>10.10 netstat被替换，可使用ss、lsof来替换</p>
+<p>10.11 <code>arp -a</code>：查看arp记录是否正常</p>
+<p>10.12 关注Content-Length值：<code>awk &#39;{if($10&gt;5000000){print $0}}&#39; /var/log/httpd/access_log</code></p>
+<p>10.13 查看动态库是否被修改</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">echo <span class="variable">$LD_PRELOAD</span></div><div class="line">busybox cat /etc/ld<span class="selector-class">.so</span><span class="selector-class">.preload</span></div><div class="line">也可使用strace、ldd、readefl等命令</div></pre></td></tr></table></figure>
+<p>10.14 利用iptables阻断通讯</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">iptables -A INPUT -s xmr<span class="selector-class">.crypto-pool</span><span class="selector-class">.fr</span> -j DROP</div><div class="line">iptables -A OUTPUT -d xmr<span class="selector-class">.crypto-pool</span><span class="selector-class">.fr</span> -j DROP</div></pre></td></tr></table></figure>
+<p>10.15 文件监控</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">创建文件监控规则</div><div class="line">auditctl -w <span class="regexp">/etc/</span>passwd -p war -k password_monitor</div><div class="line">监听日志</div><div class="line">tail -f <span class="regexp">/var/</span>log<span class="regexp">/audit/</span>audit.log|<span class="keyword">grep</span> password_monitor</div></pre></td></tr></table></figure>
+<p>10.16 网页挖矿多数都是加载<code>conhive.min.js</code>，script标签里有<code>miner.start</code>关键字，全局查找即可</p>
+<p>10.17 检查SSH后门</p>
+<ul>
+<li>对比ssh版本：<code>ssh -V</code></li>
+<li>查看ssh配置文件和<code>/usr/sbin/sshd</code>的时间:<code>stat /usr/sbin/sshd</code></li>
+<li>strings检查<code>/usr/sbin/sshd</code>，看是否有邮箱、IP等信息:<code>strings /usr/bin/.sshd | egrep &#39;[1-9]{1,3}\.[1-9]{1,3}\.&#39;</code></li>
+<li>通过strace监控sshd进程读写文件的操作，一般的sshd后门都会将账户密码记录到文件，可以通过strace进程跟踪到ssh登录密码文件。</li>
+</ul>
+<p>10.18 清除僵尸进程</p>
+<p>父进程调用fork创建子进程后，子进程运行直至其终止，它立即从内存中移除，但进程描述符仍然保留在内存中。</p>
+<p><code>ps -e -o stat,ppid,pid,cmd | grep -e &#39;^[Zz]&#39; | awk &#39;{print $2}&#39; | xargs kill -9</code></p>
+<p>10.19 扫描是否存在恶意驱动</p>
+<p>10.20 黑帽seo关键词匹配</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sogou，<span class="keyword">so</span>.<span class="keyword">com</span>，google，youdao，yahoo，bing，<span class="number">118114</span>，biso，gougou，ifeng，ivc，sooule，niuhu，biso，<span class="number">360</span>，<span class="keyword">sm</span>，uc</div><div class="line"></div><div class="line">老虎机、澳门银行、万博亚洲官网、狗万app、新万博官网、ylg9999、九州娱乐、澳门威尼斯人、威尼斯人、大红鹰葡京会、振动盘、澳门银河、永利娱乐场、太阳城集团、金沙娱乐、Bet365、钱柜娱乐、永利娱乐、百家乐、博必发、商务模特、会所推荐、洗浴休闲、找鸡上门、外围女、按摩服务、大保健</div></pre></td></tr></table></figure>
+<p><img src="http://blog.w2n1ck.com/w2n1ck-code.gif" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="瓦都剋 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="瓦都剋 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      瓦都剋
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2020/02/01/应急响应笔记/" title="应急响应笔记之Linux篇">http://byd.dropsec.xyz/2020/02/01/应急响应笔记/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/" rel="tag"><i class="fa fa-tag"></i> linux</a>
+          
+            <a href="/tags/应急响应/" rel="tag"><i class="fa fa-tag"></i> 应急响应</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/31/企业安全建设之与灰黑产对抗的两个多月（三）/" rel="next" title="企业安全建设之与灰黑产对抗的两个多月（三）">
+                <i class="fa fa-chevron-left"></i> 企业安全建设之与灰黑产对抗的两个多月（三）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/07/C:S客户端测试笔记/" rel="prev" title="PC(C/S架构)客户端测试笔记">
+                PC(C/S架构)客户端测试笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="瓦都剋" />
+          <p class="site-author-name" itemprop="name">瓦都剋</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">106</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://vulwiki.readthedocs.io/" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://am4zing.me/" title="王小岩" target="_blank">王小岩</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yangge.me/" title="杨大成" target="_blank">杨大成</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://vulwiki.readthedocs.io/" title="漏洞知识库" target="_blank">漏洞知识库</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.w2n1ck.com/" title="新博客" target="_blank">新博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-系统日志"><span class="nav-number">1.</span> <span class="nav-text">1. 系统日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-访问日志"><span class="nav-number">2.</span> <span class="nav-text">2. 访问日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-进程"><span class="nav-number">3.</span> <span class="nav-text">3. 进程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-用户"><span class="nav-number">4.</span> <span class="nav-text">4. 用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-系统命令"><span class="nav-number">5.</span> <span class="nav-text">5. 系统命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-计划任务"><span class="nav-number">6.</span> <span class="nav-text">6. 计划任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-开机启动项"><span class="nav-number">7.</span> <span class="nav-text">7. 开机启动项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-文件"><span class="nav-number">8.</span> <span class="nav-text">8. 文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-端口"><span class="nav-number">9.</span> <span class="nav-text">9. 端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-技巧"><span class="nav-number">10.</span> <span class="nav-text">10. 技巧</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">瓦都剋</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2020/02/01/应急响应笔记/';
+          this.page.identifier = '2020/02/01/应急响应笔记/';
+          this.page.title = '应急响应笔记之Linux篇';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="20" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>

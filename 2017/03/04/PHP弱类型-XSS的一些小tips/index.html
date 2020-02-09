@@ -486,7 +486,7 @@
 </li>
 </ol>
 <h1 id="绕过open-basedir"><a href="#绕过open-basedir" class="headerlink" title="绕过open_basedir"></a>绕过open_basedir</h1><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">利用DirectoryIterator + Glob 直接列举目录</div><div class="line">realpath列举目录</div><div class="line">SplFileInfo::getRealPath列举目录</div><div class="line">GD库imageftbbox/imagefttext列举目录</div><div class="line">bindtextdomain暴力猜解目录</div></pre></td></tr></table></figure>
-<h1 id="XSS绕过"><a href="#XSS绕过" class="headerlink" title="XSS绕过"></a>XSS绕过</h1><figure class="highlight lasso"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">. 可以用 <span class="keyword">with</span></div><div class="line">onerror 可以用 onblur oncut</div><div class="line">window 可以用 top <span class="keyword">parent</span> <span class="built_in">self</span></div><div class="line">al%<span class="number">00</span>ert</div><div class="line"><span class="string">``</span></div><div class="line">\x0A\x0D 可以用 \x2028\x2029</div><div class="line">base64解码函数atob()</div><div class="line"><span class="string">"oncut=_=window;_.onerror=_["</span>al<span class="string">"+"</span>ert<span class="string">"];throw[1]</span></div><div class="line"><span class="string">"</span>oncut=location=<span class="string">"javascript:aler"</span>+<span class="string">"t%"</span>+<span class="string">"281%"</span>+<span class="string">"29</span></div></pre></td></tr></table></figure>
+<h1 id="XSS绕过"><a href="#XSS绕过" class="headerlink" title="XSS绕过"></a>XSS绕过</h1><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">. 可以用 with</div><div class="line">onerror 可以用 onblur oncut</div><div class="line">window 可以用 top parent self</div><div class="line"><span class="keyword">al</span>%<span class="number">00</span>ert</div><div class="line">``</div><div class="line">\x0A\x0D 可以用 \x2028\x2029</div><div class="line">base64解码函数atob()</div><div class="line"><span class="string">"oncut=_=window;_.onerror=_["</span><span class="keyword">al</span><span class="string">"+"</span>ert<span class="comment">"];throw[1]</span></div><div class="line"><span class="string">"oncut=location="</span>javascrip<span class="variable">t:aler</span><span class="string">"+"</span>t%<span class="string">"+"</span><span class="number">281</span>%<span class="string">"+"</span><span class="number">29</span></div></pre></td></tr></table></figure>
       
     </div>
 
@@ -688,7 +688,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">104</span>
+                <span class="site-state-item-count">106</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -701,7 +701,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">96</span>
+                <span class="site-state-item-count">98</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

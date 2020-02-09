@@ -1,0 +1,1494 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="渗透测试,PC客户端,C/S," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="瓦都剋" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="0. 概述web、PC客户端、APP客户端的区别：  web为B/S架构，服务端更新后，刷新一下页面就同步更新了 PC、APP为C/S架构，服务端更新后，需要对各个主流版本进行兼容测试及回归测试，客户端更新的话，需要重新安装或升级应用  PC客户端漏洞挖掘主要是逆向工程和进程监控为主。 1. 信息收集PC客户端的信息收集有别于web，主要收集一些比如：编译信息，开发环境/语言，协议，数据库，IP，">
+<meta name="keywords" content="渗透测试,PC客户端,C&#x2F;S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PC(C&#x2F;S架构)客户端测试笔记">
+<meta property="og:url" content="http://byd.dropsec.xyz/2020/02/07/C:S客户端测试笔记/index.html">
+<meta property="og:site_name" content="瓦都剋">
+<meta property="og:description" content="0. 概述web、PC客户端、APP客户端的区别：  web为B/S架构，服务端更新后，刷新一下页面就同步更新了 PC、APP为C/S架构，服务端更新后，需要对各个主流版本进行兼容测试及回归测试，客户端更新的话，需要重新安装或升级应用  PC客户端漏洞挖掘主要是逆向工程和进程监控为主。 1. 信息收集PC客户端的信息收集有别于web，主要收集一些比如：编译信息，开发环境/语言，协议，数据库，IP，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.w2n1ck.com/proxifier.png">
+<meta property="og:image" content="http://blog.w2n1ck.com/w2n1ck-code.gif">
+<meta property="og:updated_time" content="2020-02-09T13:19:34.098Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PC(C&#x2F;S架构)客户端测试笔记">
+<meta name="twitter:description" content="0. 概述web、PC客户端、APP客户端的区别：  web为B/S架构，服务端更新后，刷新一下页面就同步更新了 PC、APP为C/S架构，服务端更新后，需要对各个主流版本进行兼容测试及回归测试，客户端更新的话，需要重新安装或升级应用  PC客户端漏洞挖掘主要是逆向工程和进程监控为主。 1. 信息收集PC客户端的信息收集有别于web，主要收集一些比如：编译信息，开发环境/语言，协议，数据库，IP，">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/proxifier.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/2020/02/07/C:S客户端测试笔记/"/>
+
+
+
+
+
+  <title>PC(C/S架构)客户端测试笔记 | 瓦都剋</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">瓦都剋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-wx">
+          <a href="/wx" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            微信公众号
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://byd.dropsec.xyz/2020/02/07/C:S客户端测试笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="瓦都剋">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="瓦都剋">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">PC(C/S架构)客户端测试笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-07T21:32:24+08:00">
+                2020-02-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/02/07/C:S客户端测试笔记/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/02/07/C:S客户端测试笔记/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,757
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="0-概述"><a href="#0-概述" class="headerlink" title="0. 概述"></a>0. 概述</h3><p>web、PC客户端、APP客户端的区别：</p>
+<ul>
+<li>web为<code>B/S</code>架构，服务端更新后，刷新一下页面就同步更新了</li>
+<li>PC、APP为<code>C/S</code>架构，服务端更新后，需要对各个主流版本进行兼容测试及回归测试，客户端更新的话，需要重新安装或升级应用</li>
+</ul>
+<p>PC客户端漏洞挖掘主要是逆向工程和进程监控为主。</p>
+<h3 id="1-信息收集"><a href="#1-信息收集" class="headerlink" title="1. 信息收集"></a>1. 信息收集</h3><p>PC客户端的信息收集有别于web，主要收集一些比如：编译信息，开发环境/语言，协议，数据库，IP，接口，混淆/加密，是否加壳等。</p>
+<h4 id="1-1-信息提取"><a href="#1-1-信息提取" class="headerlink" title="1.1 信息提取"></a>1.1 信息提取</h4><p>提取PE文件中的敏感信息</p>
+<ul>
+<li>Universal Extractor</li>
+</ul>
+<p><a href="https://www.filecroco.com/download-universal-extractor/" target="_blank" rel="external">https://www.filecroco.com/download-universal-extractor/</a></p>
+<ul>
+<li>binwalk</li>
+</ul>
+<p><a href="https://github.com/devttys0/binwalk/releases/latest" target="_blank" rel="external">https://github.com/devttys0/binwalk/releases/latest</a></p>
+<h4 id="1-2-文件数字签名检测"><a href="#1-2-文件数字签名检测" class="headerlink" title="1.2 文件数字签名检测"></a>1.2 文件数字签名检测</h4><ul>
+<li>Sigcheck：文件数字签名检查工具</li>
+</ul>
+<p><a href="https://download.sysinternals.com/files/Sigcheck.zip" target="_blank" rel="external">https://download.sysinternals.com/files/Sigcheck.zip</a></p>
+<ul>
+<li>GUI版本：</li>
+</ul>
+<p><a href="https://github.com/bibortone/Toolsuite/blob/master/SigcheckGUI.exe" target="_blank" rel="external">https://github.com/bibortone/Toolsuite/blob/master/SigcheckGUI.exe</a></p>
+<h4 id="1-3-PE文件分析"><a href="#1-3-PE文件分析" class="headerlink" title="1.3 PE文件分析"></a>1.3 PE文件分析</h4><p>查看.net的PE结构、编译环境等</p>
+<ul>
+<li>ExeinfoPe</li>
+</ul>
+<p><a href="https://down.52pojie.cn/Tools/PEtools/ExeinfoPe.zip" target="_blank" rel="external">https://down.52pojie.cn/Tools/PEtools/ExeinfoPe.zip</a></p>
+<ul>
+<li>CFF Explorer</li>
+</ul>
+<p><a href="https://download.cnet.com/CFF-Explorer/3000-2383_4-10431155.html" target="_blank" rel="external">https://download.cnet.com/CFF-Explorer/3000-2383_4-10431155.html</a></p>
+<ul>
+<li>StudyPE</li>
+</ul>
+<p><a href="https://down.52pojie.cn/?query=studype" target="_blank" rel="external">https://down.52pojie.cn/?query=studype</a></p>
+<h4 id="1-4-查壳-脱壳"><a href="#1-4-查壳-脱壳" class="headerlink" title="1.4 查壳/脱壳"></a>1.4 查壳/脱壳</h4><ul>
+<li>PEID</li>
+</ul>
+<p><a href="https://down.52pojie.cn/Tools/PEtools/PEiD%200.95.zip" target="_blank" rel="external">https://down.52pojie.cn/Tools/PEtools/PEiD%200.95.zip</a></p>
+<ul>
+<li>NETUnpack</li>
+</ul>
+<p><a href="https://down.52pojie.cn/Tools/NET/NETUnpack.rar" target="_blank" rel="external">https://down.52pojie.cn/Tools/NET/NETUnpack.rar</a></p>
+<h4 id="1-5-字符串"><a href="#1-5-字符串" class="headerlink" title="1.5 字符串"></a>1.5 字符串</h4><p>通过strings、find、cat、grep等命令搜索IP、域名等敏感字符串</p>
+<h3 id="2-逆向工程"><a href="#2-逆向工程" class="headerlink" title="2. 逆向工程"></a>2. 逆向工程</h3><h4 id="2-1-反编译"><a href="#2-1-反编译" class="headerlink" title="2.1 反编译"></a>2.1 反编译</h4><p>逆向工程里面两个最受欢迎的工具：</p>
+<p>静态分析：IDA pro</p>
+<p><a href="https://down.52pojie.cn/Tools/Disassemblers/IDA.txt" target="_blank" rel="external">https://down.52pojie.cn/Tools/Disassemblers/IDA.txt</a></p>
+<p>动态调试：Ollydbg</p>
+<p><a href="https://down.52pojie.cn/Tools/Debuggers/%E5%90%BE%E7%88%B1%E7%A0%B4%E8%A7%A3%E4%B8%93%E7%94%A8%E7%89%88Ollydbg.rar" target="_blank" rel="external">https://down.52pojie.cn/Tools/Debuggers/%E5%90%BE%E7%88%B1%E7%A0%B4%E8%A7%A3%E4%B8%93%E7%94%A8%E7%89%88Ollydbg.rar</a></p>
+<p><a href="https://down.52pojie.cn/Tools/OllyDbg_Plugin/" target="_blank" rel="external">https://down.52pojie.cn/Tools/OllyDbg_Plugin/</a></p>
+<h5 id="2-1-1-NET"><a href="#2-1-1-NET" class="headerlink" title="2.1.1 .NET"></a>2.1.1 .NET</h5><ul>
+<li>de4dot：<a href="https://down.52pojie.cn/Tools/NET/de4dot.zip" target="_blank" rel="external">https://down.52pojie.cn/Tools/NET/de4dot.zip</a></li>
+<li>dotPeek：<a href="https://www.jetbrains.com/decompiler/download/" target="_blank" rel="external">https://www.jetbrains.com/decompiler/download/</a></li>
+<li>ilasm：<a href="https://msdn.microsoft.com/zh-cn/library/496e4ekx(v=vs.110).aspx" target="_blank" rel="external">https://msdn.microsoft.com/zh-cn/library/496e4ekx(v=vs.110).aspx</a></li>
+<li>ildasm：<a href="https://msdn.microsoft.com/zh-cn/library/f7dy01k1(v=vs.110).aspx" target="_blank" rel="external">https://msdn.microsoft.com/zh-cn/library/f7dy01k1(v=vs.110).aspx</a></li>
+</ul>
+<blockquote>
+<p>ilasm 和 ildasm 都是微软官方提供的.Net编译与反编译工具，可谓是.Net逆向中的瑞士军刀。这两个工具的位置分别位于.Net Framework目录和Microsoft SDK目录中：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; C:\Windows\Microsoft.NET\Framework\v2.0.50727\ilasm.exe</div><div class="line">&gt; C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\ildasm.exe</div><div class="line">&gt;</div></pre></td></tr></table></figure>
+</blockquote>
+<ul>
+<li><p>ILSpy：<a href="https://github.com/icsharpcode/ILSpy/releases" target="_blank" rel="external">https://github.com/icsharpcode/ILSpy/releases</a></p>
+</li>
+<li><p>dnSpy：<a href="https://github.com/0xd4d/dnSpy/releases" target="_blank" rel="external">https://github.com/0xd4d/dnSpy/releases</a></p>
+<blockquote>
+<p>基于ILSpy发展而来，它能在完全没有源码的情况下即时调试程序，甚至还能修改程序！</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="2-1-2-Java"><a href="#2-1-2-Java" class="headerlink" title="2.1.2 Java"></a>2.1.2 Java</h5><p>同安卓平台，所以安卓反编译的工具在此也应该是都可以用的</p>
+<ul>
+<li>jadx：<a href="https://down.52pojie.cn/Tools/Android_Tools/jadx-1.1.0.zip" target="_blank" rel="external">https://down.52pojie.cn/Tools/Android_Tools/jadx-1.1.0.zip</a></li>
+<li><p>jad：<a href="https://varaneckas.com/jad/" target="_blank" rel="external">https://varaneckas.com/jad/</a></p>
+</li>
+<li><p>JD-GUI：<a href="https://down.52pojie.cn/Tools/Android_Tools/jd-gui-1.5.5.jar" target="_blank" rel="external">https://down.52pojie.cn/Tools/Android_Tools/jd-gui-1.5.5.jar</a></p>
+</li>
+<li>在线反编译：javare.cn，www.javadecompilers.com</li>
+</ul>
+<p><strong>通过第一阶段的信息收集，我们可能会获得一些敏感信息，比如：</strong></p>
+<ul>
+<li>安装目录是否存在db、conf、config等敏感文件；</li>
+<li>IP、域名、API、数据库等敏感信息；</li>
+<li>硬编码配置信息，比如Appkey、AppSecure、加密密钥等；</li>
+<li>源代码，在通过github、码云等去搜相关的代码特征；</li>
+<li>获取加解密逻辑；</li>
+<li>后门；</li>
+</ul>
+<h3 id="3-运行监控"><a href="#3-运行监控" class="headerlink" title="3. 运行监控"></a>3. 运行监控</h3><p>运行监控包括软件安装、运行时Windows上文件、注册表、进程、流量的动态情况及分析。监控整个客户端的运行情况，我们就可以知道程序在我们的计算机上做了些什么、整个业务逻辑流程是什么样的。</p>
+<h4 id="3-1-文件"><a href="#3-1-文件" class="headerlink" title="3.1 文件"></a>3.1 文件</h4><p>开发调试日志、错误日志、临时文件、配置文件、运行时文件等，比如登录后是否本地铭文保存账号密码，开发调试日志是否有服务器敏感信息，本地数据是否明文储存等</p>
+<ul>
+<li><p>Process Monitor：强大的监视和过滤功能的高级 Windows 监视工具，可实时显示文件系统、注册表、进程/线程的活动，可以添加过滤规则。</p>
+<p><a href="https://docs.microsoft.com/en-us/sysinternals/downloads/procmon" target="_blank" rel="external">https://docs.microsoft.com/en-us/sysinternals/downloads/procmon</a></p>
+</li>
+</ul>
+<h4 id="3-2-注册表"><a href="#3-2-注册表" class="headerlink" title="3.2 注册表"></a>3.2 注册表</h4><ul>
+<li><p>RegfromApp：可以选择一个进程之后跟踪其对注册表的修改</p>
+<p><a href="https://www.nirsoft.net/utils/reg_file_from_application.html" target="_blank" rel="external">https://www.nirsoft.net/utils/reg_file_from_application.html</a></p>
+</li>
+<li><p>Process Monitor：强大的监视和过滤功能的高级 Windows 监视工具，可实时显示文件系统、注册表、进程/线程的活动，可以添加过滤规则。</p>
+<p><a href="https://docs.microsoft.com/en-us/sysinternals/downloads/procmon" target="_blank" rel="external">https://docs.microsoft.com/en-us/sysinternals/downloads/procmon</a></p>
+</li>
+<li><p>Regshot：注册表备份和比对工具，可以通过保存快照和比对快照的方式来找出注册表中哪些值发生了变化，利用regshot比较客户端运行（如登录）前后注册表差别。</p>
+<p><a href="https://sourceforge.net/projects/regshot/" target="_blank" rel="external">https://sourceforge.net/projects/regshot/</a></p>
+</li>
+<li><p>Autoruns：一款启动项、注册表、进程等多功能的安全检测工具</p>
+<p><a href="https://docs.microsoft.com/en-us/sysinternals/downloads/autoruns" target="_blank" rel="external">https://docs.microsoft.com/en-us/sysinternals/downloads/autoruns</a></p>
+</li>
+</ul>
+<h4 id="3-3-进程"><a href="#3-3-进程" class="headerlink" title="3.3 进程"></a>3.3 进程</h4><ul>
+<li><p>ProcessHacker：查看客户端内存中的敏感数据，比如账号密码、key、数据库信息等。</p>
+<p><a href="https://github.com/processhacker/processhacker/releases" target="_blank" rel="external">https://github.com/processhacker/processhacker/releases</a></p>
+</li>
+<li><p>ProcessExplorer：利用ProcessExplorer就可以知道哪个程序打开了某个文件或者目录么？PorcessExplorer将会显示出进程打开或者加载了哪些的句柄（handles）或者动态链接库（Dlls）。</p>
+<p><a href="https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer" target="_blank" rel="external">https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer</a></p>
+</li>
+<li><p>火绒剑：集进程、启动项、注册表、文件等多种功能为一体的监控工具</p>
+<p><a href="https://cowtransfer.com/s/3c60db3f057a4b" target="_blank" rel="external">https://cowtransfer.com/s/3c60db3f057a4b</a></p>
+</li>
+</ul>
+<h4 id="3-4-流量"><a href="#3-4-流量" class="headerlink" title="3.4 流量"></a>3.4 流量</h4><p>Wireshark/Echo Mirage/Burpsuite+Proxifier/Fillder/Charles</p>
+<ul>
+<li>WSExplorer：进程抓包工具，左侧是进程，右侧是对应的进程抓到的数据包。</li>
+</ul>
+<p><a href="https://bbs.pediy.com/thread-125475.htm" target="_blank" rel="external">https://bbs.pediy.com/thread-125475.htm</a></p>
+<ul>
+<li>Echo Mirage：Echo Mirage可针对某一个应用规则拦截并修改非HTTP协议的流量。</li>
+</ul>
+<p><a href="https://sourceforge.net/projects/echomirage.oldbutgold.p/" target="_blank" rel="external">https://sourceforge.net/projects/echomirage.oldbutgold.p/</a></p>
+<ul>
+<li>TCPView：TCPView是一个用来显示系统中所有的TCP和UDP端点（endpoint）列表的Windows程序，包括本地和远程的网络地址，以及TCP连接的状态。</li>
+</ul>
+<p><a href="https://docs.microsoft.com/zh-cn/sysinternals/downloads/tcpview" target="_blank" rel="external">https://docs.microsoft.com/zh-cn/sysinternals/downloads/tcpview</a></p>
+<h3 id="4-业务逻辑分析"><a href="#4-业务逻辑分析" class="headerlink" title="4. 业务逻辑分析"></a>4. 业务逻辑分析</h3><p>PC客户端业务逻辑分析方法同安卓客户端，抓取到业务逻辑流量之后参照B/S架构的测试方法即可。</p>
+<p>业务流量抓取主要分为两步：</p>
+<p>1、添加代理服务器</p>
+<p>2、设置代理规则（设置需要代理的应用程序）</p>
+<p>这样，只要选择需要代理的应用程序，比如<code>chrome.exe</code>，即可实现PC客户端流量转发</p>
+<p><img src="http://blog.w2n1ck.com/proxifier.png" alt=""></p>
+<p>具体详情可参考：<a href="https://www.w2n1ck.com/article/31/" target="_blank" rel="external">渗透测试之业务流量通用抓包方法</a></p>
+<h3 id="5-其他漏洞"><a href="#5-其他漏洞" class="headerlink" title="5. 其他漏洞"></a>5. 其他漏洞</h3><p>其他漏洞的测试大致同B/S架构，只不过都变成了桌面的框框的。</p>
+<ul>
+<li><p>登录爆破 </p>
+</li>
+<li><p>用户名枚举</p>
+</li>
+<li><p>任意用户注册</p>
+</li>
+<li><p>任意用户密码重置</p>
+</li>
+<li><p>SQL语句等敏感信息泄漏</p>
+</li>
+<li><p>SQL注入</p>
+</li>
+<li><p>CSV注入</p>
+</li>
+<li><p>XSS</p>
+</li>
+<li>文件读取</li>
+<li>命令执行</li>
+<li>逻辑缺陷</li>
+<li><p>DLL劫持</p>
+</li>
+<li><p>认证授权缺陷：<a href="https://www.freebuf.com/vuls/203227.html" target="_blank" rel="external">https://www.freebuf.com/vuls/203227.html</a></p>
+</li>
+<li><p>安全策略绕过</p>
+</li>
+<li><p>越权</p>
+</li>
+<li>中间人攻击</li>
+<li>未授权</li>
+<li>溢出</li>
+</ul>
+<h4 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h4><p><a href="https://zhuanlan.zhihu.com/p/23512632" target="_blank" rel="external">嘶吼RoarTalk《厚客戶端渗透测试实战》系列文章</a></p>
+<p><a href="https://down.52pojie.cn/" target="_blank" rel="external">https://down.52pojie.cn/</a></p>
+<p><a href="https://github.com/theLSA/CS-checklist" target="_blank" rel="external">https://github.com/theLSA/CS-checklist</a></p>
+<p><a href="https://github.com/cybertechniques/site/" target="_blank" rel="external">https://github.com/cybertechniques/site/</a></p>
+<p><a href="https://github.com/bibortone/Toolsuite/" target="_blank" rel="external">https://github.com/bibortone/Toolsuite/</a></p>
+<p><a href="https://github.com/theLSA/hack-cs-tools" target="_blank" rel="external">https://github.com/theLSA/hack-cs-tools</a></p>
+<p><a href="https://www.aneasystone.com/archives/2015/06/net-reverse-decompiling.html" target="_blank" rel="external">https://www.aneasystone.com/archives/2015/06/net-reverse-decompiling.html</a></p>
+<p><a href="https://blog.csdn.net/WPwalter/article/details/80457131" target="_blank" rel="external">https://blog.csdn.net/WPwalter/article/details/80457131</a></p>
+<p><a href="https://www.t00ls.net/articles-50878.html" target="_blank" rel="external">https://www.t00ls.net/articles-50878.html</a></p>
+<p><a href="https://www.freebuf.com/vuls/203227.html" target="_blank" rel="external">https://www.freebuf.com/vuls/203227.html</a></p>
+<p><a href="https://cloud.tencent.com/developer/article/1472352" target="_blank" rel="external">https://cloud.tencent.com/developer/article/1472352</a></p>
+<p><img src="http://blog.w2n1ck.com/w2n1ck-code.gif" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+  <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+    <div>大爷，赏个铜板呗！</div>
+    <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+      <span>赏</span>
+    </button>
+    <div id="QR" style="display: none;">
+      
+        <div id="wechat" style="display: inline-block">
+          <img id="wechat_qr" src="/images/weixin.png" alt="瓦都剋 WeChat Pay"/>
+          <p>微信打赏</p>
+        </div>
+      
+      
+        <div id="alipay" style="display: inline-block">
+          <img id="alipay_qr" src="/images/zhifubao.png" alt="瓦都剋 Alipay"/>
+          <p>支付宝打赏</p>
+        </div>
+      
+    </div>
+  </div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+  <ul class="post-copyright">
+    <li class="post-copyright-author">
+      <strong>本文作者：</strong>
+      瓦都剋
+    </li>
+    <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://byd.dropsec.xyz/2020/02/07/C:S客户端测试笔记/" title="PC(C/S架构)客户端测试笔记">http://byd.dropsec.xyz/2020/02/07/C:S客户端测试笔记/</a>
+    </li>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong>
+      本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/渗透测试/" rel="tag"><i class="fa fa-tag"></i> 渗透测试</a>
+          
+            <a href="/tags/PC客户端/" rel="tag"><i class="fa fa-tag"></i> PC客户端</a>
+          
+            <a href="/tags/C-S/" rel="tag"><i class="fa fa-tag"></i> C/S</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/01/应急响应笔记/" rel="next" title="应急响应笔记之Linux篇">
+                <i class="fa fa-chevron-left"></i> 应急响应笔记之Linux篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="瓦都剋" />
+          <p class="site-author-name" itemprop="name">瓦都剋</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">106</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">98</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://vulwiki.readthedocs.io/" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://am4zing.me/" title="王小岩" target="_blank">王小岩</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yangge.me/" title="杨大成" target="_blank">杨大成</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://vulwiki.readthedocs.io/" title="漏洞知识库" target="_blank">漏洞知识库</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.w2n1ck.com/" title="新博客" target="_blank">新博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-概述"><span class="nav-number">1.</span> <span class="nav-text">0. 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-信息收集"><span class="nav-number">2.</span> <span class="nav-text">1. 信息收集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-信息提取"><span class="nav-number">2.1.</span> <span class="nav-text">1.1 信息提取</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-文件数字签名检测"><span class="nav-number">2.2.</span> <span class="nav-text">1.2 文件数字签名检测</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-PE文件分析"><span class="nav-number">2.3.</span> <span class="nav-text">1.3 PE文件分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-查壳-脱壳"><span class="nav-number">2.4.</span> <span class="nav-text">1.4 查壳/脱壳</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-字符串"><span class="nav-number">2.5.</span> <span class="nav-text">1.5 字符串</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-逆向工程"><span class="nav-number">3.</span> <span class="nav-text">2. 逆向工程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-反编译"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 反编译</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-1-NET"><span class="nav-number">3.1.1.</span> <span class="nav-text">2.1.1 .NET</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-2-Java"><span class="nav-number">3.1.2.</span> <span class="nav-text">2.1.2 Java</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-运行监控"><span class="nav-number">4.</span> <span class="nav-text">3. 运行监控</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-文件"><span class="nav-number">4.1.</span> <span class="nav-text">3.1 文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-注册表"><span class="nav-number">4.2.</span> <span class="nav-text">3.2 注册表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-进程"><span class="nav-number">4.3.</span> <span class="nav-text">3.3 进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-流量"><span class="nav-number">4.4.</span> <span class="nav-text">3.4 流量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-业务逻辑分析"><span class="nav-number">5.</span> <span class="nav-text">4. 业务逻辑分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-其他漏洞"><span class="nav-number">6.</span> <span class="nav-text">5. 其他漏洞</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参考文章："><span class="nav-number">6.1.</span> <span class="nav-text">参考文章：</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">瓦都剋</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/2020/02/07/C:S客户端测试笔记/';
+          this.page.identifier = '2020/02/07/C:S客户端测试笔记/';
+          this.page.title = 'PC(C/S架构)客户端测试笔记';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="20" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
