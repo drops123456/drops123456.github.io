@@ -1,0 +1,1111 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误！');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content=",," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="瓦都剋" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="1. 可预测性旧版API若API形式为：/api/v3/login，那么可尝试/api/v2/login，/api/v1/login等。 2. 语义相似性若API形式为：/api/mobile/login，那么可尝试/api/phone/login，/api/wx/login等，再比如download_receipt，export_receipt等。 3. 不安全的直接对象引用(IDOR)比如如下">
+<meta name="keywords" content="渗透测试,API">
+<meta property="og:type" content="website">
+<meta property="og:title" content="渗透测试之API测试技巧">
+<meta property="og:url" content="http://byd.dropsec.xyz/渗透测试之API技巧.html">
+<meta property="og:site_name" content="瓦都剋">
+<meta property="og:description" content="1. 可预测性旧版API若API形式为：/api/v3/login，那么可尝试/api/v2/login，/api/v1/login等。 2. 语义相似性若API形式为：/api/mobile/login，那么可尝试/api/phone/login，/api/wx/login等，再比如download_receipt，export_receipt等。 3. 不安全的直接对象引用(IDOR)比如如下">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blog.w2n1ck.com/w2n1ck-code.gif">
+<meta property="og:updated_time" content="2020-04-06T12:03:38.341Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="渗透测试之API测试技巧">
+<meta name="twitter:description" content="1. 可预测性旧版API若API形式为：/api/v3/login，那么可尝试/api/v2/login，/api/v1/login等。 2. 语义相似性若API形式为：/api/mobile/login，那么可尝试/api/phone/login，/api/wx/login等，再比如download_receipt，export_receipt等。 3. 不安全的直接对象引用(IDOR)比如如下">
+<meta name="twitter:image" content="http://blog.w2n1ck.com/w2n1ck-code.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"输入关键词进行搜索","hits_empty":"找不到关于“${query}”的文章","hits_stats":"共找到 ${hits} 篇文化在那个，花了 ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://byd.dropsec.xyz/渗透测试之API技巧.html"/>
+
+
+
+
+
+  <title>渗透测试之API测试技巧 | 瓦都剋</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?61c879c1c104a92aab1d6e4b6888ffe5";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">瓦都剋</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Looking at yourself from a different Angle!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-wx">
+          <a href="/wx" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-wrench"></i> <br />
+            
+            微信公众号
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-daohang">
+          <a href="/daohang" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-globe"></i> <br />
+            
+            导航
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+  <header class="post-header">
+
+	<h1 class="post-title" itemprop="name headline">渗透测试之API测试技巧</h1>
+
+
+
+</header>
+
+    
+    
+      <h4 id="1-可预测性旧版API"><a href="#1-可预测性旧版API" class="headerlink" title="1. 可预测性旧版API"></a>1. 可预测性旧版API</h4><p>若API形式为：<code>/api/v3/login</code>，那么可尝试<code>/api/v2/login</code>，<code>/api/v1/login</code>等。</p>
+<h4 id="2-语义相似性"><a href="#2-语义相似性" class="headerlink" title="2. 语义相似性"></a>2. 语义相似性</h4><p>若API形式为：<code>/api/mobile/login</code>，那么可尝试<code>/api/phone/login</code>，<code>/api/wx/login</code>等，再比如<code>download_receipt</code>，<code>export_receipt</code>等。</p>
+<h4 id="3-不安全的直接对象引用-IDOR"><a href="#3-不安全的直接对象引用-IDOR" class="headerlink" title="3. 不安全的直接对象引用(IDOR)"></a>3. 不安全的直接对象引用(IDOR)</h4><p>比如如下JSON Response</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&#123;<span class="attr">"user_id"</span>:<span class="number">233</span>,<span class="attr">"nickname"</span>:<span class="string">"w2n1ck"</span>,<span class="attr">"phone"</span>:<span class="string">"15566668888"</span>&#125;</div></pre></td></tr></table></figure>
+<p>那么可尝试：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">GET /api/user/&#123;user_id&#125;         //查询用户</div><div class="line">GET /api/user/&#123;orther_user_id&#125;  //查询其他用户</div><div class="line">POST /api/user/&#123;user_id&#125;        //修改用户信息</div><div class="line">PUT /api/user/&#123;user_id&#125;         //修改用户信息</div><div class="line">POST /api/user                  //创建新用户</div><div class="line">DELETE /api/user/&#123;user_id&#125;      //删除用户</div></pre></td></tr></table></figure>
+<h4 id="4-命令注入"><a href="#4-命令注入" class="headerlink" title="4. 命令注入"></a>4. 命令注入</h4><p>在Ruby on Rails App的情况下，如果开发人员使用了<code>Kernel#open</code>函数的话，使用<code>1</code>管道符测试命令注入</p>
+<h4 id="5-根据返回包判断对象属性"><a href="#5-根据返回包判断对象属性" class="headerlink" title="5. 根据返回包判断对象属性"></a>5. 根据返回包判断对象属性</h4><p>比如更新某功能时</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">PUT /api/videos/233</div><div class="line"></div><div class="line">&#123;<span class="attr">"name"</span>:<span class="string">"my_video"</span>,<span class="attr">"format"</span>:<span class="string">"mp4"</span>&#125;</div></pre></td></tr></table></figure>
+<p>但是在其他接口可能会有该对象的其他属性</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">GET /api/my_videos</div><div class="line"></div><div class="line">&#123;[&#123;"id":233,"file_name":"my_video.mp4","path":"/my_video/path/"&#125;]&#125;</div></pre></td></tr></table></figure>
+<p>尝试添加隐藏属性</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">PUT /api/videos/233</div><div class="line"></div><div class="line">&#123;<span class="attr">"name"</span>:<span class="string">"my_video"</span>,<span class="attr">"format"</span>:<span class="string">"mp4"</span>,<span class="attr">"path"</span>:<span class="string">"/my_video/path/../../evil/path"</span>&#125;</div></pre></td></tr></table></figure>
+<h4 id="6-平台不一致性"><a href="#6-平台不一致性" class="headerlink" title="6. 平台不一致性"></a>6. 平台不一致性</h4><p>若web端限制较严格，可以尝试在app端测试</p>
+<h4 id="7-REST-API-amp-SOAP-API"><a href="#7-REST-API-amp-SOAP-API" class="headerlink" title="7. REST API &amp; SOAP API"></a>7. REST API &amp; SOAP API</h4><p>对于Rest API可以修改<code>Content-Type</code>为<code>application/xml</code>，并在body中添加xml代码，看是否会有错误产生。</p>
+<h4 id="8-header-amp-body"><a href="#8-header-amp-body" class="headerlink" title="8. header &amp; body"></a>8. header &amp; body</h4><p><code>http body / header</code> 中的参数比url中的参数更容易受到攻击。</p>
+<h4 id="9-JWT"><a href="#9-JWT" class="headerlink" title="9. JWT"></a>9. JWT</h4><p>如果API使用JWT验证，那么CSRF就无法利用了。</p>
+<h4 id="10-UUID"><a href="#10-UUID" class="headerlink" title="10. UUID"></a>10. UUID</h4><p>即使id是UUID或其他非数字字符串，也要尝试发送一个数字值，比如使用<code>/user/detail?userId=1</code>替换<code>/user/detail?userId=616d6bad-536e-44bb-9bf5-05042c9bffe8</code>。</p>
+<h4 id="11-集群绕过"><a href="#11-集群绕过" class="headerlink" title="11. 集群绕过"></a>11. 集群绕过</h4><p>如果不同业务功能被分配到了不同的集群机器上，那么可能导致绕过。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># 修改密码为例</div><div class="line">POST /api/reset_pass //需要旧密码</div><div class="line">PUT /api/update_user //添加reset_pass中的参数可能直接就修改密码了</div></pre></td></tr></table></figure>
+<h4 id="12-子域名"><a href="#12-子域名" class="headerlink" title="12. 子域名"></a>12. 子域名</h4><p>不同子域名可能使用同一套API，可尝试在其他子域名测试。比如<code>admin.w2n1ck.com</code>，可尝试<code>admin-api.w2n1ck.com</code>，<code>admin-api-v1.w2n1ck.com</code>等</p>
+<h4 id="13-静态资源"><a href="#13-静态资源" class="headerlink" title="13. 静态资源"></a>13. 静态资源</h4><p>由于大部分系统对静态资源的处理方式不同，所以静态资源很容易出现越权等问题。</p>
+<h4 id="14-客户端"><a href="#14-客户端" class="headerlink" title="14. 客户端"></a>14. 客户端</h4><p>如果最新的APP无法找到突破口，可尝试下载旧版的客户端程序。</p>
+<h4 id="15-API重要程度"><a href="#15-API重要程度" class="headerlink" title="15. API重要程度"></a>15. API重要程度</h4><p>开发者可能对比较重要的接口做的防护更加完善，多留意一些不重要的API。</p>
+<h4 id="16-非生产环境"><a href="#16-非生产环境" class="headerlink" title="16. 非生产环境"></a>16. 非生产环境</h4><p>开发者对于一些重要接口可能会做一些频次等限制，但是非生产环境可能就没这些限制措施。</p>
+<h4 id="17-前端"><a href="#17-前端" class="headerlink" title="17. 前端"></a>17. 前端</h4><p>前端js、webpack可能包含了大量API接口及参数。</p>
+<h4 id="18-白盒审计"><a href="#18-白盒审计" class="headerlink" title="18. 白盒审计"></a>18. 白盒审计</h4><p>若通过某种途径获取到dll，jar，rar等源码，可通过反编辑等手段，阅读源码在源码中找API。</p>
+<h4 id="19-导出功能"><a href="#19-导出功能" class="headerlink" title="19. 导出功能"></a>19. 导出功能</h4><p>若API存在导出功能，比如导出PDF，可尝试注入特定的HTML代码。</p>
+<h4 id="20-属性变形"><a href="#20-属性变形" class="headerlink" title="20. 属性变形"></a>20. 属性变形</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># 数组</div><div class="line">&#123;"id":111&#125; --&gt; &#123;"id":[111]&#125;</div><div class="line"># Json</div><div class="line">&#123;"id":111&#125; --&gt; &#123;"id":&#123;"id":111&#125;&#125;</div><div class="line"># 参数污染</div><div class="line">id=111&amp;id=222</div><div class="line"># 通配符</div><div class="line">&#123;<span class="attr">"id"</span>:<span class="string">"*"</span>&#125;</div></pre></td></tr></table></figure>
+<h4 id="21-XSS防护"><a href="#21-XSS防护" class="headerlink" title="21. XSS防护"></a>21. XSS防护</h4><p>如果响应包是<code>Content-type: application/json</code>，就不要考虑XSS攻击了。</p>
+<h4 id="22-参数组合"><a href="#22-参数组合" class="headerlink" title="22. 参数组合"></a>22. 参数组合</h4><p><code>.net</code>应用可能会使用<code>Path.Combine(path_1,path_2)</code>来组合参数，将两者连接起来得到一个完整的路径。web 应用程序的上下文中，第一个参数通常是指向图像或用户文档存储位置的绝对目录路径， 第二个参数通常是用户控制的，那么在某种程度上，如果参数path_2是绝对路径，则忽略参数path_1。</p>
+<h4 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h4><p><a href="https://github.com/smodnix/31-days-of-API-Security-Tips/blob/master/README.md" target="_blank" rel="external">https://github.com/smodnix/31-days-of-API-Security-Tips/blob/master/README.md</a></p>
+<p><a href="https://apidock.com/ruby/Kernel/open" target="_blank" rel="external">https://apidock.com/ruby/Kernel/open</a></p>
+<p><a href="https://www.praetorian.com/blog/pathcombine-security-issues-in-aspnet-applications" target="_blank" rel="external">https://www.praetorian.com/blog/pathcombine-security-issues-in-aspnet-applications</a></p>
+<p><a href="https://medium.com/@inonst/a-deep-dive-on-the-most-critical-api-vulnerability-bola-1342224ec3f2" target="_blank" rel="external">https://medium.com/@inonst/a-deep-dive-on-the-most-critical-api-vulnerability-bola-1342224ec3f2</a></p>
+<p><img src="http://blog.w2n1ck.com/w2n1ck-code.gif" alt=""></p>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="瓦都剋" />
+          <p class="site-author-name" itemprop="name">瓦都剋</p>
+           
+              <p class="site-description motion-element" itemprop="description">Looking at yourself from a different Angle!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">101</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/w2n1ck" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://github.com/w2n1ck" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://vulwiki.readthedocs.io/" target="_blank" title="Zhihu">
+                  
+                    <i class="fa fa-fw fa-heartbeat"></i>
+                  
+                  Zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wkh.dropsec.xyz" title="王小洪" target="_blank">王小洪</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://fgp.dropsec.xyz" title="冯小鹏" target="_blank">冯小鹏</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.neargle.com/" title="周小斌" target="_blank">周小斌</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://am4zing.me/" title="王小岩" target="_blank">王小岩</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yangge.me/" title="杨大成" target="_blank">杨大成</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.dropsec.xyz/" title="团队主页" target="_blank">团队主页</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://vulwiki.readthedocs.io/" title="漏洞知识库" target="_blank">漏洞知识库</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.w2n1ck.com/" title="新博客" target="_blank">新博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-可预测性旧版API"><span class="nav-number">1.</span> <span class="nav-text">1. 可预测性旧版API</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-语义相似性"><span class="nav-number">2.</span> <span class="nav-text">2. 语义相似性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-不安全的直接对象引用-IDOR"><span class="nav-number">3.</span> <span class="nav-text">3. 不安全的直接对象引用(IDOR)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-命令注入"><span class="nav-number">4.</span> <span class="nav-text">4. 命令注入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-根据返回包判断对象属性"><span class="nav-number">5.</span> <span class="nav-text">5. 根据返回包判断对象属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-平台不一致性"><span class="nav-number">6.</span> <span class="nav-text">6. 平台不一致性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-REST-API-amp-SOAP-API"><span class="nav-number">7.</span> <span class="nav-text">7. REST API & SOAP API</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-header-amp-body"><span class="nav-number">8.</span> <span class="nav-text">8. header & body</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-JWT"><span class="nav-number">9.</span> <span class="nav-text">9. JWT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#10-UUID"><span class="nav-number">10.</span> <span class="nav-text">10. UUID</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#11-集群绕过"><span class="nav-number">11.</span> <span class="nav-text">11. 集群绕过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#12-子域名"><span class="nav-number">12.</span> <span class="nav-text">12. 子域名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#13-静态资源"><span class="nav-number">13.</span> <span class="nav-text">13. 静态资源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#14-客户端"><span class="nav-number">14.</span> <span class="nav-text">14. 客户端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#15-API重要程度"><span class="nav-number">15.</span> <span class="nav-text">15. API重要程度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#16-非生产环境"><span class="nav-number">16.</span> <span class="nav-text">16. 非生产环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#17-前端"><span class="nav-number">17.</span> <span class="nav-text">17. 前端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#18-白盒审计"><span class="nav-number">18.</span> <span class="nav-text">18. 白盒审计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#19-导出功能"><span class="nav-number">19.</span> <span class="nav-text">19. 导出功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#20-属性变形"><span class="nav-number">20.</span> <span class="nav-text">20. 属性变形</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#21-XSS防护"><span class="nav-number">21.</span> <span class="nav-text">21. XSS防护</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#22-参数组合"><span class="nav-number">22.</span> <span class="nav-text">22. 参数组合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考文章："><span class="nav-number">23.</span> <span class="nav-text">参考文章：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-linkedin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">瓦都剋</span>
+</div>
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+    <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://mydisqus-2.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://byd.dropsec.xyz/渗透测试之API技巧.html';
+          this.page.identifier = '渗透测试之API技巧.html';
+          this.page.title = '渗透测试之API测试技巧';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://mydisqus-2.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (search_path.endsWith("json")) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+<script type="text/javascript" color="0,0,0" opacity='0.7' zIndex="-2" count="20" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+</body>
+</html>
