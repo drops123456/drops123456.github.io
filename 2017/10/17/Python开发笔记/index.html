@@ -94,7 +94,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="编程,MySQL,Python,Flask," />
+  <meta name="keywords" content="编程,Python,MySQL,Flask," />
 
 
 
@@ -113,7 +113,7 @@
 
 
 <meta name="description" content="近期学习开发中遇到的一些知识，做的学习笔记，做个小记录，持续更新中…">
-<meta name="keywords" content="编程,MySQL,Python,Flask">
+<meta name="keywords" content="编程,Python,MySQL,Flask">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python开发笔记">
 <meta property="og:url" content="http://byd.dropsec.xyz/2017/10/17/Python开发笔记/index.html">
@@ -548,7 +548,7 @@
 <p>WHERE字句，不管是涉及表<code>left_table</code>、表<code>right_table</code>上的限制条件，还是涉及2表连接的条件，都会对记录集起到过滤作用，把不符合要求的记录刷选掉；</p>
 <h1 id="jinja2获取循环索引"><a href="#jinja2获取循环索引" class="headerlink" title="jinja2获取循环索引"></a>jinja2获取循环索引</h1><figure class="highlight django"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="xml">jinja2获取循环</span><span class="template-tag">&#123;% <span class="name"><span class="name">for</span></span> i <span class="keyword">in</span> n %&#125;</span><span class="xml">的索引使用loop.index</span></div><div class="line"><span class="xml"></span><span class="template-tag">&#123;% <span class="name"><span class="name">for</span></span> i <span class="keyword">in</span> names %&#125;</span><span class="xml"></span></div><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">tr</span>&gt;</span></span></div><div class="line"><span class="xml">    <span class="tag">&lt;<span class="name">td</span>&gt;</span></span><span class="template-variable">&#123;&#123; loop.index &#125;&#125;</span><span class="xml"><span class="tag">&lt;/<span class="name">td</span>&gt;</span>  //当前是第x条</span></div><div class="line"><span class="xml">    <span class="tag">&lt;<span class="name">td</span>&gt;</span></span><span class="template-variable">&#123;&#123; i.name &#125;&#125;</span><span class="xml"><span class="tag">&lt;/<span class="name">td</span>&gt;</span></span></div><div class="line"><span class="xml"><span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span></div><div class="line"><span class="xml"></span><span class="template-tag">&#123;% <span class="name"><span class="name">endfor</span></span> %&#125;</span><span class="xml"></span></div></pre></td></tr></table></figure>
 <h1 id="flask-重定向和错误"><a href="#flask-重定向和错误" class="headerlink" title="flask 重定向和错误"></a>flask 重定向和错误</h1><p>可以用<code>redirect()</code>函数把用户重定向到其它地方。放弃请求并返回错误代码，用<code>abort()</code>函数。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> abort, redirect, url_for</div><div class="line"><span class="meta">@app.route('/')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> redirect(url_for(<span class="string">'login'</span>))</div><div class="line"><span class="meta">@app.route('/login')</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">()</span>:</span></div><div class="line">    abort(<span class="number">401</span>)</div><div class="line">    this_is_never_executed()</div></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">from flask import abort, redirect, url_for</div><div class="line">@app.route(<span class="string">'/'</span>)</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span></span><span class="symbol">:</span></div><div class="line">    <span class="keyword">return</span> redirect(url_for(<span class="string">'login'</span>))</div><div class="line">@app.route(<span class="string">'/login'</span>)</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">login</span><span class="params">()</span></span><span class="symbol">:</span></div><div class="line">    abort(<span class="number">401</span>)</div><div class="line">    this_is_never_executed()</div></pre></td></tr></table></figure>
 <p>默认情况下，错误代码会显示一个黑白的错误页面。如果你要定制错误页面，可以使用<code>errorhandler()</code></p>
 <p>装饰器:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> render_template</div><div class="line"><span class="meta">@app.errorhandler(404)</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">page_not_found</span><span class="params">(error)</span>:</span></div><div class="line">    <span class="keyword">return</span> render_template(<span class="string">'page_not_found.html'</span>), <span class="number">404</span></div></pre></td></tr></table></figure>
@@ -559,12 +559,12 @@
 <p>在网页的模板是这么引入的</p>
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;form <span class="attribute">method</span>=post <span class="attribute">action</span>=<span class="string">""</span>&gt;    </div><div class="line">&lt;input <span class="attribute">name</span>=_csrf_token <span class="attribute">type</span>=hidden <span class="attribute">value</span>=<span class="string">"&#123;&#123; csrf_token() &#125;&#125;"</span>&gt;</div></pre></td></tr></table></figure>
 <h1 id="flask上下文处理器"><a href="#flask上下文处理器" class="headerlink" title="flask上下文处理器"></a>flask上下文处理器</h1><p>Flask 上下文处理器自动向模板的上下文中插入新变量。上下文处理器在模板渲染之前运行，并且可以在模板上下文中插入新值。上下文处理器是一个返回字典的函数，这个字典的键值最终将传入应用中所有模板的上下文:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@app.context_processor</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">inject_user</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> dict(user=g.user)</div></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">@app.context_processor</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">inject_user</span><span class="params">()</span></span><span class="symbol">:</span></div><div class="line">    <span class="keyword">return</span> dict(user=g.user)</div></pre></td></tr></table></figure>
 <p>上面的上下文处理器使得模板可以使用一个名为user值为<code>g.user</code>的变量。不过这个例子不是很有意思，因为g在模板中本来就是可用的，但它解释了上下文处理器是如何工作的。<br>变量不仅限于值，上下文处理器也可以使某个函数在模板中可用（由于Python允许传递函数）:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@app.context_processor</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">utility_processor</span><span class="params">()</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">format_price</span><span class="params">(amount, currency=<span class="string">u'€'</span>)</span>:</span></div><div class="line">        <span class="keyword">return</span> <span class="string">u'&#123;0:.2f&#125;&#123;1&#125;.format(amount, currency)</span></div><div class="line"><span class="string">    return dict(format_price=format_price)</span></div><div class="line"><span class="string">上面的上下文处理器使得format_price函数在所有模板中可用:</span></div><div class="line"><span class="string">&#123;&#123; format_price(0.33) &#125;&#125;</span></div></pre></td></tr></table></figure>
 <h1 id="日志记录"><a href="#日志记录" class="headerlink" title="日志记录"></a>日志记录</h1><p><code>handler = logging.FileHandler(&#39;flask.log&#39;, encoding=&#39;UTF-8&#39;)</code></p>
 <h2 id="1、请求之前设置requestId并记录日志"><a href="#1、请求之前设置requestId并记录日志" class="headerlink" title="1、请求之前设置requestId并记录日志"></a>1、请求之前设置requestId并记录日志</h2><p>每个URL请求之前，定义requestId并绑定到g</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@app.before_request</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">before_request</span><span class="params">()</span>:</span></div><div class="line">    g.requestId = gen_requestId()</div><div class="line">    logger.info(<span class="string">"Start Once Access, and this requestId is %s"</span> % g.requestId)</div></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">@app.before_request</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">before_request</span><span class="params">()</span></span><span class="symbol">:</span></div><div class="line">    g.requestId = gen_requestId()</div><div class="line">    logger.info(<span class="string">"Start Once Access, and this requestId is %s"</span> % g.requestId)</div></pre></td></tr></table></figure>
 <h2 id="2、请求之后添加响应头与记录日志"><a href="#2、请求之后添加响应头与记录日志" class="headerlink" title="2、请求之后添加响应头与记录日志"></a>2、请求之后添加响应头与记录日志</h2><p>每次返回数据中，带上响应头，包含API版本和本次请求的requestId，以及允许所有域跨域访问API, 记录访问日志</p>
 <figure class="highlight vbscript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">@app.after_request</div><div class="line">def add_header(<span class="built_in">response</span>):</div><div class="line">    <span class="built_in">response</span>.headers[<span class="string">"X-SaintIC-Media-Type"</span>] = <span class="string">"saintic.v1"</span></div><div class="line">    <span class="built_in">response</span>.headers[<span class="string">"X-SaintIC-Request-Id"</span>] = g.requestId</div><div class="line">    <span class="built_in">response</span>.headers[<span class="string">"Access-Control-Allow-Origin"</span>] = <span class="string">"*"</span></div><div class="line">    logger.info(json.dumps(&#123;</div><div class="line">        <span class="string">"AccessLog"</span>: &#123;</div><div class="line">            <span class="string">"status_code"</span>: <span class="built_in">response</span>.status_code,</div><div class="line">            <span class="string">"method"</span>: <span class="built_in">request</span>.method,</div><div class="line">            <span class="string">"ip"</span>: <span class="built_in">request</span>.headers.<span class="keyword">get</span>(<span class="comment">'X-Real-Ip', request.remote_addr),</span></div><div class="line">            <span class="string">"url"</span>: <span class="built_in">request</span>.url,</div><div class="line">            <span class="string">"referer"</span>: <span class="built_in">request</span>.headers.<span class="keyword">get</span>(<span class="comment">'Referer'),</span></div><div class="line">            <span class="string">"agent"</span>: <span class="built_in">request</span>.headers.<span class="keyword">get</span>(<span class="string">"User-Agent"</span>),</div><div class="line">            <span class="string">"requestId"</span>: str(g.requestId),</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    ))</div><div class="line">    return <span class="built_in">response</span></div></pre></td></tr></table></figure>
 <p><code>basicConfig</code>方法可以满足你在绝大多数场景下的使用需求，但是<code>basicConfig</code>有一个很大的缺点。调用<code>basicConfig</code>其实是给<code>root logger</code>添加了一个<code>handler(FileHandler )</code>，这样当你的程序和别的使用了 <code>logging</code>的第三方模块一起工作时，会影响第三方模块的<code>logger</code>行为。这是由logger的继承特性决定的</p>
@@ -641,9 +641,9 @@
           
             <a href="/tags/编程/" rel="tag"><i class="fa fa-tag"></i> 编程</a>
           
-            <a href="/tags/MySQL/" rel="tag"><i class="fa fa-tag"></i> MySQL</a>
-          
             <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          
+            <a href="/tags/MySQL/" rel="tag"><i class="fa fa-tag"></i> MySQL</a>
           
             <a href="/tags/Flask/" rel="tag"><i class="fa fa-tag"></i> Flask</a>
           
@@ -772,7 +772,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">112</span>
+                <span class="site-state-item-count">118</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -785,7 +785,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">105</span>
+                <span class="site-state-item-count">109</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -921,7 +921,7 @@
         <div class="copyright" >
   
   &copy;  2016 - 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-linkedin"></i>
   </span>
